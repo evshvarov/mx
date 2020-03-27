@@ -1,0 +1,60 @@
+ROUTINE USOPEN
+USOPEN ; ;[ 20200217 19:33:59 ]
+ ; MSM, CACHE, GT.M, MiniM
+ ; vmx Copyright(c) SIA ENTERS  1997-2016
+ ; 
+C q
+UserDate(%1) 
+ q $$NewDate^MXD
+NewDate(%1) 
+ q:'$d(%1) $$NewDate^MXD()  q $$NewDate^MXD(%1)
+icDate(p1,p2) 
+ q $$icDate^MXD(p1,p2)
+d8(p1,p2) q ""
+d9(d,mm) q $g(%DatUMs)
+d8plus(d8,p) 
+ q $$d8plus^MXD(d8,p)
+mnew(m,p) 
+ n %
+ i p>0 f %=1:1:p s m=m+1 s:m#100=13 m=m+88
+ i p<0 f %=1:1:-p s m=m-1 s:m#100=0 m=m-88
+ q m
+dd(x) n %
+ i '$d(x)!$g(x) s %=$$d8(0) q ""
+ s %=$$d8 q ""
+%XD6 
+D s %=$$d8(0) q
+d8t(d8,mm) 
+ q:'$d(mm) $$d8t^MXD(d8)  q $$d8t^MXD(d8,mm)
+ZD q
+pD(%H,t) 
+ ; CONVERTS %H,$H ==> ggggmmdd hh:mm:ss
+ q $$pD^MXD(%H,$g(t))
+WeekDay(d8) 
+ q $$WeekDay^MXD(d8)
+time(h,r) ; Time
+ n %1,%2
+ s:'$d(h) h=$p($h,",",2) s %1=h\3600,%2=h#3600\60
+ i '$d(r) q %1_":"_$e(%2+100,2,3)
+ q %1_r_$e(%2+100,2,3)
+CleAL 
+ q
+ ;;;;;;;;;;M-academija;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+x1 s d="06/13/00" w $tr("Dd.Mm.20Yy.g.","Mm/Dd/Yy",d)  ;;; 13.16.2000.g.
+ q
+x2 s x=12345,$e(x)=""  w x                             ;;; 2345
+ q
+x3 s x="",$e(x,3)=""   w 1,x,$l(x)                     ;;; 1  2
+ q
+x4 s x=12345,$e(x,9)=""  w x,$l(x)                     ;;; 12345   8
+ q
+korobov ; ;[ 11/24/00  12:49 PM ]
+ s home=$io
+ open 4 s ^OK=0
+ u 4 write !,"ATDN3480229;"+$c(13)
+ f  read r q:r["OK"  h 1
+ u home write "Connected! :",r s ^OK=1
+ u 4 w "ATH"+$c(13)
+ u home w !,"Disconnected"
+ close 4
+ q

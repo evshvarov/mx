@@ -1,0 +1,55 @@
+ROUTINE MX [Type=INT]
+MX ;[ 20200229 13:28:03 ]
+ ; MSM, CACHE, IRIS,  GT.M, MiniM
+ ; vmx Copyright(c) SIA ENTERS 2005-2020
+ Q
+MXWEB ; TKWEB-(this comment enables this linetag to be reference from web  with  M3)
+MXGET ; TKWEB
+ Q
+ii(oo) q ""
+UCI(%UCI) n %
+ x:$zv["Mini"!($zv["Ca")!($zv["IRIS") "s %=$znspace" x:'$d(%) "s %=$p($zu(0),"","")"
+ q $g(%,"UNDEF")
+sv j comX4(12) q
+comX4(comPort,b,zr) 
+ s zr=$g(zr,"^sv"),b=$g(b,9600),ComPort="COM"_comPort  ;; ,terminat=$g(terminat,13)
+ s $zt="comR4^MX"  close ComPort  h 1  k @zr s @zr="START-$j="_$j,oldQ=0  ;; ,oldH=0
+ ;OPEN comX ;;;:(:::"  801x0":b):5 s o=$TEST  ;; h 1 ;; 20150224
+ OPEN ComPort:(:::" 8     ":b):5 h 1
+ s @zr=$j f %=1:1:99 s @zr@(%)=0
+ ;; w *-3 ;; 20150129   ;; q  ;;USE comX:(:"SI") f o=1:1:999 r *a:0  ;; read com-port, even $c(3)  !! 
+ USE ComPort:(:::" 8     ":b)
+comR4 
+ i $g(@zr)="" CLOSE ComPort HALT
+ ;; s jsv=$j i $ze["<ENDOFFILE" CLOSE ComPort HALT
+ s Q="" f x=0:1:99 r *o:1 q:o=-1!(o=13)  s Q=Q_$c(o)
+ i '$l(Q),o<0 w *-3 f x=0:1:32000 r *o:0   ;; 20161122 
+ g:oldQ=Q!'$l(Q) comR4  s %=$H,oldQ=Q
+ ;; i oldH=%,'Q g comR4
+ s sec=+%_$e(100000+$p(%,",",2),2,9) i '$d(@zr@(sec)) s o=+$o(@zr@(0)) k @zr@(o)
+ s @zr@(sec)=Q  g comR4
+ q
+comWrite(Port,text,zr,b) 
+ k:'$l($g(zr)) zr k:'$l($g(b)) b 
+ s zr=$g(zr,"^comWrite"),b=$g(b,9600),ComPort="COM"_+Port  s @zr@(Port,$$pD^MXD($h,2))="?"  ;; ,terminat=$g(terminat,13)
+ OPEN ComPort:(:::" 8     ":b):5
+ USE ComPort:(:::" 8     ":b)
+ WRITE text,$c(13),text,$c(13)    ;; *-3
+ CLOSE:000 ComPort s @zr@(Port,$$pD^MXD($h,2))=text
+ q
+comRtest(Port) 
+ s b=9600,ComPort="COM"_+Port,ts=$$pD^MXD($h,2) n o,x,Q
+ OPEN ComPort:(:::" 8     ":b):5 h 1
+ USE ComPort:(:::" 8     ":b)
+ s Q="" f x=0:1:99 r *o:1 q:o=-1!(o=13)  s Q=Q_$c(o)
+ CLOSE ComPort s ^test(Port,ts)=Q_$$pD^MXD($h,2)
+ q
+mxIndex(reportNo) 
+ n % s %=$g(%omPrint(-reportNo),-1) q:% ""  s %omPrint(-reportNo)=""
+ i $l(%) q:'$d(^om(%USID,reportNo)) "" q $$getObj^MXTQM(%,1)
+ s:%mxIndex="" %mxIndex=$g(%mxIndex(0)) q:%mxIndex="" ""
+ I $$S^MXF(" s %YX(%YXy,2)="".<mx ic20.-2 "" ",0)
+ q $$getObj^MXTQM(%mxIndex,1)
+omFormat(oo) 
+ if oo[%B set oo=oo_"<mx format=itog "
+ q oo

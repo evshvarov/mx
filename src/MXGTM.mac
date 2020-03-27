@@ -1,0 +1,70 @@
+ROUTINE MXGTM
+MXGTM ; for GTM ; ;[ 20190602 22:24:47 ]
+ q
+FREAD ; terminal gtm !!
+ x "zprint ^FREAD" 
+ read "File > ",sd set retry=0 set $ztrap="BADAGAIN" 
+ open sd:(readonly:exception="do BADOPEN") use sd:exception="goto EOF"
+ for  use sd read x use $principal write x,!
+EOF 
+ if '$zeof zmessage +$zstatus 
+ close sd quit 
+BADOPEN 
+  set retry=retry+1 if retry=2 open sd
+  if retry=4 halt
+  if $piece($zstatus,",",1)=2 do
+  . write !,"The file ",sd," does not exist. Retrying in about 2 seconds ..."
+  . hang 2.1
+  . quit
+  if $piece($zstatus,",",1)=13 do
+  . write !,"The file ",sd," is not accessible. Retrying in about 3 seconds ..."
+  . hang 3.1 
+ . quit 
+ quit 
+BADAGAIN 
+ w !,"BADAGAIN",!
+ quit 
+ ;
+tcp ; GT.M native master server
+  s timeo=30
+  s port=2233  ;; 6331
+  s tcp="|TCP|"_port
+  o tcp:(ZLISTEN=port_":TCP":NODELIMITER:ZNODELAY:ATTACH="listener"):timeo:"SOCKET"
+  e  q
+  ;u tcpdev:morereadtime=100
+  u tcp
+ x " w /listen(1)"
+  f  d  q:$key]""
+  . x "w /wait(timeo)"
+  . i $key]"" q
+  s socket=$p($key,"|",2)
+ close tcp:(SOCKET="listener")
+ j tcp^MXGTM
+ use tcp:(NODELIMITER:ZNODELAY:SOCKET=socket) ;; j listen^%mwire
+  ;c tcp:(SOCKET="listener")
+  ;u tcp:(NODELIMITER:ZNODELAY:SOCKET=socket)
+  ;;   d command
+L s ooo=""
+ f  READ *%:60  d:%>-1  s uci=$tr($p($p(ooo," UCI=",2)," "),"""") s:$e(ooo,1,3)="GET" o=$p($p($p(ooo,"UCI=",2),";",1,6)," "),uci=$p(o,";") q:$l(uci)>2!111
+ . ;; s ^mxMonito($$ts,3.1,-$j)=% 
+ . s:%>0 ooo=$c(%) f  READ *%:0  s ooo=ooo_$c(%)  q:%<0  
+ . ;; s ^mxMonito($$ts,3.2,-$j)=ooo
+ s Html=$l(ooo)_-987654321
+ s %=$c(13)_$c(10),%1=$l(Html)
+ s %mxWeb="HTTP/1.1 200 OK"_%_"Content-type: text/html"_%_"Access-Control-Allow-Origin: *"_%_"Cache-Control: no-cache"_%_"Content-Length: "
+ w %mxWeb_%1_%_%_Html,$c(0),*-3 ;; k:000 ooo,Html,uci,port,shee ;;  d:$d(o) saveMem
+ use 0  w ooo,!,$key,!,Html 
+ use tcp
+ g L
+mwireVersion 
+  ;;Build 22
+  ;
+mwireDate 
+  ;;06 July 2011
+  ;
+version 
+  ;
+  s output="+M/Wire "_$p($t(mwireVersion+1),";;",2,2000) ;_separatorend;
+  w output
+  QUIT
+  ;

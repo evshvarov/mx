@@ -1,0 +1,534 @@
+ROUTINE USX
+USX ; MX-SERVER [ 01/10/2006  10:11 PM ]  ;[ 20200130 18:47:21 ]
+ ; MSM, CACHE, IRIS, GT.M, MiniM
+ ; MX  Copyright(c) SIA ENTERS  2005-2020
+ ; 
+ N II,GG,%IG,%2,L,%FILE,%B,%,o,%n,%x s %=""
+ S %FILE=$P(%1," "),%USPR=$G(%USPR,"%USPR"),%B=$c(254) q:"o"_%B[%FILE
+ i '$l($g(%USID))!'$l(%FILE) s %mxWarng("^USX")="'$l($g(%USID)!'$l(%FILE)"_$g(%USID)_$g(%FILE) q
+ i -$g(xC)[-56,$d(^mxConfig("A",%FILE)),'$d(^(%FILE,%USID)) s xC=-xC_"- access denyed",%mxWarng(xC)="^USX" q
+ S II=$g(^AL(%FILE,"%LII")),GG=$g(^("%LG"))
+ i $l(II)<1!($l(GG)<3) s:$d(@("^"_%FILE)) mxWarng(%FILE)=II_GG_$g(%V)_%B_$g(%I) q
+ f %="II","GG" s @%=$p(@%_"    ","    ")
+ S %2="s "_$p(GG,",",2)_"=$p(%R,"""_%B_""",2)"
+ i (GG["~") s %2="s %B=$c(254)"
+ s %x=1 F %=2:1:$L(GG,",") d
+ . i GG["~" s %n=$p($p(GG,",",%),$c(13)) d  q
+ . . ;;;q:%n["~~"
+ . . i $e(%n)'="~" s %x=%x+1,%2=%2_","_%n_"=$p(%R,%B,"_%x_")" q
+ . . s %n=$tr(%n,"~"),%2=%2_","_%n_"=$p($p(%R,%B_"""_%n_"="",2),%B)"
+ . S:%>2 %2=%2_","_$P(GG,",",%)_"=$P(%R,"""_%B_""","_%_")"
+ S %XG(%FILE)=%2
+ s %2="n %,%q s %=$p(%I,""("",2,9),%=$p(%_0,"")0"")"
+ F %=1:1:$l(II,",") S %2=%2_" s "_$p(II,",",%)_"=$p(%,"","","_%_")" d
+ .s %2=%2_" s:$e("_$p(II,",",%)_")="""""""" "_$p(II,",",%)_"=$e("_$p(II,",",%)_",2,$l("_$p(II,",",%)_")-1)"
+ s %2="s " d
+ .f %=1:1 s %n=$p(II,",",%) q:%n=""  s %2=%2_%n_"=$qs(%I,"_%_"),"
+ .s %2=$p(%2_",",",,")
+ n %x1
+ S %XI(%FILE)=%2,%x=$l(GG,",")+9,%x1=1  k %CON
+ i GG'["~" S %CON(%FILE)="n %,%N,%B S %R=%SF,%B=$c(254) F %=2:1:"_$L(GG,",")_" S %N=$P("""_GG_""","","",%),%R=%R_%B_@%N "
+ i GG["~" S %CON(%FILE)="n %,%N,%B S %R=%SF,%B=$c(254)" F %=2:1:$L(GG,",") s %n=$p(GG,",",%) d
+ . ;;;q:%n["~~"
+ . s:%n'["~" %x1=%x1+1,o="(%OLD("""_%n_"""),$p(%R,%B,"_%x1_"))="_%n
+ . s:%n["~" o="$p(%R,%B,"_%x_")="""_$tr(%n,"~")_"=""_"_$tr(%n,"~"),%x=%x+1
+ . s %CON(%FILE)=%CON(%FILE)_","_o
+ S %LG(%FILE)=GG,%LII(%FILE)=II,%LI(%FILE)=$p($g(^AL(%FILE,"%LI"))," ")
+ q
+%XG(%1) 
+ s %1=$p(%1,"(") s:$e(%1)="^" %1=$e(%1,2,22) q:'$l(%1) 0
+ i $d(^AL(%1)) d ^USX q %1
+ q 0
+x(%1) d X q ""
+xe(%USID,%xecute) 
+ s %xUSX=%xecute s $zt="Erx^USX"
+ n % x %xecute
+ q
+get(%1,%2) 
+ n %n,%
+ f %=1:1:$l(%1," ") s %n=$p(%1," ",%) i %n'="",'%n s @%n=$g(@%n,$g(%2))
+ q ""
+wm(%rm,%nn) 
+ n %,%1,%r,%n,%x,%im,%j,%jq,%lrm,%rmx
+ s %j=+%rm,%jq=0 i %rm s %rm=%V(%V,3),%nn=%V(%V,"4.rm")
+ f %1=$l(%rm,$c(254)):-1:1 d
+ .i %j<-1,%1>($l(%rm,$c(254))+1-%j) q
+ .f %x=1:1:$l(%nn,$c(254)) s %n=$p(%nn,$c(254),%x) d:%V(%V,5)_"-"'[("-"_%n_"-")
+ ..s %="" f  s %=$o(@%n@(%)) q:%=""  s %jq=@%n@(%)   d:%jq
+ ...i %j s:%j>0 %jq=%jq-$j(%jq,0,%j) s:%j<0 %jq="-"_%jq q:'%jq
+ ...s $p(%rm(%1,$c(255)_%),$c(254),%x)=%jq
+ ...q:%V(%V)'["-"
+ ...s $p(%rm(%1,$c(255)_%),$c(254),%x)="-"_%jq
+ .s %im=$p(%rm,$c(254),1,%1) x "i $o(^rm(%USID,"_$tr(%im,$c(254),",")_",0))"
+ .s %="" f  s %=$o(%rm(%1,%)) q:%=""  d 
+ .. s %r=$g(^(%)),%lrm=$l(%rm(%1,%),$c(254))
+ .. i %rm(%1,%)'["++",%r'["++" d  q
+ ... f %x=1:1:%lrm s $p(%r,$c(254),%x)=$p(%r,$c(254),%x)+$p(%rm(%1,%),$c(254),%x)
+ ... s ^(%)=%r
+ .. n v,s
+ .. f %x=1:1:%lrm s %rmx=$p(%rm(%1,%),$c(254),%x),s=$p(%r,$c(254),%x),$p(%r,$c(254),%x)=$$sv^fin("s++%rmx")
+ .. s ^(%)=%r
+ q ""
+nE(%E) n % f %=1:1:99,0 q:$p(%V(%V,3.1),%B,%)=%E
+ q %
+rm(%e,%nn) 
+ n %x,%n,% k %LineVAL
+ i %e'[")" d  i '% s mxERROR=%e_" %e  $$rm^USX(%e,%nn) ?? " q ""
+ .s %=$$nE(%e) q:'%
+ .s %e=$p(%V(%V,3.1),%B,1,%),%e="^rm(%USID,"_$tr(%e,%B,",")_")"
+ s $p(%e,",")="^rm(%USID,%V" 
+ s:'$d(%nn) %nn=$g(%V(%V,"4.rm")) q:%nn="" ""
+ f %x=1:1:$l(%nn,%B) s %n=$p(%nn,%B,%x),%=$g(@%n) k @%n s @%n=%
+ i '$d(%V(%V,"rm")) s %=$c(255) d  ;; s:$zv["U_"&000 %=$c(55555) d
+ .i $o(^rm(%USID,%V,%ggmm,%))'="" f  s %=$o(^(%)) q:%=""  s %V(%V,"rm",%)=$g(^(%))
+ .i '$d(%V(%V,"rm")) f  s %=$o(^rm(%USID,%V,%)) q:%=""  s %V(%V,"rm",%)=^(%)
+ .k ^rm(%USID,$j,%V) m ^rm(%USID,$j,%V)=%V(%V,"rm") k %V(%V,"rm") s %V(%V,"rm")=1
+ s %="" i $e(%e,$l(%e))'=")" s %e=$e(%e,1,$l(%e)-1)
+ f  s %=$o(^rm(%USID,$j,%V,%)) q:%=""  d:$g(%V(%V,4))["*"!($d(@%e@(%))#10)
+ .s %rm=$g(@%e@(%)),%1=$e(%,2,99)
+ .f %x=1:1:$l(%nn,%B) d
+ .. s %n=$p(%nn,%B,%x),@%n@(%1)=$p(%rm,%B,%x)
+ .. q:@%n@(%1)'["++"  n v,%
+ .. f %=2:1:$l(@%n@(%1),"++") s v=$e($p(@%n@(%1),"++",%),1,3) d:v'=""
+ ...  s %LineVAL(v)=$g(%LineVAL(v),%B)_%n_%B
+ q ""
+wv(%m,%g) 
+ n %l,%i,% s %l=$l(%g,$c(254)),%i=$p($p(%m,"(",2),")")
+ s @%i="" f  s @%i=$o(@%m) q:@%i=""  s %r=$g(^(@%i)) d  s ^(@%i)=%r
+ .f %=1:1:%l s %n=$p(%g,$c(254),%) i %n'="" s:$g(@%n) $p(%r,$c(254),%)=@%n+$p(%r,$c(254),%)
+ q ""
+rv(%m,%g) 
+ n %l,%i,%r,%rr s %l=$l(%g,%B),%i=$p($p(%m,"(",2),")")
+ f %=1:1:%l s %n=$p(%g,%B,%) k:%n'="" @$p(%n,"(")
+ s @%i="" f  s @%i=$o(%MiT(%Li,@%i)) q:@%i=""  d
+ .s %r=%MiT(%Li,@%i),%rr=$g(%MiT(%Li-1,@%i)) k %MiT(%Li,@%i)
+ .f %=1:1:%l s %n=$p(%g,%B,%) d:%n'=""
+ ..x "s "_%n_"=$p(%r,%B,%)"
+ ..s $p(%rr,%B,%)=$p(%rr,%B,%)+$p(%r,%B,%)
+ .s %MiT(%Li-1,@%i)=%rr
+ q ""
+%xgl 
+ s (%xgl(0),%xgl(1),%xgl(-1))=";"  q:'$d(^AL(%FILE,"Gf"))
+ F %=-1,0,1 S %xgl(%)=$G(^AL(%FILE,"Gf",$P("OFF PRE ON"," ",2+%)))
+ k %xglm  m %xglm(%FILE)=%xgl
+ Q
+X 
+ N A S A=%1 D USX 
+ q
+%xig(%1) 
+ s (%XG(%1),%XI(%1))="" d:$d(^AL(%1)) X
+ q ""
+%MMUSER(%PrFile,%Vch) 
+ n %v,%1,%2,%,%n,L,oo,o
+ S L=$T(@%V^@%USPR) Q:L="" ""
+ n Vq s Vq=""
+ F %L=2:1:15 S %1=$P(L,"\",%L) D  S %v(%L)=%1
+ .s %=$p($g(%Vch),"\",%L) s:$l(%) %1=%
+ .s %1=$p(%1_"     ","     ") s:%1="-" %1=""
+ .i $e(%1)="@" d
+ ..  s %=$p($e(%1,2,99)," ") s:%="" %=%V
+ ..  s %2=$p($t(@%+(%=%V)^@%USPR),"\",%L)
+ ..  s:%2="" %2=$g(@%) s %1=$p(%2_" "_$p(%1," ",2,99)_"   ","   ")
+ .i %L<8 s Vq=Vq_" ;"_%L_" ?%v("_%L_") "
+ s:%v(3)'[%B %v(3)=$tr(%v(3),",",%B)
+ i %v(4)["@" s $p(%v(4),"@",2)=@$p(%v(4),"@",2),%v(4)=$tr(%v(4),"@")
+ s %v(4)=$tr(%v(4)," ",%B),%=$p(%v(4),"=",2) 
+ f o=1:1:$l(%,%B) s oo=$p(%,%B,o) s:%B_%v(3)_%B[(%B_oo_%B) $p(%,%B,o)=1
+ f o=1:1:$l(%,%B) s oo=$p(%,%B,o) s:%B_$p(%v(4),"=")_%B[(%B_oo_%B) $p(%,%B,o)=1
+ s:%[(%B_1) %=$$trw^UST(%,%B_1),$p(%v(4),"=",2)=%
+ S:%B_%B_%v(3)'[(%B_%B_"%V"_%B) %v(3)="%V"_%B_"%ggmm"_%B_%v(3)
+ S:$E(%v(5))="-" %v(5)=$P(%v(3),%B,2)_%v(5)
+ S:%B_%v(3)_%B'[(%B_$P(%v(5),"-")_%B) %v(5)=$P(%v(3),%B,2)
+ f %=1:1:$l(%v(3),%B) s %n=$p(%v(3),%B,%) i $e(%n)["-" d
+ . s %v(5)=%v(5)_%n,$p(%v(3),%B,%)=$e(%n,2,99)
+ S %v(6)=" "_$tr(%v(6),","," ")_" "
+ i mxConfig[":^z5:",%v(6)["ciko",%v(6)'["z5" s %v(6)=%v(6)_"z5 "
+ i %v(7)[" " x %v(7)
+ s %v(4)=$g(%v(14))_%v(4) k %v(14)
+ i $$%XV(%PrFile)
+ merge %V(%V)=%v
+ q ""
+%XV(%PrFile) 
+ N H,%,%2,%3,%4,%4M,%E,x,%22,o 
+ s %PrFile="^"_$tr(%PrFile,"^","")
+ f %="%v(3)","%v(4)" s:@%'[%B @%=$tr(@%,",",%B)
+ s %v(3.5)=$p(%v(3),"*",2),%v(3.1)=$p(%v(3),"*")
+ i %v(3.5)["(" f %=1:1:$l(%v(4),%B) d
+ .s x=$p(%v(4),%B,%)
+ .q:$tr(x,"()",",,")'[$tr(","_$p(%v(3.5),"(",2),"()",",,")
+ .s $p(%v(4.5),%B,%)=x s $p(%v(4),%B,%)=1 q
+ s %v(4.3)="",%=%v(4)
+ i %v(4)'["*)",%v(4)'["(*" s %v(4.3)=$p(%v(4),"*",2),%=$p(%v(4),"*")
+ s %v(4.2)=$p(%,"=",2),%v(4.1)=$p(%,"=")
+ f %=1:1:$l(%v(4.1),%B) s x=$p(%v(4.1),%B,%) d:",*)"[$e($p(x,"(",2)_0)
+ .s x=$p(x,"("),$p(%v(4.1),%B,%)=2
+ .s %v("4.rm")=$g(%v("4.rm"))_$s($d(%v("4.rm")):%B,1:"")_x
+ S %3=%v(3.1),%4=%v(4.1),%4M=%v(4.3)
+ s %2="" f %=1:1:$l(%4,%B) s %n=$p(%4,%B,%) d:%n!%2!(%n["_")
+ .q:%n=+%n
+ .i %n["_" s %n=$l($p(%n,".",2))_$p($p(%n,"."),"_")
+ .s:%n %2=+%n,%n=$p(%n,+%n,2,99),$p(%4,%B,%)=%n
+ .s $p(%v("4.p"),%B,%)=%2
+ s %v(4.1)=%4 s:$l(%v(4.2)) %4=%4_%B_%v(4.2)
+ s %v(.34)=%3_%B_%4
+ s %4=$L(%v(4.1),%B)+1_%B_%4,H=""""_%B_""""
+ s %2="n %zr S %zr=$NAME("_%PrFile_"("_$tr(%3,%B,",")_")),%R=$g(@%zr) i $e(%zr,1,$l(%zr)-1)[$e($g(%V(%V,""xMrm"")),1,$l($g(%V(%V,""xMrm"")))-1) s ^("
+ s:'$d(%V(%V,"xMrm")) %2="S ooozr=$NAME("_%PrFile_"("_$tr(%3,%B,",")_")),%R=$g(@ooozr),^("
+ s %E=$p(%3,%B,$L(%3,%B))
+ s %2=%2_%E_")=" F %=2:1:%4 d
+ .s %1="_" s:%=2 %1="" i $p(%4,%B,%) s %2=%2_%1_H
+ .e  s %2=%2_%1_H_"_($p(%R,"_H_","_%_")+"_$P(%4,%B,%)_")"
+ f %=%4+1:1:$L(%4,%B) s %2=%2_"_"_H_"_"_$P(%4,%B,%)
+ i %4M'="" s %2=%2_"_"_%B_"_$P(%R,%B,"_($L(%4,%B)+1)_",99) N I,% S I="""" F %="_($L(%4,%B)+1)_":1 S I=$O("_%4M_"(I)) Q:I=""""  S:"_%4M_"(I) $P(^("_%E_"),%B,%)=$P(%R,%B,%)+"_%4M_"(I)"
+ i %v(3.5)'="" s %2=%2_" i $d(^("_%E_",1))+1,1!$$wv^USX("""_%v(3.5)_""","""_%v(4.5)_""")"
+ i $g(%v("4.rm"))'="" s %2=%2_" i 1!$$wm^USX("""_%v(3.1)_""","""_%v("4.rm")_""") "
+ s %XV(%V)=%2
+ q ""
+wParVM(%USID,%n,%q) 
+ q ""
+VarsMe1(%zr) 
+ n %1,%2,%3,% s %="%",%3="",%1=251 i $d(@%zr@(1))
+ f  s %=$o(@%) q:%=""  i %'="%",%'?1"%"1n,$d(@%)#2,$l(@%)<999 d
+ .s %3=%3_$c(4)_%_"="_@% q:$zv["M3"  q:$l(%3)>15000
+ .i $l(%3)>250 f  d  q:$l(%3)<250
+ .. s ^(%1)=$e(%3,1,250),%3=$e(%3,251,9999),%1=%1+250
+ s ^(%1)=%3_$c(4)
+ q $d(@%zr)
+SaveJob(%1,%2,LiOfMvar) 
+ n %mxWeb     job SaveMem(%1,%2,$ZPARENT):(:1):1   q $d(^oAllVars(%1,%2))
+SaveMem(%1,%2,LiOfMvar) 
+ s:'$d(%2) %2=$g(%1),%1=%USID
+ n % s:0[$g(%2) %2=0 s:0[$g(%1) %1=%USID i %2'<0,$d(%mxWeb) q %2
+ k ^oAllVars(%1,%2) s ^(%2,"$j")=$j i $g(LiOfMvar) s ^("$j")=+LiOfMvar,LiOfMvar=""
+ i $l($g(LiOfMvar)) d  q $g(%11)
+ . i LiOfMvar="%FILE" s %=$tr(%LI(%FILE),",~"," ") q:'$l(%)  s LiOfMvar=%_" %xgl() %xglm() %G() %W() %FILE %gFILE %GM %I %LG %K %KEM %N %B %SF %NEW %LIv" 
+ . s ^oAllVars(%1,%2,-1)=LiOfMvar
+ . f %11=1:1:$l(LiOfMvar," ") s %=$p(LiOfMvar," ",%11) i $l(%) x:%["()" "s %=$p(%,""()"") m:$d(@%) ^oAllVars(%1,%2,%)=@% i $d(^oAllVars(%1,%2,%))" s:$d(@%)#2 ^(%)=@%
+ i $d(%mxWarng) k ^o($j,"%mxWarng") s %=$s($zv["GT":"$R",1:"$zr") x "m @"_%_"=%mxWarng s @"_%_"=$g(%mxForma)_"" ""_$$pD^MXD($h,2) k %mxWarng"
+ s %="%" g:$zv'["MS" SaveMem3 
+ f  s %=$o(@%) q:%=""  i $e(%)'="$"," %0 %1 %2 %USID o oo ooo "'[(" "_%_" ") d:$d(@%)>1  i $d(@%)#2 s ^(%)=$e(@%,1,500)  i $l(@%)>500 f %22=501:500:$l(@%) s ^(%,%22)=$e(@%,%22,%22+499) i $d(^oAllVars(%1,%2,%))
+ . n %11 s %11=%_"("""")"
+ . f  s %11=$q(@%11) q:%11=""  i $d(@%11)#2 s ^(%11)=$e(@%11,1,500) d
+ .. i $l(@%11)>500,'$d(^(%11,1)) d  i $d(^oAllVars(%1,%2,%))
+ ... f %22=501:500:$l(@%11) s ^(%22)=$e(@%11,%22,%22+499)
+ q ""
+SaveMem3 
+ s ^oAllVars(%1,%2,1)=$h,%="%" ;; s:$zv["M3" %="%1J"
+ f  s %=$o(@%) q:%=""  i $e(%)'="$",$e(%,1,2)'?1"%"1n," %USID o oo ooo %msm8uni cMSM2Uni "'[(" "_%_" ") s:$d(@%)#2 ^(%)=@% i $d(@%)>1 m ^oAllVars(%1,%2,%)=@% i $d(^oAllVars(%1,%2,%)) 
+ q ""
+CopySave(%) 
+ n %1
+ k ^oAllVars(%USID,%),^oM3(%USID)
+ m ^oM3(%USID)=^oAllVars(%USID,0) m ^oAllVars(%USID,%)=^oM3(%USID)
+ k ^oM3(%USID)
+ s %=0,%1="" f  s %=$o(^oAllVars(%USID,%)) q:%=""  s %1=%1_%_$c(4)
+ q %1
+RestMeKi(%USID,%xxx0,%noKILL) 
+ q:'$d(^oAllVars(%USID,%xxx0)) ""
+ i $$RestMem(%USID,%xxx0,$g(%noKILL))
+ k ^oAllVars(%USID,%xxx0)
+ q 1
+RestAdd(%1,%2) 
+ i $d(^oAllVars(%1,%2,1))
+ n % s %=999 f  s %=$o(^(%)) q:'$l(%)  i $e(%)'="$",'$d(@%) m @%=^oAllVars(%1,%2,%)
+ q 1
+RestMem(%1,%2,%3) 
+ s:'$d(%2) %2=$g(%1),%1=%USID s %3=$g(%3) n %
+ i %3>0,$g(^oAllVars(%1,%2,"$j"))=%3 kill (%1,%2,%3,%USID,%mxWeb,%mxSheet)
+ i %2<0,$d(%mxWeb),$j=$g(^oAllVars(%1,%2,"$j")),$g(%session)=$g(^("%session")) q $j
+ s:0[$g(%1) %1=%USID s:0[$g(%2) %2=0 ;; i %2'<0,$d(%mxWeb) q %2
+ h:'$d(^oAllVars(%1,%2,"$j")) .1   q:'$d(^oAllVars(%1,%2,"$j")) -1  
+ i %3>0,^("$j")-%3 q -%3_" -- saved.job="_^("$j")
+ i %3'>0,'$d(%mxWeb),^("$j")-$j q -1
+ i $l($g(^oAllVars(%1,%2,-1))) n %11,LiOfMvar s LiOfMvar=^(-1) d  g RestMemE
+ . f %11=1:1:$l(LiOfMvar," ") s %=$p(LiOfMvar," ",%11) i $l(%),%'="%" s %=$p(%,"("),@%=$g(^(%)) i $d(^(%))>1 k @% m @%=^oAllVars(%1,%2,%) i $d(^oAllVars(%1,%2,%))
+ i $zv'["MS" s %=999 f  s %=$o(^(%)) q:%=""  d:$e(%)'="$"
+ .q:" oo o ERR mxMsgBox mxERROR %USID %RestMem % %1 %2 "[(" "_%_" ")
+ .i %3'>0,$e(%)="%",'$d(%mxWeb),$d(@%) q:"%LANG %YX %omPrint %mxSheet %mxForma %XD81 %XD82 %gm %DatUMs %DATUMS %MENESI %GADS %DAYS %YEAR %XD81m %XD82m "[(%_" ")
+ .i $d(^(%))=1 s @%=^(%) q
+ .k @% m @%=^oAllVars(%1,%2,%)
+ i $zv["MS" s %=999 f  s %=$o(^(%)) q:%=""  d:$e(%)'="$"
+ .q:" oo o ERR mxMsgBox mxERROR %USID %RestMem % %1 %2 "[(" "_%_" ")
+ .i %3'>0,$e(%)="%",$d(@%) q:"%LANG %YX %omPrint %mxSheet %mxForma %XD81 %XD82 %gm %DatUMs %DATUMS %MENESI %GADS %DAYS %YEAR %XD81m %XD82m "[(%_" ")
+ .k @% i $d(^(%))#2 s @%=^(%) d:$l(@%)=500
+ ..n %22
+ ..f %22=501:500 q:'$d(^oAllVars(%1,%2,%,%22))  s @%=@%_^(%22)
+ ..i $d(^oAllVars(%1,%2,%))
+RestMemE s %=999 f  s %=$o(%RestMem(%)) q:%=""  s @%=%RestMem(%) k %RestMem(%)
+ q ""
+1(%) s %RestMem(%)=$g(@%) q 1
+v(%Vch,oov,oov2) 
+ n oovL,v 
+ s oovL=$tr($p(%Vch,"\",3,4),"\,=","   ")_" %I "
+ s oovL=$$trw^UST(oovL,"(*)")
+ i $g(oov)?8n d  s oov="s:d8<"_oov_" flagSTOP=1 "_$g(oov2)
+ . n x,o k %d8start
+ . f x=1:1:99 s o=$p($p(%Vch,"\",6)," ",x) s:$l(o) %d8start(o)=oov
+ q $$%v($p(%Vch,"\"),%Vch,,,$g(oov))_$$%vL($p(%Vch,"\"),,,,oovL)    
+ ;
+%v(%V,%Rout,xMcode,%PrFile,oov) 
+ n %Vch s %Vch=$g(%Rout) i $l(%Vch,"\")<4 s %Vch=""
+ i %V["^" s %Rout=$p(%V,"^",2),%V=$p(%V,"^")
+ s %PrFile=$g(%PrFile,"^M")
+ n o,oo,%FILE,%W,%uspr s %uspr=%USPR
+ n %USPR k %rVstop(%V),%koko
+ s %USPR=%Rout,%V(%V)="1F",%W=$c(255)
+ i $t(@%V^@%USPR)=""  d  q mxERROR
+ . s mxERROR="line "_%V_"^"_%USPR_" not exist.."
+ i $$%MMUSER(%PrFile,%Vch)
+ k ^oMX(%USID,"%V",%V) m ^oMX(%USID,"%V",%V)=%V 
+ k vbak 
+ s xVw="d "_%V_"^"_%Rout
+ i $zv["Ca" do DISABLE^%NOJRN ;;i $SortBegin(^M(%V,%ggmm))
+ k @%PrFile@(%V,%ggmm),^rm(%USID,%V,%ggmm),^oMX(%USID,"v",%V)
+ i '$l($g(flgPlusM)) s %="" f  s %=$o(^M(%V,%)) q:%=""  k:$p(%,":",2)=%USID ^(%) k ^rm(%USID,%V)
+ i $l($g(flgPlusM)) q:$d(flgPlusM(%V,+%ggmm)) 0 s flgPlusM(%V,+%ggmm)=1 n %ggmm s %ggmm=flgPlusM_":"_%USID_":*"  
+ F %FileNum=1:1:33 S o=$p(%V(%V,6)," ",%FileNum) d:o'=""
+ .s:o o=$p(o,+o,2,99) d %FILE^USPRINT(o_"^"_%Rout)
+ i $zv["Ca" do ENABLE^%NOJRN  ;;i $SortEnd(^M(%V,%ggmm))
+ q $d(@%PrFile@(%V))
+%vL(%V,%PrNode,xMcodeL,%PRRvL,oovL) 
+ n %E,%NNN,d8,sd,sk,%vL s %NNN=0
+ i $l($g(flgPlusM)),$d(flgPlusM(%V,%ggmm))!111 n %ggmm s %ggmm=flgPlusM_":"_%USID_":*"
+ i $d(%PrNode),%PrNode_%V'["^" s %V=%V_"^"_%PrNode k %PrNode
+ i %V["^" s %Rout=$p(%V,"^",2)
+ s %V=$p($p(%V,"^")_"LLLLLLLL","LLLLLLLL")
+ m %V=^oMX(%USID,"%V",%V)
+ s %vL=%V_"L",%PrNode=$g(%PrNode,"^M(%V)")
+ q:'$d(@%PrNode) $NAME(@%PrNode)
+ i $t(@%vL^@%Rout)="" q "line "_%vL_"^"_%Rout_" not found.."
+ n %Li,%Mi,%M,%MiT
+ i $zv["Ca" do DISABLE^%NOJRN
+ i $$%PrNode^USPRINT(%PrNode)
+ i $zv["Ca" do ENABLE^%NOJRN
+ q 1_%USPR_"."_%V_%PrNode
+qerr s $zt="" h 1 q "ERROR:ta^USX("_%j_","_p1_") "_$h_-$j_" zc="_zc
+wDOS(%dos,text) 
+ ; o 51:(%dos:"W"):0
+ ; u 51 w:$d(text) text w:'$d(text) !,$h,!,%USPR,!
+ q ""  ; c 51 q ""
+MsgVM1 ;;;;(%ListVM) ;;  FromM.VM1 ==> to  M  !!!!
+ f %=2:2:$l(%ListVM,$c(4)) d
+ . s %1=$p(%ListVM,$c(4),%),%2=$p(%ListVM,$c(4),%+1)
+ . i %2="",%1[" " x %1 q
+ . x "s "_%1_"="""_%2_""""
+ q
+MsgMVj(%VarList) 
+ q $$MsgVMV("  ",%VarList)
+MsgVM ; MVM ;;;(%ListVM)  ;;  job 
+ k ^MsgVM(%USID),^(%USID,1)
+ n %MsgVMxx  ;;; h 3  
+ f %=2:2:$l(%ListVM,$c(4)) d
+ . s %1=$p(%ListVM,$c(4),%),%2=$p(%ListVM,$c(4),%+1)
+ . i %1="%MVMkey" s %MVMkey=%USID       ;;;%2
+ . s %MsgVMxx(%1)=%2,^(%1)=%2
+ s ^MsgVM(%USID)=1
+ q
+MsgVMV(%,%VarList) 
+ k %MsgMV s %MsgMV=%_$c(4),%VarList=$g(%VarList)
+ i $g(%ErrorM)'="" s %VarList=%VarList_" %ErrorM"
+ n %1,%2,%3,% s %2=""
+ s %MsgMV=%MsgMV_$g(%VarList)_$c(4)_"$j="_$j_$c(4)
+ f %1=1:1:$l(%VarList," ") s %=$p(%VarList," ",%1) s:%["~" %=$tr(%,"~") d:$e(%)="@"
+ . s %2=%2_" "_$e(%,2,99)_" "_$tr($g(@($e(%,2,99))),","_$c(4),"  ")
+ s %VarList=%VarList_%2_" %VarList "
+ f %1=1:1:$l(%VarList," ") s %=$p(%VarList," ",%1) s:%["~" %=$tr(%,"~") d
+ .q:"@"[$e(%_"@")
+ .i $d(@%)#2 s %MsgMV(%1)=$c(4)_%_"="_$e(@%,1,15000) d:$l(@%)>15000 
+ ..f %2=15001:15000:$l(@%) s %MsgMV(%1*100000_"."_%2)=$e(@%,%2,%2+14999)
+ .q:$d(@%)<2
+ . s %3=%_"("""")" f %4=1:1 s %3=$q(@%3) q:%3=""  i $d(@%3)#2 d
+ .. s %MsgMV(%1*100000+%4)=$c(4)_%3_"="_$e(@%3,1,15000)
+ .. i $l(@%3)>15000 f %2=15001:15000:$l(@%3) s %MsgMV(%1*100000+%4_"."_%2)=$e(@%3,%2,%2+14999)
+ s %1=0,%2="%MsgMV"
+ f  s %2=$q(@%2) q:%2=""  s %1=%1+$l(@%2) q:%1>15000  s %MsgMV=%MsgMV_$c(4)_@%2 k @%2
+ q:$zv'["U) " %MsgMV  q $$U^MXF(%MsgMV)
+GetList(%,%VarList) 
+ k %MsgMV s %MsgMV=%_$c(4),%VarList=$g(%VarList)
+ i $g(%ErrorM)'="" s %VarList=%VarList_" %ErrorM"
+ n %1,%2,%3,% s %2=""
+ s %MsgMV=%MsgMV_$g(%VarList)_$c(4)_"$j="_$j_$c(4)
+ f %1=1:1:$l(%VarList," ") s %=$p(%VarList," ",%1) s:%["~" %=$tr(%,"~") d:$e(%)="@"
+ . s %2=%2_" "_$e(%,2,99)_" "_$tr($g(@($e(%,2,99))),","_$c(4),"  ")
+ s %VarList=%VarList_%2_" %VarList "
+ f %1=1:1:$l(%VarList," ") s %=$p(%VarList," ",%1) s:%["~" %=$tr(%,"~") d
+ .q:"@"[$e(%_"@")
+ .i $d(@%)#2 s %MsgMV(%1)=$c(4)_%_"="_$e(@%,1,8000) d
+ ..i $l(@%)>8000 f %2=8001:8000:$l(@%) d
+ ... s %MsgMV(%1*100000_"."_%2)=$e(@%,%2,%2+7999)
+ .q:$d(@%)<2
+ . s %3=%_"("""")" f %4=1:1 s %3=$q(@%3) q:%3=""  i $d(@%3)#2 d
+ .. s %MsgMV(%1*100000+%4)=$c(4)_%3_"="_$e(@%3,1,8000)
+ ..i $l(@%3)>8000 f %2=8001:8000:$l(@%3) d
+ ... s %MsgMV(%1*100000+%4_"."_%2)=$e(@%3,%2,%2+7999)
+ s %1=$l(%MsgMV),%2="%MsgMV" f  s %2=$q(@%2) q:%2=""  s %1=%1+$l(@%2) d
+ . i %1<8000 s %MsgMV=%MsgMV_$c(4)_@%2 k @%2
+ q %MsgMV
+latv1(%) 
+ s %="e{275}{274}u{363}{362}i{299}{298}a{257}{256}s{353}{352}g{291}{290}k{311}{310}l{316}{315}z{382}{381}c{269}{268}n{326}{325}..{1081}{1049}{1094}{1062}{1091}{1059}{1082}{1050}{1077}{1045}{1085}{1053}{1075}{1043}{1096}{1064}{1097}{1065}{1079}{1047}{1093}{1061}{1098}{1066}{1092}{1060}{1099}{1067}{1074}{1042}{1072}"
+ s %=%_"{1040}{1087}{1055}{1088}{1056}{1086}{1054}{1083}{1051}{1076}{1044}{1078}{1046}{1101}{1069}{1103}{1071}{1095}{1063}{1089}{1057}{1084}{1052}{1080}{1048}{1090}{1058}{1100}{1068}{1073}{1041}{1102}{1070}"
+ n o s o="ú..|."
+ s %=%_$c(254)_o_$c(179)_"."_$c(186)_"."_$c(182)_"."_$c(197)_"."_$c(199)_"."_$c(180)_"."_$c(195)_"."_$c(196)_"."_$c(205)_"."_$c(213)_"."_$c(209)_"."_$c(187)_"."_$c(218)
+ q $$Uu^MXF(%_"."_$c(193)_"."_$c(194)_"."_$c(192)_"."_$c(212)_"."_$c(190)_"."_$c(202)_"."_$c(201)_"."_$c(200)_"."_$c(203)_"."_$c(206)_"."_$c(207)_"."_$c(178)_"."_$c(176)_"."_$c(177)_"."_$c(178)_".")  
+%ALstart(%FILE) 
+ q 1
+ALwrite(%List) 
+ n %h s %h=$c(4),%B=$c(254),%Lg="",%Lii="",%FILE=""
+ f %=1:4:999 s %1=$p(%List,%h,%,%+3) q:$p(%1,%h,4)=""  d
+ . s %K=$p(%1,%h),%n=$p(%1,%h,2),%g=$p(%1,%h,3),%FILE=$p(%1,%h,4)
+ . i %g<0,%K="" s %=9999 q
+ . i %g<0 s:+%K'=%K %K=""""_%K_"""" s $p(%Lii,",",-%g)=%K
+ . i %g>0 s $p(%Lg,%B,%g+1)=%K
+ i %<999,%FILE'="" s @("^"_%FILE_"("_%Lii_")")=%Lg,(%Lg,%Lii)=""
+ q
+readI(%i,%xColumn) 
+ x "s $zt=""Err^USX"""
+ I %i'["^"!(%i'["(") q "-^-(-?-)-"
+ I $d(@%i)#2=0 q "00"
+ s %R=$g(@%i),%I=$NAME(@%i) d:$l(%R)=500  n %1 s %1=$e($p(%i,"("),2,99)
+ .n % f %=501:500 q:$g(@%I@(%))=""  s %R=%R_^(%)
+ x %XG(%1),%XI(%1) i $d(^mxConfig("A")),'$$tAccess^US("A",%1) s %R="" x %XG(%1) q 0
+ q 1
+zo(%i,%di,%MV) 
+ i %i["("""""""")" s ^ERROR(%i)="zo^USX" q ""
+ n %,%I,%R,%IR,%n,%1 s %R=""
+ s %1=$e($p(%i,"("),2,99)
+ i $g(%LII(%1))=""!($g(%LI(%1))="") d
+ .  n %i,%di,%MV d ^USX s %LI(%1)=$g(^AL(%1,"%LI"))
+ i '%di s %R=$g(@%i),%I=$NAME(@%i) d:$l(%R)=500  i 1
+ . f %=501:500 q:$g(@%I@(%))=""  s %R=%R_^(%)
+ e  s %I=$$zo500(%i,%di) i $l(%I),%I'["("""")" s %R=$g(@%I) d:$l(%R)=500
+ . f %=501:500 q:$g(@%I@(%))=""  s %R=%R_^(%)
+ x %XG(%1),%XI(%1) s %IR=%I
+ i $d(^mxConfig("A")),'$$tAccess^US("A"),%i'["("""")" s %I=%i,%R=$g(@%i) x %XG(%1),%XI(%1) q $$MsgVMV("$$zo^USX",%MV)
+ f %=1:1 s %n=$p(%LI(%1),",",%) q:'$l(%n)  d:%n["~"  s %IR=%IR_$c(9)_@%n
+ . i %n'["~~" s %n=$tr(%n,"~") q
+ . s %n=$tr(%n,"~") s:'$d(%XG0(%1,%)) %XG0(%1,%)=$p($g(^AL(%1,"%W",%n,0)),";",2,99)
+ . s o=%XG0(%1,%) n %K,%1,% x o s:$d(%K) @%n=%K
+ i %R="" s %IR=""
+ q $$MsgVMV("$$zo^USX",%MV)
+ ; ; q $$GetList("$$zo^USX",%MV)
+mxGetBlo(h4,h5,BloSize) 
+  ; ; %zr  %zr0 
+ q:%zr'[%zr0 ""  n blok,%r,%,o500 s blok=""
+ s h4=$g(h4,$c(4)),h5=$g(h5,$c(5)),BloSize=$g(BloSize,10000)
+ f  s %zr=$q(@%zr) q:%zr'[%zr0  d  s %zr=o500  q:$l(blok)>BloSize
+ .s %r=@%zr,o500=%zr
+ .i $l(%r)=500 f %=501:500 q:$g(@%zr@(%))=""  s %r=%r_@%zr@(%),o500=$NAME(@%zr@(%))
+ .i h4<0 s blok=blok_%r_h5 q
+ .s blok=blok_%zr_h4_$tr(%r,%B,h4)_h5
+ q blok
+zoIRg(%i,%di) ; 20060214
+ n %,%IR,o,%Zon,%oP1,%oll s o=%i,%oP1="",%oll=0 k ooozoIRg
+ i $d(@%i)#2 x:$zv'["GT" "s o=$q(@o,-1)" i o="" s o=$$zoIR(%i,0)_$c(4),ooozoIRg(0)=o w o q 0
+ s %=$p($g(%i)_"))))","))))"),%Zon=$p(%_"""""""","""""""")
+ q:o="" $c(4)
+ f %=0:1 s %IR=$$zoIR(o,%di),%1=$p(%IR,$c(9)) q:o=%1  q:%1'[%Zon  d
+ . s %oll=%oll+$l(%IR)+1 i %oll>15000 s ooozoIRg(%)=%oP1,%oP1="",%oll=$l(%IR)+1
+ . s o=%1,%oP1=%oP1_%IR_$c(4)
+ s:$l(%oP1) ooozoIRg(%)=%oP1
+ q %
+zoIRn(%i,%di,%3) 
+ s %="",ooo="" i $$zoIRo(%i,%di,99999)
+ f  s %=$o(^o(%USID,%),-1) q:'%  s ooo=^(%)_$c(4)_ooo q:$l(ooo)>25000
+ q ooo
+zoIRo(%i,%di,%3) 
+ n %,%IR,o,%Zon s o=%i,%3=$g(%3,99999) q:o="" 0  k ^o(%USID)
+ i $d(@%i)#2 x:$zv'["GT" "s o=$q(@o,-1)" i o="" s ^o(%USID,1)=$$zoIR(%i,0) q 1
+ s %=$p($g(%i)_"))))","))))"),%Zon=$p(%_"""""""","""""""")
+ f %=1:1:%3 s %IR=$$zoIR(o,%di),%1=$p(%IR,$c(9)) q:o=%1  q:%1'[%Zon  d
+ . s o=%1,^o(%USID,%)=%IR 
+ q %-1
+zoIR(%i,%di,%Zon) 
+ n %,%I,%R,%IR,%n,%1,o
+ s %1=$e($p(%i,"("),2,99)
+ i $g(%LII(%1))=""!($g(%LI(%1))="") d
+ .  n %i,%di,%MV d ^USX s %LI(%1)=$g(^AL(%1,"%LI"))
+ i '%di s %I=$NAME(@%i),%R=$g(@%I) d:$l(%R)=500  i 1
+ . f %=501:500 q:$g(@%I@(%))=""  s %R=%R_^(%)
+ e  s %I=$$zo500(%i,%di) s:%I="" %I=%i s %R=$g(@%I) d:$l(%R)=500
+ . f %=501:500 q:$g(@%I@(%))=""  s %R=%R_^(%)
+ x %XG(%1),%XI(%1) s %IR=%I
+ i $d(^mxConfig("A")),'$$tAccess^US("A",%1) q %IR
+ f %=1:1 s %n=$p(%LI(%1),",",%) q:'$l(%n)  d:%n["~"    s %IR=%IR_$c(9)_$s($l(@%n)<1023:@%n,1:$l(@%n)_">1023")
+ . i %n'["~~" s %n=$tr(%n,"~") q
+ . s %n=$tr(%n,"~") s:'$d(%XG0(%1,%)) %XG0(%1,%)=$p($g(^AL(%1,"%W",%n,0)),";",2,99)
+ . s o=%XG0(%1,%) n %K,%1,% x o s:$d(%K) @%n=%K
+ q %IR
+zo500(i0,di) 
+ n i,%KeM s i=i0 i i0'[%FILE n %FILE s %FILE=$e($p(i0,"("),2,99)
+ s %KeM=$g(%KEM(%FILE)) s:'%KeM (%KeM,%KEM(%FILE))=$l(%LII(%FILE),",")
+ i 'di q:$ql(i)=%KeM i0
+ i di'<0 f  s i=$q(@i) q:'$l(i)  q:$ql(i)=%KeM
+ i di<0 f  s i=$q(@i,-1) q:'$l(i)  q:$ql(i)=%KeM
+ q:'$l(i) i0  q:$o(mxConfig("^"))'["^" i 
+ n % s %=$o(mxConfig($p(i0,"("))) q:'$l(%) i0  q:i'[% i0
+ q i
+vFoundI(%i,f) 
+ n %FILE,%,zr  s f=$g(f)
+ s %FILE=$e($p(%i,"("),2,99)
+ I f=0 k ^rMX(%USID,"vFoundI",%FILE) q 0
+ s %="^rMX(%USID,""vFoundI"",%FILE,"_$p(%i,"(",2,99) I f>0 s @%=f q f
+ s %=$d(@%),zr=$NAME(@%)
+ I %<1 s %=$q(@zr) I %["vFoundI" s %="^"_%FILE_"("_$p(%,",",4,99)
+ q %
+CheckSyn(%RN,text) 
+ ; Syntaxis checking
+ q:$zv["GT" "ok"    ;;;;;;; GT.M - no checking... ;;;;
+ q:$zv["MiniM" "MiniM"    ;;;;;;; MiniM - no checking... ;;;;
+ n LN,OFS,%,LBL,K,LINE,zt,error s text=$g(text)
+ x "s zt=$zt,$zt=""erChSy"""
+ i %RN[" ",text="" s text=" "_%RN
+ i text[$c(4) s text=WMcode(text)
+ i text'="" s %RN="r" x "zr  zi text zs r zl r zs r::1" S LN=$ZA,OFS=$ZB
+ i text=""  x " zl @%RN ZS @%RN::1" S LN=$ZA,OFS=$ZB
+ I LN=0,OFS=0 Q "ok!"
+ S LBL="",K=0
+ F %=1:1:LN S LINE=$T(+%^@%RN) Q:LINE=""  d
+ . S K=K+1 I $P(LINE," ")'="" S K=0,LBL=$P(LINE," ")
+ s LINE=text S:'$l(text) LINE=$T(+LN^@%RN)
+ x:$zv'["MiniM" "s $zt=zt" s error="?"
+ i $l(LINE,"(")-$l(LINE,")") s error=")("
+ i $l(LINE,"""")#2=0 s error=""""""
+ q +LN_":"_LBL_"+"_K_"c"_OFS_"@"_error_"@"_LINE
+erChSy x "s %=%USID_"".CheckSyntax^USX: name of routine is unvalid !! ""_$ze"
+ s $zt=zt q %_";"_$c(0)
+MWcode(%1) 
+ n %,%2,%3,s
+ s %=$c(179)_$c(186)_$c(182)_$c(197)_$c(199)_$c(180)_$c(195)_$c(196)_$c(205)_$c(213)_$c(209)_$c(187)_$c(218)_$c(193)_$c(194)_$c(192)_$c(212)_$c(190)_$c(202)_$c(201)_$c(200)_$c(203)_$c(206)_$c(207)_$c(178)_$c(176)_$c(177)_$c(178)
+ q:$tr(%1,%_%1,%)="" %1
+ s %2="" f %3=1:1:$l(%1) s s=$e(%1,%3) d:%[s  s %2=%2_s
+ . s s=$c(4)_$e(1000+$a(s),2,9)
+ q %2
+WMcode(%2) 
+ i %2'[$c(4) q %2
+ s %1=$p(%2,$c(4))
+ f %=2:1:$l(%2,$c(4)) s s=$p(%2,$c(4),%),%1=%1_$c($e(s,1,3))_$e(s,4,999)
+ q %1
+uci q
+ic(%USID,%) 
+ n %1
+ i $g(%)'="",$$RestMem^USX(%USID,%)
+ i $$icDate^MXD(%XD81,%XD82)
+ q 1
+xEmpty() 
+ q ""
+fo(fo) 
+ n %,%1,%2
+ s %=$$trw^UST(fo,"s~","$$s^USX("""),%=$$trw^UST(%,"v~","$$v^USX(""") q:%=fo fo
+ f %=2:1:$l(fo,"~") s %1=$p(fo,"~",%) d
+ . f %2=2:1:99 q:",_*\/ #+-)?!"[$e(%1_" ",%2)
+ . S $p(fo,"~",%)=$e(%1,1,%2-1)_""")"_$e(%1,%2,999)
+ s %=$$trw^UST(fo,"s~","$$s^USX("""),%=$$trw^UST(%,"v~","$$v^USX(""")
+ q %
+xForma(%I,%xForma) 
+ n %FILE,% s %xForma=+$g(%xForma)
+ s %FILE=$e($p(%I,"("),2,99) q:%FILE="" "?? %I non correct"
+ i '%xForma q "?? "_%xForma
+ k ^xForma s %j=+%j_" xForma "
+ i $d(^AL(%FILE,"%xForma",%xForma)) x ^(%xForma) s %j=+%j q %xForma
+ f %=9:-1:2 i $d(^(%)) x ^(%) q
+ s %j=+%j n %1 i '$g(%xForma) q %xForma
+ s %=%FILE_"^AL" x "s %1=$t("_%_")" i $l(%1) d @% q %FILE
+ q "?? "
+ q

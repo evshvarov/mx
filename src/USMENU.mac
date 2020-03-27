@@ -1,0 +1,126 @@
+ROUTINE USMENU
+USMENU ; US*  [ 01/10/2006  10:43 PM ]  ;[ 20070324 17:08:44 ]
+ ; M3-LITE, MSM-4.4x, CACHE-3x..5x, GT.M-5x
+ ; Soft-in-cell  MX Copyright(c) SIA ENTERS  1997-2007
+yx(y,x,c) 
+ q:%j ""
+ q:$d(c) $$yx^US(y,x,c) q:$d(x) $$yx^US(y,x) q $$yx^US(y)
+m1xx(%) d %M q ""
+%M1xx(%USID) 
+ s %=$$RestMem^USX(%USID,"menu"),%=%menu
+ ; JV
+%M ; MENU - select 1 (with passw.), %=parametr !
+ s $p(%,"\",5)=%USPR,%menu=%
+%M2 
+ I '%j,$zv["MSM" x "u $p:(:::::1)"
+ k YY,x1,x2,y1,y2,S,%ZN,%ZN0
+ I $zv["MSM" d
+ .n a1,a2,a3,a4 s a1="Esc",a2="F2",a4="F9",a5="F10",a3="F5"
+ .w:'%j $$w^USE("                               return?.a1 mMail?.a3 FILE?.a4 exit?.a5",24,1)
+ F %=1:1:9 X "k %"_%_"  S %"_%_"=$P(%menu,""\"","_%_")"
+ f YY=3:1 q:YY+$l(%menu," ")>(23-YY)
+ S %ZN=$tr(%5,"^") S:%ZN="" %ZN=%USPR,$p(%menu,"\",5)=%ZN
+ s %3=107
+ s y1=$p(%2,"[",2),x1=$p(%2,";",2),y1=YY+1*'y1+y1
+ f  s y2=y1+$l(%4," ")+2 q:y2<24  s y1=y1-1
+ S x2=+$p(%2,";",4) s:'x2 x2=x1+30 s %=x2-x1+1 s:x2>79 x2=79,x1=x2-%
+ w:'%j $$w^US(y1,x1,y2,x2,"b")
+ i $zv'["GT.M" x "w:'%j $$yx(y1,x1+3),%1,""--"",$zu($zv[""Ca""*5),""--"",%ZN"
+ F YY=1:1 S %0=$P(%4," ",YY) Q:%0=""  D
+ .S %9=$T(@%0^@%ZN) S:$L(%9,"\")>4!(%9'[";\") %9=""
+ .S:%9'="" $P(%4," ",YY)=%0_"^"_%ZN S:%9="" %9=$T(@%0)
+ .I %9="" S %9="^"_$G(^AL(%0,"NAME")),YY(YY,3)="__^"_%0_"___"
+ .E  S %9=$P(%9,"\",2,3),YY(YY,3)=%0
+ .S YY(YY)=YY+y1,YY(YY,1)=%0,YY(YY,2)=$E(%9,1,x2-x1-7)
+ .i %j,YY(YY,2)["izeja" s YY(YY,2)="(HIDE)"
+ .s YY(YY,"c")=%3 s %=$$%lw(YY,x1,x2,107) Q
+ S YY("max")=YY,%0=$g(^US(%USID,"%MENU",%menu,0),1)
+ i '$d(^menu(%USPR)) s oo=$p(%menu,"\",4) f o=1:1:$l(oo," ") d
+ .  s ^menu(%USPR,o)=%B_$p(oo," ",o)_%B_$p(%menu,"\")
+ f YY=1:1:99,1 q:$g(YY(YY,1))=%0
+ s %menuY0=YY
+ i '%j d %L F  D  Q:13.27[%zb  d %L
+ .s R=$$%zbr^USE("") S %3=$E(%zb,5,6)  
+ .I +%zb=133 s R="s o=$$KALK^USF(40)",%zb=13 q
+ .i %zb="0134" c 1 o 1 u 1 d ^%RE     q
+ .i %zb=277984 d mMailF9^USDOS  s %zb=0 q
+ .i %zb=277988 s R="d ^USDOS",%zb=13  q
+ .i %zb=277989 d EXIT^USMENU          q
+ .I "-127-8-279168"[-%zb              q
+ .I %zb=13 s:R="" R=YY                q
+ .I -%zb[-27,%3=65!(%3=66)  d         q
+ ..w $$%lw(YY,x1,x2,107)
+ ..S YY=YY-(%3=65)+(%3=66) S:YY=YY("max") YY=YY("max")-1 s:'YY YY=1
+ .q  
+ ;  mv
+ ;;;;;;;;;zw %j r rrrrrr
+w7xx i +%j=7 d  q
+ .;;w "<html><title>menu</title>",!
+ .;;w "<body>",!
+ .k %XD82 i $$d8^MXD
+ .w "<h5 align=""center"" >",$g(%XD82),"</h5>",!
+ .;;w "<h5 align=""right"" >",$zu(0)," ",$zv,"</h5>",!
+ .;;w "<h2 align=""center"" >",$$o^MX(%FIRMA),"</h2>",!
+ .;;w "<h2 align=""center"" >",$$d8t^MXD($g(%XD82)),"</h2>",!
+ .w "<table border=""1"" width=""90%"" align=""center"" >",!
+ .w "<colgroup><col align=""right""><col span=""4"" align=""center"">"
+ .w "</colgroup>",!
+ .;;m ^mxv("YY")=YY
+ .f o=1:1:99 q:'$d(YY(o))  d
+ .. w "<pre><tr bgcolor=""khaki"" >"
+ .. w "<td>",$$o^MX(YY(o,1)),"</td>"
+ .. w "<td>",$$o^MX(YY(o,2)),"</td>"
+ .. ;;w "<td>",$$o^MX(YY(o,3)),"</td>"
+ .. w "</tr></pre>",!
+ .w "</table>",!
+ .;;w "</body></html>"
+ q:%zb=27
+ q:"."[R
+SaveAndH 
+ i R_"^^"["^^^",%j d  g %Mret
+ .i $$%MSAVE(YY)
+ .s ^JOB(%USID,"STOP")=1 f  h 1  q:'$d(^JOB(%USID,"STOP"))
+ .h:'$d(^JOB(%USID))
+ ;  mv
+ I R Q:'$d(YY(R))  S YY=+R,R=$P(%4," ",+R)
+ i R'[" " s:$e(R)["^" R=$e(R,2,99)
+ I R[" ",%j  s o=$$%MSAVE(YY) x R             g %Mret
+ I R[" " s o=$$%MSAVE(YY) x R                 g %Mret
+ i R'["(",R'["," x "s %=$t("_R_")" i %'="" d  g %Mret
+ . s o=$$%MSAVE(YY) d @R s %zb=0
+ s o=$$%MSAVE(YY) i $d(^AL(R)),'R s o=$$Enter^USb(R)  halt:%j   g %Mret
+ s o=$$ALR^USX(R) g %Mret
+ q
+RestMenu(%J,%menu) 
+ s %=$$RestMem^USX(%J,%menu)
+ q %menu
+%Mret 
+ S %MENU=+$O(^US(%USID,"%MENU",999),-1) q:%MENU<1
+ s %menu=$g(^US(%USID,"%MENU",%MENU))
+ k ^US(%USID,"%MENU",%MENU)
+ g %M2
+%MSAVE(y) 
+ s %MENU=$o(^US(%USID,"%MENU",9999),-1)+1
+ s:R'["EXIT" ^US(%USID,"%MENU",%MENU)=%menu,^(%menu,0)=YY(y,1)
+ s ^(YY(YY,1))=$g(^US(%USID,"%MENU",%menu,1,YY(YY,1)))+1
+ s %Scr=%MENU
+ q ""
+EXITxx d 00  ;\izeja
+ i '%j k ^JOB(%USID) h
+ h
+00 
+ q
+%lw(y,x1,x2,c1,c2) 
+ Q:'$D(YY(y)) ""   q:'$d(YY) ""
+ n %,%3 s %=$g(^US(%USID,"MENU",%menu,1,YY(y,1))),%3=YY(y,"c")
+ i '$d(c2) s c2=$s(%>30:247,%>11:207,1:%3)
+ i c2<0 s (c1,c2)=3-$e(%3)_(7-$e(%3,2))_(7-$e(%3,3)) d
+ .i c2=270 s c2=202 i YY(y,3)'["_^" s c2=242
+ W:'%j $$yx(YY(y),x1+1,c1),YY(y,1),$e("_______",1,6-$l(YY(y,1)))
+ w:'%j $$yx(c2)," ",YY(y,2),?x2 Q ""
+%L q:'$d(YY)  q:'$d(YY(YY))
+ n %,%1,x s %1=YY(YY,3),%=%1
+ i %1["^" f x=1:1:9,"-" s %=$q(@($tr(%1,"_","")_"("""")"),-1)_x q:%["^"
+ w:'%j $$%lw(YY,x1,x2,-1,-1) 
+ w:'%j $$yx(YY("max")+y1,4+x1,%3),%,"  ",$e("               ",1,x2-x1-$l(%))
+ Q

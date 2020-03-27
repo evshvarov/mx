@@ -1,0 +1,215 @@
+ROUTINE MXterm
+MXterm ;  ;[ 20200301 19:53:45 ]
+ q
+jo(%mcomm) ;; s ^ERR(0,$h)=%mcomm 
+ i $e(%mcomm,1,2)="Q;"!($e(%mcomm,1,2)="q;")!($e(%mcomm,1,6)=" ;STOP") s %=$$killJob($g(%jobChild)) k ^trm(%USID)  w !,"-EXIT-" d oo zn:$d(%zns) %zns  d  q
+ . n j s j="",nn=0 f  s j=$o(^$JOB(j)) q:'j  q:nn>3  i '$d(^JOB(+$h,j)),$o(^(1)),$$killJob(j)=j w " -- process "_j_" killed --  "  s nn=nn+1
+ if %mcomm'["; readTRM ;",$l($g(%USID)) s %zns=$znspace k ^|"%SYS"|ootrmooo,^ootrmooo
+ i "  "_%mcomm_"   "[" p  "!("  "_%mcomm_"  "[" P  "),%mcomm'["""" x %mcomm q
+ s %zt=$zt,$zt="erjo^MXterm" n %
+ if %mcomm'["; readTRM ;" s %=$$killJob($g(%jobChild)) i %mcomm'["^",%mcomm'[":",%mcomm'["w  " x %mcomm q  
+ if %mcomm'["; readTRM ;" job job:(:1):1 s %jobChild=$ZCHILD,^JOB(%USID,$ZCHILD)=$h
+ if %mcomm["; readTRM ;" k ^trm(%USID) s ^trm(%USID)=";;;"_$p(%mcomm,"; readTRM ;")
+ f %=1:1:99 s o=$o(^trm(%USID,""),-1)  h .1  if o,$o(^trm(%USID,""),-1)=o,%>9 q
+ i 'o,$g(%jobChild),%>98 w "  !! process ID = ",%jobChild i $$killJob(%jobChild)
+ w "^trm(%USID)"    if $l($g(%USID)),$$RestMem^USX(%USID,"trm",$j)
+ q
+erjo w $ze," $zn=",$zn
+ q
+job 
+ s %io=$io,%B=$c(254)  k ^trm(%USID) k ^oAllVars(%USID,"trm") k ^|%zns|ootrmooo
+ s ^|"%SYS"|trm($j)=$znspace_" "_%USID_" "_%zt,%zns=$znspace    
+ s $zt="er^MXterm" ;; o "|TRM|"::1 j j2:(:5:"|TRM|"):1 c "|TRM|" 
+ i ("  "_%mcomm_"  "[" zw  ")!("  "_%mcomm_"  "["w  ") s %mcomm="s %=""%"" f  s %=$o(@%) q:'$l(%)  i '$p(%,""%"",2),%'[""%o"" w %,""="",$g(@%),! i $d(@%)>2 s %1=% f  s %1=$q(@%1) q:'$l(%1)  q:$p(%1,""("")'=%  w ""    "",%1,""  =  "",$g(@%1),!"
+ o $io u $io::"^MXterm" D $ZU(82,12,1) x %mcomm  D $ZU(82,12,0) u 0 
+ i $d(%USID),$$SaveJob^USX(%USID,"trm",$ZPARENT)
+ if '$d(%USID) d oo ;; s %j=1,%B=$c(254)
+ s %=0 f o=1:1 s %=$o(^|%zns|ootrmooo(%)) q:'%  s ^|%zns|trm(%USID,o)=^|%zns|ootrmooo(%)
+ s ^|%zns|trm(%USID,o+100)=$g(^|%zns|ootrmooo) ;; k ^|%zns|ootrmooo 
+ q
+er d oo D $ZU(82,12,0) u $io  u:$d(%io) %io  s $zt=$g(%zt) if $l($g(%USID))*$l($g(%zns))=0 halt
+ s ^|%zns|trm(%USID,999999)=$e($g(^|%zns|ootrmooo),1,9999)_$ze
+ q
+x(%mcomm,%znsp) 
+ s %io=$io k ^SPOOL($j) i $$killJob(0)
+ s ^|"%SYS"|trm($j)=$znspace_" "_%USID_" "_$zt,%zns=$znspace    
+ k ^|"%SYS"|ootrmooo,^ootrmooo  s $zt="erx^MXterm",%mcomm="  "_%mcomm_"  "
+ i (%mcomm[" zw  ")!(%mcomm[" w  ")!(%mcomm[" ZW  ")!(%mcomm[" W  ") s %mcomm="s %=""%"" f  s %=$o(@%) q:'$l(%)  i '$p(%,""%"",2) w %,""="",$g(@%) w:$d(@%)>2 !,"" ..."" w ! "
+ else  i %mcomm[" p  "!(%mcomm[" P  "),%mcomm'["""" x %mcomm q ""
+ i $d(%znsp) s %UCI=$znspace zn %znsp  
+ o 2:($j:1):"^MXterm"  u 2::"^MXterm" 
+ D $ZU(82,12,1)  x %mcomm   D $ZU(82,12,0)
+ c 2 u $io u:$d(%io) %io
+ i $d(%znsp),$d(%UCI) zn %UCI  
+  ;; if '$d(%USID) d oo zn %zns s %j=1,%B=$c(254)
+ n %,o,%oo s %=0,o=1,%oo="" f  s %=$o(^ootrmooo(%)) q:'%  s %oo=%oo_^(%) d   s ^SPOOL($j,o)=%oo
+ . f  s ^SPOOL($j,o)=$p(%oo,$c(10))_$c(10),%oo=$p(%oo,$c(10),2,999),o=o+1 q:%oo'[$c(10)
+ q ""
+erx D $ZU(82,12,0) s ^SPOOL($j,9999)=$ze_"  "_$g(%mcomm)  zn:$d(%UCI) %UCI  s ^SPOOL($j,9999)=$ze_"  "_$g(%mcomm)  d oo  close 2 u:$d(%io) %io s $zt=$g(%zt) ;; if $l($g(%USID))*$l($g(%zns))=0 halt
+ q $g(^|%zns|ootrmooo)_$ze ;; s ^|%zns|trm(%USID,999999)=^|%zns|ootrmooo
+ q
+j2 s ^ERR("j2")=$j o "|TRM|:|"_j2 u "|TRM|:|"_j2 s ^ERR("$io")=$io
+ q
+killJob(j) 
+ n % s %=$g(%USID,0) s:'j j=$o(^JOB(%,0)) q:'j 0  q:'$d(^$JOB(+j)) -j  q:$d(^JOB(+$h,j)) -$h
+ i +$p($zv,"Build ",2)>602 do $System.Process.Terminate(+j) k ^JOB(%,+j) d  q j
+ . f %=1:1:9 q:'$d(^$JOB(+j))  h 1
+ . f %=1:1:99 k ^JOB($h-%)
+ ;; Do $ZUTIL(4,+j,-65) h 1 q j
+ q 0
+oo if '$d(%USID) s %=$g(^|"%SYS"|trm($j)),%zns=$p(%," "),%USID=$p(%," ",2),%zt=$p(%," ",3,99)
+ q
+wstr(%exp) 
+ D oo,$ZU(82,12,0) n %,o,z  u 0  s z=$zr 
+ s %=+$o(^|%zns|ootrmooo(""),-1),o=$g(^(%)) s:'% %=1 s:$l(o)+$l(%exp)>999 %=%+1,o="" s ^(%)=o_%exp,$x=$x+$l(%exp)
+ D $ZU(82,12,1) u 0::"^MXterm" i $d(z),$d(@z)
+ q
+wnl D oo,$ZU(82,12,0) n %,o,z  s z=$zr ;; w !
+ s %=+$o(^|%zns|ootrmooo(""),-1),o=$g(^(%)),%='%+%,^(%)=o_$c(10),$x=1
+ i $d(z),$d(@z)
+ D $ZU(82,12,1)
+ q
+wff D oo,$ZU(82,12,0) w:000 #  n %,o,z s z=$zr 
+ s %=+$o(^|%zns|ootrmooo(""),-1),o=$g(^(%)),%='%+%,^(%)=o_$c(13,12),$y=1,$x=1
+ i $d(z),$d(@z)
+ D $ZU(82,12,1) 
+ q
+wchr(%) D oo,$ZU(82,12,0) w:000 *%   n %,o,z s z=$zr 
+ s %=+$o(^|%zns|ootrmooo(""),-1),o=$g(^(%)),%='%+%,^(%)=o_$c(%)
+ i $d(z),$d(@z)
+ D $ZU(82,12,1)
+ q
+wtab(%) ; w ?%
+ D oo,$ZU(82,12,0)
+ n %0,%1,o,z s %0=%,%=$s(%>$x:%-$x,1:1),%1="",$e(%1,%)=" " s z=$zr 
+ s %=+$o(^|%zns|ootrmooo(""),-1),o=$g(^(%)),%='%+%,^(%)=o_%1_$c(9),$x=%0
+ i $d(z),$d(@z)
+ D $ZU(82,12,1)
+ q
+rstr(len,to) 
+ D $ZU(82,12,0) d oo s:'$l($g(len)) len=999 n %,o,z s z=$zr 
+ ;; if $D(len)&&$D(to) s %input=$e(to_"ooooooooooooooooooooooooo",1,len) g rstre
+ ;; i $D(len) s %input=$e("ooooooooooooooooooooooooo",1,len) g rstre 
+ ;; i $D(to) s %input=to_"sek-ok-Read-to" g rstre
+ ;; i $zv'["MiniM" READ %:3 s:%="" %="trm"  u $io::"^MXterm"
+ s ^|%zns|trm(%USID)="?"_$zn,%input=""
+ s %=0  f o=1:1 s %=$o(^|%zns|ootrmooo(%)) q:'%  s ^|%zns|trm(%USID,%)=^|%zns|ootrmooo(%)
+ s ^|%zns|trm(%USID,o+10)=$g(^|%zns|ootrmooo) k ^|%zns|ootrmooo ;; s ^|%zns|ootrmooo=""
+ f %=1:1:19 h 1 s o=$g(^|%zns|trm(%USID)) i $e(o,1,3)=";;;" s %input=$e($e(o,4,999),1,len),^|%zns|trm(%USID)="" q
+rstre i $d(z),$d(@z)
+ D $ZU(82,12,1)
+ q %input
+rchr(to) 
+ D $ZU(82,12,0) d oo  
+ i $d(to) s %inp=$a(8)  ;; R *data:to . ;
+ i '$d(to) s %inp=$a(9)  ;; R *data
+ D $ZU(82,12,1) 
+ q %inp
+zw n % s %=" " f  s %=$q(@%) q:'$l(%)  w !,%,"=",$g(@%)
+ q
+APC 
+BEL 
+CBT(%1) ; $X
+CCH 
+CHA(%1) ; $X
+CHT(%1) ; $X
+CNL(%1) ; $X, $Y
+CPL(%1) ; $X, $Y
+CPR 
+CTC(%1,%2,%3,%4,%5,%6,%7,%8,%9) 
+CUB(%1) ; $X
+CUD(%1) ; $Y
+CUF(%1) ; $X
+CUP(%1,%2) ; $X,$Y
+CUU(%1) ; $Y
+CVT(%1) ; $Y
+DA 
+DAQ(%1,%2,%3,%4,%5,%6,%7,%8,%9) 
+DCH(%1) 
+DCS 
+DL(%1) 
+DMI 
+DSR(%1) 
+EA(%1) 
+ECH(%1) 
+ED(%1) 
+EF(%1) 
+EL(%1) 
+EMI 
+EPA 
+ESA 
+FNT 
+GSM 
+GSS 
+HPA(%1) ; $X
+HPR(%1) q  ; $X
+HTJ s $x=$x+4 q  ; $X
+HTS s $x=$x+4 q  ; $X
+HVP(%1,%2) ; $X, $Y
+ICH(%1) 
+IL(%1) 
+IND ; $Y
+INT 
+JFY 
+MC 
+MW 
+NEL ; $X, $Y
+NP(%1) 
+OSC 
+PLD ; $Y
+PLU ; $Y
+PM 
+PP(%1) 
+PU1 
+PU2 
+QUAD 
+REP(%1) ; $X, $Y
+RI ; $Y
+RIS ; $X=0, $Y=0
+RM(%1,%2,%3,%4,%5,%6,%7,%8,%9) 
+SEM 
+SGR(%1,%2,%3,%4,%5,%6,%7,%8,%9) 
+SL 
+SM(%1,%2,%3,%4,%5,%6,%7,%8,%9) 
+SPA 
+SPI 
+SR 
+SS2 
+SS3 
+SSA 
+ST 
+STS 
+SU 
+TBC 
+TSS 
+VPA(%1) ; $Y
+VPR(%1) ; $Y
+VTS 
+ q
+zpipe quit ; CPIPE example to run host console command -- https://github.com/rcemper/CPIPE/blob/master/CPIPE.int
+execute(cmd,test)  ;; Public {
+ set dev="|CPIPE|1"
+ set $zt="cls"
+ set empty=0
+ open dev:cmd:0 s oo=$test
+ ;; write:test $test,!
+ ;; else write "pipe failed",! quit 0
+ ; while empty<3  ;;  {
+ use dev read line
+ set empty=$s($l(line):0,1:$i(empty))
+ use 0 write line,! ;;; or do any kind of analysis of the line
+ ;; }
+cls 
+ set $zt="" use 0
+ close dev
+ if $ze'["<ENDOFFILE>" w $ze,!
+ quit $t
+ q  ;; }
+cmd(osComm) 
+ k ^oPIPE n pipe,%,R  s %zt=$zt,$zt="erPIPE^MXterm",pipe="|CPIPE|1" 
+  o pipe:(osComm_" > cmd.txt"):1 q:'$test   u pipe
+ f L=1:1:999 read R:0 if $l(R) s ^oPIPE($j,L)=R
+ close pipe set $zt=%zt u 0
+ q
+erPIPE s $zt=%zt close pipe  u 0
+ q

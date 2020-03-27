@@ -1,0 +1,636 @@
+ROUTINE USDOS
+USDOS ; MX.Shell  ;[ 20200217 21:01:03 ]
+ ; MSM, CACHE, IRIS, GT.M, MiniM
+ ; vmx Copyright(c) SIA ENTERS  2005-2020
+ ; 
+ ;(1,disk)        -D:           -q daudz.disku
+ ;(2,file)     -ERASE (del)  -                    -5=no path
+ ;(3,fold,fnew)-RENAME/(COPY?)  -
+ ;(4)          -VER.of DOS   -
+ ;(5,file,atr) -CHMOD        -32=arh,(16=dir,8=disk),4=sys,2=hid,1=read
+ ;(6,dir)      -MKDIR        -
+ ;(7,dir)      -RMDIR        -delete dir
+ ;(8,dir)      -CD           -q                   -5=no path
+ ;(9,disk)        -  ?space     -s/kl^freekl^b/s^kl
+ ;(10,file,atr)-  ?atr       -q zos5              -5=no path
+ ;(11,d)       -  ?dir       -q tek.dir(-d)
+ ;(12,f?*,atr) -  ?file ,,63 -q file^S2=30b
+ ;(13,q12)     -  ?nextfile  -q 12
+ ;(14)         -  ?tek.disk  -
+ ;             ------------------
+ i '%j w #,$zv," ",?70 i $zv["MS" w $zu(0)
+ s %USER=$g(%USER,"XXX") n %USPR s %USPR="USDOS"
+ s %="\[3;47;20;78w\\open save rFnd Rcomp net mMailF9"
+ d %M^USMENU q
+zos(%1,%2) 
+ n %,o
+ i $zv["MS" x "s %=$zos(%1,%2)" q %
+ q ""
+open k ^US($j,"mMail.read") d %GR^USDOS q    ;\A:/B: glob.restory
+rFnd d %RFound q                             ;\ROUTINES FOUND
+Rcomp d RCMP^UShelp q                       ;\Glob & Rout Compare
+zc(exe) 
+ i $zv["MS" s exe=$$TERMINAL^%HOSTCMD(exe)
+ i $zv["Ca" s exe=$zf(-1,exe)
+ i $zv["IRIS" s exe=$zf(-1,exe)
+ q exe
+net ;\ Net-info
+ k r s r(110)="NBTSTAT -r"
+ s r(120)="NET CONFIG"
+ s r(130)="NET DIAG"
+ s r(140)="NET VIEW"
+ s r(150)="NET PRINT"
+ s r(160)="NET USE"
+ s r(170)="NET VER"
+ s r(180)="NETSTAT"
+ s r(190)="ARP"
+ s r(200)="FTP"
+ s r(210)="PING"
+ s r(220)="ROUTE"
+ s r(230)="TELNET"
+ s r(240)="TRACERT"
+ ;
+ s %=$$ws^USE("r",2,44) q:%zb=27
+ s %=$$zc(@%wz),%=$$zc("PAUSE")
+ q
+mMail ;\ Write/Read
+ q
+mMailF9 ;\ Write/Read mMail show
+ q
+Shellbat(t) 
+ n %,%file s %file="shell"_$j_".bat"
+ d OpenUseW
+ f %=1:1 q:$p(t,$c(13),%)=""  w $p(t,$c(13),%),!
+ w "EXIT",!
+ d Close
+ s %=$$zc("start /min shell"_$j_".bat ") 
+ h:'$d(%j)
+ q %
+save d USGS                       ;\MSM-globals,routines==>
+%RFound q
+jwr(%j,%NODE) 
+ n %,%1,%Node,%2
+ s %NODE=$g(%NODE),%Node="" x $e(%j,2,999)
+ f  s %Node=$o(^mMail(%Node)) q:%Node=""  d:%Node=%NODE!(%NODE="")
+ .s %dow=$p(^mMail(%Node),$c(254),2),gList=$p(^mMail(%Node),$c(254),3)
+ .q:^(%Node)[";"
+ .s %dor="" s:gList="-"!($e(gList)["(") %dor=%dow,%dow=""
+ .s:$e(gList)["(" %dor=%dor_"/"_$p($p(gList,"(",2),")"),gList=$p(gList,"(")
+ .f %="gList","%dow","%dor" s %(%)="" d  s @%=%(%)
+ ..n %x f %x=1:1:9 s %1=$p(@%,"_",%x) i %1'="" d
+ ... x:$e(%1)="(" "s %1="_%1 s %(%)=%(%)_%1
+ .i gList[":\",$e(%dow,1,2)=$e(gList,1,2) x "s %=$zos(3,%dow,gList)" q
+ .i gList["\"  d  h 1 q
+ .. s %=gList,$p(%,"\",$l(%,"\"))="x.x"  q:$$zos(2,%)=-5
+ ..s %=$$Shellbat("@echo off"_$c(13)_"copy "_%dow_" "_gList_" > nul") h 1
+ .i %dow["\" s %=$$jwg(%j,%dow,gList,0,gList) q
+ .i %dor["\" s %=$$jrg(%j,%dor) q
+ h:%j  
+ q ""
+jw(%j,%Node,%dow,gList) 
+ s %=$$jwg(%j,%dow,gList,0,gList)
+ q ""
+jwg(%j,%file,gList,%Piez,%MET) 
+ s (%Piez,%MET)=$g(%Piez)_$g(%MET)
+ s %file=$s(%Piez:+%Piez,1:%Piez["OS"),%RL=""
+ d Close
+ s %=%file,$p(%,"\",$l(%,"\"))="x.x" i $zv["MS" q:$$zos(2,%)=-5 ""
+ s %file="C:\M\tmpjwg."_$j,%MET=%file_" "_$g(%MET) d %GSj
+ f %1=1:1:3 s %=$$zos(2,%file) q:$$zos(10,%file)-32  h 5 ; del.@%file
+ d Close
+ i $zv["MS" x "s %=$zos(3,%file,%file)" i 1
+ e  i $$Shellbat("@echo off"_$c(13)_"copy "_%file_" > nul")
+ d Close
+ h:%Piez["halt"&%j  
+ q ""
+jrg(%j,%file,%mode,%xmsm) 
+ s %=%file,$p(%,"\",$l(%,"\"))="x.x"
+ i $$zos(2,%)=-5 d:'%j  q ""
+ . W !,"NOT found ",%file r rrrrrr
+ s %mode=$g(%mode),%xmsm=$g(%xmsm)
+ d %GR 
+ d Close
+ q ""
+gr(%j,%USID,%file,%mode,%xmsm) 
+ ; mx
+ k ^ooMX(%USID,"gr") s ^ooMX(%USID,"gr")=%file_"-"_$h
+ s %mode=$g(%mode),%xmsm=$g(%xmsm)
+ d %GR
+ s ^("gr")=$h_"-"_^ooMX(%USID,"gr")
+ d Close
+ q:%j  
+ q $h
+gs(%j,%USID,%file,max,%xmsm) 
+ ; mx   ^mM(max)
+ k ^ooMX(%USID,"gs") s ^ooMX(%USID,"gs")=%file_"-"_$h
+ s:'$g(max) max=33 s zr="^mM(999999)",n=0,ot=0
+ f  s zr=$q(@zr,-1) q:zr=""  s t=$qs(zr,1)\1 s:ot-t n=n+1 s ot=t q:n>max
+ i zr="" s zr="^mM"
+ d OpenUseW
+ w $h,!,max
+ i $zv'["U) " f n=0:1 s zr=$q(@zr) q:zr=""  w !,zr,!,@zr
+ i $zv["U) " f n=0:1 s zr=$q(@zr) q:zr=""  w !,$$U^MXF(.zr),!,$$U^MXF(@zr)
+ w !,"**",!,"**",!,!
+ d Close
+ s:'n n=-1
+ s ^("gs")=n_"-"_$g(^ooMX(%USID,"gs"))
+ q:%j  
+ q n
+gsj(%j,%USID,%file,%zr,%xmsm) 
+ ; mx   ^glob
+ s (%zr,zr)=$NAME(@%zr),%ql=$ql(zr)
+ k ^ooMX(%USID,"gs") s ^ooMX(%USID,"gs")=%file_"-"_%zr_"-"_$h
+ d OpenUseW
+ f n=0:1 s zr=$q(@zr) q:zr=""  w @zr,! s ^ooMX(%USID,"gs",n)=@zr
+ d Close s:'n n=-1
+ s ^("gs")=n_"-"_$g(^ooMX(%USID,"gs"))
+ q:%j  
+ q n
+saveGlob(%j,%USID,%file,zr,%xmsm) 
+ ; mx  save one glob or node
+ k ^ooMX(%USID,"saveGlob") s ^ooMX(%USID,"saveGlob")=%file_"-"_zr_"-"_$h_" ERROR "
+ s:'%j zr=$NAME(@zr) s %xmsm=$g(%xmsm)
+ s ^ooMX(%USID,"saveGlob")=%file_"-"_zr_"-"_$h
+ d OpenUseW
+ w $$pD^MXD($h,2)," ",zr," ",$zv,!,%USID
+ s zr0=$e(zr,1,$l(zr)-1)
+ i $zv'["U) " f n=0:1 s zr=$q(@zr) q:zr'[zr0  w !,zr,!,@zr s:$l(%xmsm) ^ooMX(%USID,"saveGlob",n)=@zr
+ i $zv["U) " f n=0:1 s zr=$q(@zr) q:zr'[zr0  w !,$$U^MXF(zr),!,$$U^MXF(@zr) s:$l(%xmsm) ^ooMX(%USID,"saveGlob",n)=$$U^MXF(@zr)
+ w !! d Close
+ s ^("saveGlob")=n_"-"_$g(^ooMX(%USID,"saveGlob"))
+ q:%j  
+ q n
+b25 q
+USGS 
+writeDOS 
+ s n=0,%L=$g(%L),%MET=$g(%MET),%FN=$g(%FN)
+ s %file=$e(%MET,1,3)["OS"!($p(%L,"=",3)["OS")
+ n o x "s o=$s($zv[""MS"":$zu(0),1:$znspace)"
+ s %USER=$g(%USER,o)
+ s:%L["=" (%file,%FN)=$p($p(%L,"="),"?"),gList=$P(%L,"=",2),%RL=""
+ g %GSRS
+%GSj i '%j w $$w^USE("%GSj^USDOS",3,1) q:%zb=27
+ ;  ------- Save Globals (mMail) ---------
+ ;   M-globals/if_____?gList              
+ ; to DOS-file________?%file               
+ d %GS
+ q
+%GSRS i '%j w $$w^USE("%GSRS^USDOS",3,1) q:%zb=27
+ ; M-Globals/if_____?gList                  i..,i      %zr  ;
+ ; M-Routines/if ___?%RL
+ ; to DOS-file________?%file                   A:xx.xxx  B:xx.xxx
+ d %GS,%RS q:%j
+ g %GSRS
+saveUCI(routOnly,saveTo) 
+ i '$d(saveTo) j saveUCIj(%USID) q
+ j saveUCIj(%USID,routOnly,saveTo)
+ q
+saveUCIj(%USID,routOnly,%file) 
+ s ^oTQMx(%USID,"saveUCI")=0
+ n %j,gList,%RL,%,%L,o,%UCIsave,z,zz
+ s %j=1,%L="",o="GTM" 
+ x:$zv'["GT" "s (%UCIsave,o)=$s($zv[""MS"":$zu(0),1:$znspace)"
+ i $g(%file)="" s %file="C:\M\save"_$p(o,",")
+ s gList="* -ROUTINE -GB -rM* -rI* -rB* -rO* -mtemp* -CacheTem* -%* -M -rm* -UTILITY -mxM* -US -mvars -o* -TK* -ZMS* -Msg* -Er* -menu* -JOB* -C -DC -NNd -vc* -mJournal -mM -iVAL -gramato* -fk0 -fd* -f -HroIndex -NNo -ceChange -bJournal -apm -aFirma -aDK"
+ s %=$g(%qSelect)_$g(%qChange),%=%["isas"!(%["VISAS")!(%["VISI")!(%["isi")!(%["ALL")!(%["all")!(%["All")
+ s:% gList="* -ROUTINE -rM* -rI* -rB* -rO* -mtemp* -CacheTem* -%* -M -rm* -UTILITY -mxM* -US* -mvars -o* -TK* -ZMS* -Msg* -Er* -menu* -JOB* -C -DC -mM -iVAL -gramato* -fk0 -fd* -f -HroIndex -NNo -apm -aFirma -aDK"
+ k ^mmM i $zv["MS" k ^US,^M,^rm,^om,^oMX
+ s z="^mM($h-400_.999999)" f  s z=$q(@z) q:'$l(z)  s zz="^mmM("_$p(z,"(",2,99),@zz=@z 
+ s %RL=$g(routOnly) s:%RL="" %RL="* -%* -r -rr -rrr -TK* -oo* -Ens* "
+ i $l($g(routOnly))<3 d %GS m ^oTQMx(%USID,"saveUCI","%gg")=%gg m ^oTQMx(%USID,"saveUCI","%gg")=%gm
+ s ^oTQMx(%USID,"saveUCI")=$h_"  "_%file_" "_%RL_" save ^%RS started but NOT finished !! <mx fc7"
+ d %RS
+ s ^oTQMx(%USID,"saveUCI")=$h_"  "_%file
+ q
+%GS 
+ s %=$p(%file,":") s:%="" %="C"
+ i '%j,$e(%file,2)=":",$$zos(9,%)<0 w $$^UShelp("%file","no $zos(9,"_%_")="_$$zos(9,%)) q
+ q:'$l(gList)
+ n %g,%g0,%g2,%x,%GL,n,%2,%r  k %gg
+ s $zt="%GSlist2^USDOS"  ;;  if <DKSER> list global
+%GSlist1 
+ i $zv'["Ca",$zv'["IRIS" s %g="" f n=1:1 s %g=$o(^$GLOBAL(%g)) q:'$l(%g)  s %gg(%g)=n
+ i $zv["Ca"!($zv["IRIS") d
+ .n gd d GetDir^%GD("","gd")
+ .s %g="" f n=1:1 s %g=$o(gd(%g)) q:'$l(%g)  i %g'["." s %gg("^"_%g)=n
+ g %GSlISt
+%GSlist2 
+ s $zt="%GSlIStE^USDOS"  ;;  if <DKSER> list global
+ i $zv'["Ca",$zv'["IRIS" s %g="" f n=1:1 s %g=$o(^$GLOBAL(%g),-1) q:'$l(%g)  s %gg(%g)=n
+ i $zv["Ca"!($zv["IRIS") d
+ .n gd d GetDir^%GD("","gd")
+ .s %g="" f n=1:1 s %g=$o(gd(%g),-1) q:'$l(%g)  i %g'["." s %gg("^"_%g)=n
+%GSlIStE I '%j zw %gg,n w $zt r %
+%GSlISt s %GL=$p(gList,"/"),%di=1
+ s $zt="ErGS^USDOS"  ;;  if <DKSER> 
+revers s %="" f  s %=$o(%gg(%)) q:%=""  d
+ .i "^UTILITY ^M ^R ^r ^rm ^US "[(%_" "),gList="*" q
+ .i %["^o"!(%["^us"),gList="*" q
+ .f %x=1:1:$l(%GL," ") s %g=$p(%GL," ",%x) i %g'="" d
+ ..s:$e(%g)'["^" %g="^"_%g
+ ..i %g["(",")."'[$e(%g,$l(%g)) s %g=%g_")"
+ ..i %=$p(%g,"(") s %g(%g)=1 q
+ ..i %g["*",%[$p(%g,"*") s %g(%)=1 s:gList["?" gList=gList_" "_%
+ ..q:$e(%g,2)'["-"  s %g=$tr(%g,"-")
+ ..i %=%g k %g(%) q
+ ..i %g["*",%[$p(%g,"*") k %g(%)
+ g ErGSend
+ErGS 
+ x:$zv["MS" "s %=$zerr" s $zt=""
+ i '%j,%di>0 u $p zw %,%g  w !,"<DKSER> - M_database_invalid - file=",%g r % s %di=-1 g revers
+ s $zt=""
+ErGSend 
+ q:gList_%RL["?"  n o
+ x "s o=$s($zv[""MS"":$zu(0),1:$znspace)"
+ s %CMT=%file_" "_$g(%MET)_" --- "_o_" --- "_gList_" --- "_$zv
+ n %iff s %iff=$p(gList,"/",2,99) s:%iff="" %iff=1
+ s %if="s %zr=$q(@%zr),%=%zr[%g0&(%g2'=%zr)-1 s:'% %="_%iff
+ s %s=" w !,%zr,!,@%zr "  i $zv["U) " s %s=" w !,$$U^MXF(%zr),!,$$U^MXF(@%zr) "
+ i %file s %s=" w !,$tr(@%zr,$c(254),"","") "
+ i %file\1=2 s %s=" w @%zr,! "
+ i '%file,%file'["." s %file=%file_".ggg"  ;; ,%s="s %r=@%zr s:%r[$c(10) %r=$tr(%r,$c(10),""^"") w !,%zr,!,%r"
+ s %=%file,$p(%,"\",$l(%,"\"))="x.x"  i $zv["MS" q:$$zos(2,%)=-5
+ w:'%j ! 
+ d OpenUseW
+ w $$pD^MXD($h)_" "_$h,!,%CMT  s ^ERR=%s
+ s %2=$$Uu^MXF($c(10)_$c(10)_$g(%UCIsave)_$c(10)_"{1076}{1072}{1085}{1085}{1099}{1077} {1089}{1086}{1093}{1088}{1072}{1085}{1077}{1085}{1099} {1074} {1092}{1072}{1081}{1083} "_%file_$c(10)_"saved in "_%file)
+ s %nn=0,%g="" f  s %g=$o(%g(%g)),%g0="^" q:%g=""  d  q:'$d(%g)  s ^oTQMx(%USID,"saveUCI","%gg",%g)=" -saved "_$h  s ^oTQMx(%USID,"saveUCI","lastGlobal")=%g s:%g["zzzzzzz" @$zr=%2
+ .s %1=%g,%g2="" u:'%j $p
+ .i %1["^mM(" s %1=$p(%1,")")_".."
+ .i %1[".." s %g0=$p(%1,"..",2) s:%1["..." %g0=$p(%1,"...",2) d  i 1
+ ..s %1=$p(%1,".."),%1=$p(%1_",,,",",,,"),%1=$p(%1_")))))",")))))")_")"
+ ..i %1["^mM(" s %=+$p(%1,"(",2) i % d  s %1="^mM("_+%_")" q
+ ... s:%<0 %=-% n n,x s n=%,%=$o(^mM(""),-1),%=""
+ ... i n<999 f x=1:1:n s %=$o(^mM(%),-1)\1 q:'%
+ ... i n>971111 s:-n[-9 n=19_n d  i % s %=$o(^mM(%\1+.9))\1 s:'% %=99999
+ ....  f x=1:1:400 s %=$o(^mM(%),-1)\1 q:'%  q:$$%D^MXD(%)<n
+ ..i %g0="" s %g0=$p(%1,"(") q
+ ..f  q:$l(%1,",")'>$l(%g0,",")  s %g0=","_%g0
+ ..f %=1:1 s %2=$p(%1,",",%) q:%2=""  s:$p(%g0,",",%)="" $p(%g0,",",%)=%2
+ ..i 0_%1'[(0_$p(%g0,"(")_"(") s:%g0 %g0="("_%g0 s $p(%g0,"(")=$p(%1,"(")
+ ..i %1'[%g0 s %g2=%g0 s:%g2_0'[")0" %g2=%g2_")" s %g2=$q(@%g2),%g0="^"
+ ..s %=$p(%g,"..")_".."_$e(%g0,2,99) s:$e(%g2)="^" %=%_$q(@%g2,-1)
+ .e  q:'$d(@%g)
+ .i $d(@%1) s:%g'[".."&(%g0="^") %g0=$tr($NAME(@%1),",",")") d
+ ..s %if="s %zr=$q(@%zr),%=$tr(%zr,"","","")"")[%g0&(%g2'=%zr)-1 s:'% %="_%iff
+ .s %zr=$NAME(@%1),n=0 
+ .u:$zv["MS" 51 u:$zv["Ca" %file u:$zv["IRIS" %file u:$zv["MiniM" "|FILE|"_%file
+ .i $d(@%1)#10=1 s %zr=$q(@%zr,-1) s:%zr="" %zr=$p(%1,"(")
+ .f  x %if q:%<0  i % x %s s %nn=%nn+1,n=n+1 i $zv["MS"&$zc d  q
+ ..k %g s %g=%zr
+ I $zv["MS",'%file u 51 W !,"**",!,"**",!,!
+ I $zv["MiniM",'%file u "|FILE"_%file w !,"**",!,"**"
+ I $zv["Ca"!($zv["IRIS"),'%file u %file w !,"**",!,"**"
+ d Close
+ q
+%RS q:'$l(%RL)
+ n %r,%x,%mxWeb s %mxWeb=1 s %RL=$p(%RL,"/")
+ s %="" f  s %=$o(^$ROUTINE(%)) q:%=""  d:%'["."
+ .n o s o=% n % s %=$p(o," ")
+ .f %x=1:1:$l(%RL," ") s %r=$p(%RL," ",%x) d
+ ..i %=%r s %r(%)=1 q
+ ..i %r["*",1_%[(1_$p(%r,"*")) s %r(%)=1 s:%RL["?" %RL=%RL_" "_% q
+ ..q:%r'["-"  s %r=$tr(%r,"-","")
+ ..i %=%r k %r(%) q
+ ..i %r["*",1_%[(1_$p(%r,"*")) k %r(%)
+ q:$g(%L)_%RL["?"
+ s:%file'[".r" %file=$p(%file,".") s %CMT=$g(%MET)_" "_$g(%USER)_" "_%RL_" "_$$ts^MX1_" "_$io
+ s %=%file,$p(%,"\",$l(%,"\"))="x.x"  q:$$zos(2,%)=-5  
+ d OpenUseW
+ w $g(%USID)_"  ",!,%CMT n r 
+ s %r="" f n=1:1 s %r=$o(%r(%r)) q:%r=""  d  ;;  q:$zc
+ . ;; k r x "zl @%r f %=0:1 s t=$t(@%r+@%) q:'$l(t)  s:t'["" ""&% t=t_"" ""  s r(%)=t"
+ .k r f %=0:1:999 s t=$t(+%^@%r) i $l(t) s r(%)=t_$s(t'[" "&%:" ",1:"")
+ .f %=0:1 s t=$g(r(%)) q:'$l(t)  s t=$$U^MXF(t) s:%RL["-msm" t=$$Uu^MXF(t) w !,t
+ .w ! q:'$zc   ;;  q:%j
+ .s n=0
+ d Close
+ q
+%GR s %j=$g(%j) i '%j w $$w^USE("%GR^USDOS",2,2) q:%zb=27
+ ;                                               routines: ^^  ;
+ ; DOS-msm-file   DOS-file___?%file         /-mGlob1-mGlob2- ..
+ ;         jaun(j) contr(k) _?%mode
+ ;            msm-commands___?%xmsm         %f  %r  %sel=1
+pKC 
+  w:'%j $$yx^US(7,0)
+  n oo,o2,%r,%f,%sel,%n,%nnn,%er,%ss,%g,f,timeStmp,%mMindex,o,oDelay,%wMail
+  s %oldf=0,%nnn=0,%er="",%f="",%ss=0
+  s %2=$p(%file,"/",2,99),%file=$p($p(%file,"/")_"  ","  ") d
+  .f %=1:1:99 s f=$p($tr(%2,"+-","  ")," ",%) i f'="" s f("^"_f)=%2'["-"
+ d Close
+  s %er=0,o=$h 
+ d OpenUse
+  s zc=$zc,za=$za,zb=$zb,oDelay=$p($h,",",2)-$p(o,",",2)
+  i %er s ^ooMX(%USID,"gr")=$h_" ERROR: "_%file_"-not open .. Delay="_oDelay  c $s($zv["MS":51,1:%file) q
+  ;
+  s $zt="grErr^USDOS"
+  i $zv["MS" f %n=0:1 u 51  q:$zc<0  r %r#512 q:$zc<0  d  i %er s ^ooMX(%USID,"gr",$h)="  ERROR : %n="_%n_"  %r="_%r_"  %f="_$g(%f) q
+  .q:$l(%r)=512  i '%j u $p i %n<2 w !,%r q
+  .i %n#2=0  d:$e(%r)'="^"    s %f=%r,%g=$p(%f,"(") q
+  .. f  u 51  r %r#512 q:$zc<0  i $e(%r)="^",%r'["Ca",%r'[" " q
+  .i $e(%f)'="^" s %er=1 q
+  .i $e(%f,$l(%f))'=")" s %er=1 q
+  .i $g(f(%g))=0 s %f="",%r="" q
+  .s %mMindex=2_%f,timeStmp=+$h
+  .i $e(%f,1,4)="^mM(" k % s %="%("_$p(%f,",",2,99) d  q:%f=""!%cancel
+  ..  s %cancel=0  ;; s %cancel=1   --- for exit from ^wMail
+  ..  s (timeStmp,oo)=+$p(%f,"(",2),o2=$p(oo,".",2)
+  ..  s:$l(o2)<6 $p(oo,".",2)=$e(o2+1000000,2,9),timeStmp=oo
+  ..  i %'["^" s ^ERROR(%n)=%_"  %f="_%f_" %r="_%r_" %g="_%g,%cancel=1 q
+  ..  i %r="",%f'["0^" s ^ooMX(%USID,"gr",%g,timeStmp,%mMindex)="%r?",%cancel=1 q
+  ..  s @%=0,%mMindex=$o(%("")),%f=$e(%mMindex,2,999),%g=$p(%f,"(")
+  ..  i $g(f(%g))=0 s %f="" q
+  ..  i $d(f)>2 s %2=$o(f(0)) i f(%2),'$d(f(%g)) s %f="" q
+  ..  i '$d(%wMail) s %wMail=$l($t(^wMail))
+  ..  i %wMail,1_$$w^wMail(%mMindex,%r) q:%cancel
+  ..  
+  .i %f_")))"'["))))" s %f="",%r="" q
+  .s %g=$e($p(%f,"("),2,99),%sel=1
+  .i $l(%xmsm),%xmsm["%sel"  x %xmsm q:'%sel
+  .i $l(%xmsm),%xmsm'["%sel" s %sel=0 d  q:'%sel
+  ..  f o=1:1:$l(%xmsm," ") i %g=$p(%xmsm," ",o) s %sel=1 q
+  .i %j s ^ooMX(%USID,"gr",%g,timeStmp,%mMindex)=%r
+  .i '%mMindex k @%f s %nnn=%nnn-1 q
+  .i '%j w *13,%f
+  .i $d(@%f)#10=1 w:'%j "..ir" q:%mode["j"!(@%f=%r&(%r'["=FE"))
+  .i %r["=FE",%r'[$c(254) s %rr=%r,%r="" f %=1:1:$l(%rr) d  s %r=%r_%1
+  .. s %1=$e(%rr,%) q:%1'="="
+  .. n a,b s a=$e(%rr,%+1),b=$e(%rr,%+2) i a_b="FE" s %1=$c(254),%=%+2 q
+  .. s a=$s(a="A":10,a="B":11,a="C":12,a="D":13,a="E":14,a="F":15,1:a)
+  .. s b=$s(b="A":10,b="B":11,b="C":12,b="D":13,b="E":14,b="F":15,1:b)
+  .. s %1=$c(a*16+b),%=%+2
+  .q:%mode["k"  s @%f=%r,%nnn=%nnn+1  ;; k=kontrole
+  i $zv["MS" c 51 q
+  d ReadTXT(%file,"^oFileTXT($j)") k ^omxERROR(%USID)
+  f %n=1:1 s %r=$g(^oFileTXT($j,%n)) q:'$l(%r)&'$o(^(%n))  d  i %er s ^ooMX(%USID,"gr",$h)="  ERROR : %n="_%n_"  %r="_%r_"  %f="_$g(%f) q
+  .i %n#2 d:$e(%r)'="^"  s %f=%r,%g=$p(%f,"(") q
+  .. n % f %=1:1:99 s %n=%n+1,%r=$g(^oFileTXT($j,%n)) q:$e(%r)="^"
+  .i $e(%f)'="^" s %er=1 q
+  .i $e(%f,$l(%f))'=")" s %er=1 q
+  .i $g(f(%g))=0 s %f="",%r="" q
+  .s %mMindex=2_%f,timeStmp=+$h
+  .i $e(%f,1,4)="^mM(" k % s %="%("_$p(%f,",",2,99) d  q:%f=""!%cancel
+  ..  s %cancel=0  ;; s %cancel=1   --- for exit from ^wMail
+  ..  s (timeStmp,oo)=+$p(%f,"(",2),o2=$p(oo,".",2)
+  ..  s:$l(o2)<6 $p(oo,".",2)=$e(o2+1000000,2,9),timeStmp=oo
+  ..  i %'["^" s ^omxERROR(%USID,$j,%n)=%_"  %f="_%f_" %r="_%r_" %g="_%g,%cancel=1 q
+  ..  i %r="",%f'["0^" s ^ooMX(%USID,"gr",%g,timeStmp,%mMindex)="%r??",%cancel=1 q
+  ..  s @%=0,%mMindex=$o(%("")),%f=$e(%mMindex,2,999),%g=$p(%f,"(")
+  ..  i $g(f(%g))=0 s %f="" q
+  ..  i $d(f)>2 s %2=$o(f(0)) i f(%2),'$d(f(%g)) s %f="" q
+  ..  i '$d(%wMail) s %wMail=$l($t(^wMail))
+  ..  i %wMail,1_$$w^wMail(%mMindex,%r) q:%cancel
+  ..  
+  .i %f_")))"'["))))" s %f="",%r="" q
+  .s %g=$e($p(%f,"("),2,99),%sel=1
+  .i $l(%xmsm),%xmsm["%sel"  x %xmsm q:'%sel
+  .i $l(%xmsm),%xmsm'["%sel" s %sel=0 d  q:'%sel
+  ..  f o=1:1:$l(%xmsm," ") i %g=$p(%xmsm," ",o) s %sel=1 q
+  .   ;
+  .s ^ooMX(%USID,"gr",%g,timeStmp,%mMindex)=%r
+  .i '%mMindex k @%f s %nnn=%nnn-1 q
+  .i $d(@%f)#10=1 q:%mode["j"!(@%f=%r&(%r'["=FE"))
+  .i %r["=FE",%r'[$c(254) s %rr=%r,%r="" f %=1:1:$l(%rr) d  s %r=%r_%1
+  .. s %1=$e(%rr,%) q:%1'="="
+  .. n a,b s a=$e(%rr,%+1),b=$e(%rr,%+2) i a_b="FE" s %1=$c(254),%=%+2 q
+  .. s a=$s(a="A":10,a="B":11,a="C":12,a="D":13,a="E":14,a="F":15,1:a)
+  .. s b=$s(b="A":10,b="B":11,b="C":12,b="D":13,b="E":14,b="F":15,1:b)
+  .. s %1=$c(a*16+b),%=%+2
+  .q:%mode["k"  s @%f=%r,%nnn=%nnn+1 ;; k=kontrole
+  q
+grErr s $zt=""
+ n o i $zv["Ca"!($zv["IRIS") x "s o=$zeof" i o<0 c %file q
+ s ^ooMX(%USID,"gr")=$g(oDelay)+1_"sec. "_%file_" ERROR: za="_za_" "_$g(^ooMX(%USID,"gr"))
+ d Close
+ s $zt=""
+ q
+erGR s $zt=""
+ d Close
+ i $e(%file)'="^" s %X=$e(%file)_":" w $$DiList^USDOS(3,4)
+ g %GR^USDOS
+DKSERsav 
+ ; save of globals (gList) to  DOS-file (%file) if <DKSER>!!!only
+ ;---------------variant 1.---------
+ ;  d save^USDOS                         ;  start of the program
+save1 s %file=0,%MET=1,%RL=""
+save2 s %file="C:\mm.ggg"                 ;  DOS-file
+save3 s gList="mM Banka"                 ;  glob.list
+save4 d %GS^USDOS
+ q
+GSave(gList,%file) 
+ s %file=0,%MET=1,%RL=""
+ d %GS^USDOS
+ q
+readTXT(%USID,%file,h1,h2,max) 
+ ; read %file into ^oreadTXT(%USID)
+ n n,r,r1,%,o,zr k ^oreadTXT(%USID) s zr=$zr,h1=$g(h1),h2=$g(h2),max=$g(max),^oreadTXT(%USID)=%file
+ s:$zv'["MiniM" $zt="errReadT^USDOS"
+ if $zv["Ca"!($zv["IRIS") open %file:("RS"::$CHAR(13)_$CHAR(10)):2 u %file if 1
+ else  d OpenUse
+ s ^oreadTXT(%USID)=^oreadTXT(%USID)_"  "_$p
+ i $zv["MS" f n=1:1 r r q:$zc<0  s ^oreadTXT(%USID,n)=$tr($s($l(r)<500:r,1:$e(r,1,510)),h1,h2) i max>0,n>max q
+ i $zv'["MS" f n=1:1 d  q:$zeof!(r1<0)  i max>0,n>max q
+ . s r1="",r=""
+ . f %=0:1:31000 s o=r1 r *r1 q:$zeof  i r1>0 s r=r_$c(r1) i r1=10,o=13 s r=$e(r,1,$l(r)-2) q
+ . s:% ^oreadTXT(%USID,n)=$s($l(h1):$tr(r,h1,h2),1:r)
+ i $zv'["MS",$zv'["Ca",$zv'["IRIS" f n=1:1 d  q:$zc<0  s:% ^oreadTXT(%USID,n)=$tr(r,h1,h2) i max>0,n>max q
+ . s r1="",r=""
+ . i h2=-13 f %=0:1:31333 s o=r1 r *r1 q:$zeof  i r1>0 s r=r_$c(r1) i r1=10 s r=$e(r,1,$l(r)-1) q
+ . i h2+13 f %=0:1:31333 s o=r1 r *r1 q:$zeof  i r1>0 s r=r_$c(r1) i r1=10,o=13 s r=$e(r,1,$l(r)-2) q
+ s ^oreadTXT(%USID)=^oreadTXT(%USID)_"  "_n-1
+ d Close
+ q
+ReadTXT(%file,zr,h1,h2,max) 
+ ;mx  read fileTXT into @zr
+ s ^oERROR("ReadTXT",0)=$h_" "_%file_" "_zr
+ q:"^o ^|"'[$e(zr,1,2)
+ s:$zv'["MiniM" $zt="errReadT^USDOS"
+ n n,r,r1,%,o k @zr s h1=$g(h1),h2=$g(h2),max=$g(max),%=0
+ d OpenUse
+ s ^oERROR("ReadTXT",0)=^oERROR("ReadTXT",0)_"  "_$p
+ i $zv["MiniM" f n=1:1 r r q:$zeof  s @zr@(n)=$e($s($l(h1):$tr(r,h1,h2),1:r),1,510) i max,n>max q
+ i $zv["MS" f n=1:1 r r q:$zc<0  s @zr@(n)=$e($s($l(h1):$tr(r,h1,h2),1:r),1,510) i max,n>max q
+ i $zv["Ca"!($zv["IRIS") f n=1:1 d  q:$zeof!(r1<0)!(%>31332)  i max>0,n>max q
+ . s r1="",r=""
+ . f %=0:1:30000 s o=r1 r *r1 q:$zeof  i r1>0 s r=r_$c(r1) i r1=10,o=13 s r=$e(r,1,$l(r)-2) q
+ . s:% @zr@(n)=$s($l(h1):$tr(r,h1,h2),1:r)
+ s ^oERROR("ReadTXT",8)=$h_" "_(n-1)
+ s @zr=n-1
+ d Close
+ s ^oERROR("ReadTXT",9)=$h_" "_(n-1)
+ q
+errReadT s $zt=""
+ s:% @zr@(n)=$e($s($l(h1):$tr(r,h1,h2),1:r),1,$zv'["MS"*31_510) 
+ n o s $zt="errReadE^USDOS"
+ i $zv["Ca"!($zv["IRIS") x "s o=$zeof" i o<0 s @zr=n-1 c %file q
+ d Close
+ s ^oERROR("ReadTXT",9)=$h_" "_(n-1)
+ s ^oERROR("ReadTXT",8)=" ERROR: "_$ze
+ s @zr=^(8)
+ q
+errReadE s $zt=""
+ i $g(zr)["^" s @zr=$g(n)-1 
+ d Close
+ q
+txt2glob(zr) 
+ s:'$d(zr) zr="^oFileTXT"
+ f %=3:2 q:'$d(@zr@(%))  s i=^(%),r=^(%+1) x:$e(i)'="^" "s o=% f %=o:1:o+9 i $e($g(^(%)))=""^"" s i=^(%),r=^(%+1) q" d:$e(i,$l(i))'=")"  i $e(i)="^",i_12[")12" s @i=r
+ . s o=% f %=o+1:1:o+5 i $d(^(%+2)),$e(^(%))'="^" s i=i_" "_^(%),r=^(%+1) q:$e($g(^(%+2)))="^"  q:i_12[")12"
+ q %
+TXTtoXML(%USID,sss,zr) 
+ ; read file.XML into glob: @zr
+ s b=-1 n win1257,code1257 s win1257=0 k ^oXMLo(%USID),^oTEST m ^oXMLo(%USID)=^oXMLo1(%USID) m ^oTEST=^oXMLo1(%USID) k ^oXMLo1(%USID)
+ s code1257=" 240.253 226.198 231.241 237.243 251.221 238.216 199.240 205.244 200.211 207.246 194.181"
+ s h1=$g(h1),h2=$g(h2),max=$g(max),%=0,x=0,row=1,bit=0,wide=0,bb=0,rr=""
+ k @zr,ERR s b0=0,r=0,i="",iii=0,rrr="",ttt="",e="",start=0,L=0,r0="0",r1="0",x="",t="",%r0=0
+ f b=0:1 d  q:r<0
+ . i $l(rr)<15 s %=$q(^oXMLo(%USID)) i $l(%),$qs(%,1)=%USID s rr=rr_@% k @%
+ . s %r1=%r0,%=$e(rr),rr=$e(rr,2,99999) ;; r *% i $zv'["Ca",%<0 q
+ .  ;; i %="{",rr>127,rr<257,$e(rr,4)="}" s %=$c(+rr),rr=$e(rr,5,99999)
+ . i %="" s r=-1 q
+ . s %r=%,%=$a(%)  q:"-10-13-9-8-"[(-%_"-")  s %r0=%
+ . s:$d(@sss@(%)) %r=@sss@(%) 
+ . i %r="{",rr>127,rr<256,$e(rr,4)="}",$e(rr,5)="{" s %2=$g(@sss@(+rr_+$e(rr,6,8+1))) s ERR($tr(+rr_+$e(rr,6,8+1),"{"))=%2_"   "_rr i $l(%2) s (%,%r0)=+rr_+$e(rr,6,8+1),rr=$e(rr,$l(%)=7+10,99999),%r=%2
+ . i %r="{",rr>127,rr<256,$e(rr,4)="}",$e(rr,5)'="{" s %2=$g(@sss@(+rr)) i $l(%2) s (%,%r0)=+rr,rr=$e(rr,5,99999),%r=%2
+ . i %r="{",rr>127,rr<256,$e(rr,4)="}" s %2=$g(@sss@(+rr)) i $l(%2) s (%,%r0)=+rr,rr=$e(rr,5,99999),%r=%2
+ . d:win1257&(%>150)  s:%r="<" start=1 q:'start  s r1=r0,r0=r,r=%r i r'=" "!$l(rrr) s rrr=rrr_r
+ .. s o=$f(code1257," "_%_".") s:o>1 %r=$c($e(code1257,o,o+3)) s:o<1 ttt=ttt_-%_"?"
+ . i rrr["1257",(rrr["WINDOWS-1257")!(rrr["windows-1257") s win1257=b
+ . i $l(i) s:r'=">" i=i_r i ">"=r s:i'["/" $p(iii,",",L)=$p(i," ") i i[" "&(i'["/") s @zr@(b,L,iii,0)=rrr s rrr="",t="",L=L-1,i="" q
+ . i r0="<",r'="/" s i=r,L=L+1 q
+ . i $l(e) s:r'=">" e=e_r i r=">" s e="",start=0,iii=$p(iii,",",1,L) s:iii="" iii=L q
+ . i t["-1257",t["WINDOWS-"!(t["windows-") s win1257=b
+ . i $l(t)>32000 s r0="/>",r="",t="--ERROR--"_t
+ . i r0_r="/>" s e="",$p(iii,",",L)=i s:$l(t) @zr@(b,L,iii)=t s L=L-1,i="",rrr="",t="" q
+ . i r0_r="</" s e="</" s:$l(t) @zr@(b,L,iii,e)=t s L=L-1,i="",rrr="",t="" q
+ . s:r=">" i="",e="" i '$l(e),'$l(i),"<>"'[r,r'=" "!$l(t) s t=t_r ;; s:%>150 t=t_%
+ s @zr=b
+ ;; d Close
+ ;; s ^oERROR(%USID,"ReadXML",9)=$h_" "_(b-1)
+ q
+korrTXT(zr) 
+ q ""
+glo2rout(zr) 
+ n n,Rout,oo,t,nn s n=2,oo="",nn=0 k ^r m ^r=@zr k ERR
+ f  q:'$d(@zr@(n+1))  d
+ . s n=n+1,t=@zr@(n) q:"*************  ;; "[t
+ . i t'[" ",'t s Rout=$p(t,"^") s:Rout["(" Rout=""
+ . q:'$l(Rout)
+ . i $zv'["MiniM" x "zr  f  s n=n+1,t=$g(@zr@(n)),tt=0 s:$l(t)>255 ERR(Rout,n)=$l(t)_t s:$l(tt)>250!(tt["" ;"")!(tt[""%mxWarn"")!($zv[""MS"") t=$$Uu^MXF(t) zs:'$l(t) @Rout q:'$l(t)  zi t s nn=nn+1"
+ . i $zv["MiniM" n r x "f n=n+1:1 s t=$g(@zr@(n)) s:$l(t)>250!(t["" ;"")!(t[""%mxWarn"") t=$$Uu^MXF(t) q:'$l(t)  s nn=nn+1,r(nn)=t" i nn>1,$$SAVE^%R(Rout,$na(r)) d compile^%RCOMPIL(Rout)
+ . s oo=oo_Rout_":"_nn_" ",Rout="",nn=0
+ q oo
+listOfZN(xxx) 
+ n oo,o,n,ns,%,%B s n="",oo="",%B=$c(254)
+ i $zv["MiniM" s o=$v("db",15) f %=1:1:$l(o,"*") s ns=$p(o,"*",%) i ns'["%" s oo=oo_%B_ns,n=n+1
+ x:$zv["Ca"!($zv["IRIS") "f %=1:1:$zu(90,0) s ns=$zu(90,2,0,%)  i ns'[""%"" s:%B_oo_%B'[(%B_ns_%B) oo=oo_%B_ns,n=n+1"
+ ; ^%GD 
+ q n_oo
+ReadByte(%file) 
+ n %,zr s:$zv["MiniM" %file=$tr(%file,"/","\") s zr="^oBytes(%USID)" k @zr,^mxMonito(%USID,"ReadBytJ")
+ i $zv["Ca"!($zv["IRIS") x "s o=$zu(140,1,%file),zu=$s(o=-2:""file not found"",o=-3:""path not found"",o=-5:""access denied"",o=-12:""invalid access"",1:o)" i o'=zu q 0
+ j ReadBytJ(%USID,%file) f %=0:1:99 q:$g(^mxMonito(%USID,"ReadBytJ"))  h .1 h:%>97 1
+ ;; s ^mxMonito($$pD^MXD($h,2),3_%USID,"ReadBytJ")=%file_-%
+ q $g(@zr,-%-1)
+ReadBytJ(%USID,%file,zr) 
+ s $zt="ReadBytE^USDOS"  s:'$d(zr) zr="^oBytes(%USID)"  ; read bytes
+ d OpenUse s ^mxMonito($$pD^MXD($h,2),1_%USID,"ReadBytJ")=%file_" "_$t
+ k @zr s ooo="",b=0
+ f %=1:2 s b=b+1 r *r q:r<0  q:$zeof  s $e(ooo,%,%+1)=$e("0123456789ABCDEF",r\16+1)_$e("0123456789ABCDEF",r#16+1) s:%>30000 @zr@(b)=ooo,ooo="",%=-1
+ReadBytE s:b>15000 @zr@(b)=ooo s @zr=$s(b>15000:-b,1:ooo)
+ s ^mxMonito(%USID,"ReadBytJ")=b
+ d Close
+ q
+ReadBMP(%file,zr,filtr) 
+ ; mx  read file.BMP into @zr
+ s:'$d(zr) zr="^oBMP" s ^oERROR("ReadBMP",0)=$h_" "_%file_" "_zr
+ q:$e(zr,1,2)'="^o"  k @zr k b s b=-1
+ s $zt="errReadB^USDOS"
+ n b,n,r,r1,%,x,row,r0 k r s h1=$g(h1),h2=$g(h2),max=$g(max),%=0,x=0,row=1,bit=0,wide=0,bb=0
+ d OpenUse
+ s b0=0,r0=-1 f b=0:1 d  q:$zeof!(r<0)  ;; i max>0,b>max q
+ . i b=33 s h=b(23)*256+b(22),b0=b(11)*256+b(10),bit=b(28),wide=256*b(19)+b(18),b4=4-($s(bit=24:3,1:1)*wide#4)#4
+ . r *r q:$zeof  q:r<0  i bit=24,b0 r *r2  r *r3 s r=(r+r2+r3)\3_":"_r_":"_r2_":"_r3 
+ . s:b<33 b(b)=r i b0,b'<b0 s x=x+1 s:x>(wide+b4) x=1,row=row+1,r0=-1 s:$d(filtr) r=r<filtr s:r'=r0 @zr@(-row,x)=r,r0=r,bb=bb+1
+ s @zr=b
+ d Close
+ s ^oERROR("ReadBMP",9)=$h_" "_(b-1)
+ q
+errReadB s $zt="",b=+$g(b)
+ i $g(zr)["^" s @zr=b-1 
+ d Close
+ q 
+ReadXML(%USID,%file,zr,filtr) 
+ ; read file.XML into glob: @zr
+ s ^oERROR(%USID,"ReadXML",0)=$h_" "_%file_" "_zr
+ k @zr s b=-1 n win1257,code1257 s win1257=0
+ s code1257=" 240.253 226.198 231.241 237.243 251.221 238.216 199.240 205.244 200.211 207.246 194.181"
+ s $zt="errReadX^USDOS"
+ s h1=$g(h1),h2=$g(h2),max=$g(max),%=0,x=0,row=1,bit=0,wide=0,bb=0
+ d OpenUse
+ s b0=0,r=0,i="",iii=0,rrr="",ttt="",e="",start=0,L=0,r0="0",r1="0",x="",t="",%r0=0 ;;k ^xml
+ f b=0:1 d  q:r<0
+ . s %r1=%r0 r *% i $zv'["Ca",$zv'["IRIS",%<0 q
+ . i $zv["Ca"!($zv["IRIS"),%<0!$zeof s r=-1 q
+ . q:"-10-13-9-8-"[(-%_"-")  s %r0=% i %r1_%="196187" s t=$e(t,1,$l(t)-1)_"{315}" q
+ . ;; i %r1_%="199205" s t=$e(t,1,$l(t)-1)_"{..199.205..}" q
+ . s %r=$c(%) d:win1257&(%>150)  s:%r="<" start=1 q:'start  s r1=r0,r0=r,r=%r i r'=" "!$l(rrr) s rrr=rrr_r
+ .. s o=$f(code1257," "_%_".") s:o>1 %r=$c($e(code1257,o,o+3)) s:o<1 ttt=ttt_-%_"?"
+ . i rrr["1257",(rrr["WINDOWS-1257")!(rrr["windows-1257") s win1257=b
+ . i $l(i) s:r'=">" i=i_r i ">"=r s:i'["/" $p(iii,",",L)=$p(i," ") i i[" "&(i'["/") s @zr@(b,L,iii,0)=rrr s rrr="",t="",L=L-1,i="" q
+ . i r0="<",r'="/" s i=r,L=L+1 q
+ . i $l(e) s:r'=">" e=e_r i r=">" s e="",start=0,iii=$p(iii,",",1,L) s:iii="" iii=L q
+ . i t["-1257",t["WINDOWS-"!(t["windows-") s win1257=b
+ . i $l(t)>32000 s r0="/>",r="",t="--ERROR--"_t
+ . i r0_r="/>" s e="",$p(iii,",",L)=i s:$l(t) @zr@(b,L,iii)=t s L=L-1,i="",rrr="",t="" q
+ . i r0_r="</" s e="</" s:$l(t) @zr@(b,L,iii,e)=t s L=L-1,i="",rrr="",t="" q
+ . s:r=">" i="",e="" i '$l(e),'$l(i),"<>"'[r,r'=" "!$l(t) s t=t_r ;; s:%>150 t=t_%
+ s @zr=b
+ d Close
+ s ^oERROR(%USID,"ReadXML",9)=$h_" "_(b-1)
+ q
+errReadX s $zt="",b=+$g(b)
+ i $g(zr)["^" s @zr=b-1
+ d Close
+ q 
+wrByte(%file,%glob,%len) 
+ d OpenUseW
+ s z=%glob f n=1:1 s z=$q(@z) q:'$l(z)  s rr=@z d
+ . i %glob["^oFileExp(" w rr w:%len ! k @z q 
+ . f %=0:2:$l(rr)-2 s FF=$e(rr,%+1,%+2) w $c($zh(FF))
+ d Close
+ q
+WriteDBF(%file,formaDBF,tableDBF,tableDB2,nnnnnDBF,startTab) 
+ s ooztoooo=$zt,$zt="WriteDB2^USDOS"
+ i $e(tableDBF)="^" s o="",%=tableDBF,tableDBF="" f  s o=$o(@%@(o)) q:'$l(o)  s tableDBF=tableDBF_^(o)  
+ i $e(tableDB2)="^" s o="",%=tableDB2,tableDB2="" f  s o=$o(@%@(o)) q:'$l(o)  s tableDB2=tableDB2_^(o)  
+ d Close
+WriteDB2 n rrrrrDBF,b s $zt="errReadD^USDOS",rrrrrDBF="",b=0,r=""
+ i $zv["MS" open 51:(formaDBF:"R"):1 use 51
+ i $zv["MiniM" open "|FILE|"_formaDBF:("rte") use "|FILE|"_formaDBF
+ i $zv["Ca" open formaDBF:("R"::):1 use formaDBF
+ i $zv["IRIS" open formaDBF:("R"::):1 use formaDBF
+ i $zv'["MS" f b=0:1:999999 s r0=r,r="" r *r q:$zeof  q:r<0  s:b<9999 rrrrrDBF=rrrrrDBF_$c(r)
+ i $zv["MS" f b=0:1:999999 s r0=r,r="" r *r q:$zc<0  s:b<9999 rrrrrDBF=rrrrrDBF_$c(r)
+WriteDB x "n %FILE s %file=formaDBF h 1 d Close"
+ s ^oERROR("ReadDBF",9)=$h_" "_(b-1),$zt=ooztoooo
+ d OpenUseW
+ s $e(rrrrrDBF,5)=$c(nnnnnDBF#256)
+ w $e(rrrrrDBF,1,$s($g(startTab):startTab,1:225)),tableDBF,tableDB2,$c(r)
+ d Close
+ q
+errReadD s $zt=$g(ooztooo) g WriteDB+1
+ q
+Close close $s($zv["MS":51,$zv["MiniM":"|FILE|"_%file,1:%file)
+ q
+OpenUse i $zv["MS" o 51:(%file:"R"):0 u 51
+ i $zv["GT" o %file:"RS":1 u %file
+ i $zv["Ca" o %file:("RS"::$CHAR(13)_$CHAR(10)):2 u %file
+ i $zv["IRIS" o %file:("RS"::$CHAR(13)_$CHAR(10)):2 u %file
+ i $zv["MiniM" open "|FILE|"_%file:("rte") u "|FILE|"_%file
+ q
+OpenUseW i $zv["MS" o 51:(%file:"NW"):1 use 51 q
+ i $zv["Ca" o %file:("NWS"::):1 use %file q
+ i $zv["IRIS" o %file:("NWS"::):1 use %file q
+ d OpenUse
+ q

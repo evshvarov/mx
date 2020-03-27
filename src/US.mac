@@ -1,0 +1,244 @@
+ROUTINE US
+US ;    ; [ 11/04/2006  5:40 PM ]  ;[ 20200217 19:32:22 ]
+ ; MSM, CACHE, IRIS, GT.M, MiniM
+ ; vmx  Copyright(c) SIA ENTERS  1997-2020
+ g enter^USb
+yx(y,x,c) 
+ q ""
+PN w $$n(@%1,%1) q
+PN0 w $$n(%K,%N) q
+n(%k,%N,%) 
+ n %1 s %N=$tr($g(%N),"~")
+ I %N="" s %N=$tr($p(%LI(%FILE),",",%G),"~")
+ s (%k,@%N)=$g(%k,%K)
+ s %1=$l($p(","_$tr(%LI(%FILE),"~")_",",","_%N_","),",")
+ s (%G(%N),@%N)=%k,$p(%LIn,$c(5),%1)=%k
+ q ""
+RUN 
+ s %NEW=1,%I="^"_%FILE,%ZR=1,%KEM=$L(%LII(%FILE),","),%SF=""
+ f %=1:1:%KEM s %1=$p(%LII(%FILE),",") i $l(%1),$d(@%1) s %I=$name(@%I@(%1))
+ i $$SaveMem^USX("t-"_%FILE)  ;; _$$CopySave^USX("t-"_%FILE)
+ q
+IR(%FILE) 
+ n %,oo,%n s oo=""
+ f %=1:1:$l(%LI(%FILE),",") s %n=$tr($p(%LI(%FILE),",",%),"~"),oo=oo_$e($g(@%n),1,1023)_$c(4)
+ q oo
+e(%Inew,%Iold) 
+ s:$e(%Inew)'="^" %Inew="^"_%FILE_"("_%LII(%FILE)_")" 
+ n %FILE s %Inew=$NAME(@%Inew),%FILE=$p($e(%Inew,2,999),"("),%SF=$g(%SF)
+ q:$g(mxConfig)[("noChange:"_%FILE_":") ""
+ s %Iold=$g(%Iold),%IRnew=$$IR(%FILE) s:%Iold["("""""!(%Iold[","""")") %Iold=""
+ s:%Iold="" %Iold=%Inew i $e(%Iold)="~" s:$e(%Iold,2)="^" %Inew=$e(%Iold,2,999) s %Iold="DELETE"
+ n %R,%1,%,%Rold,%N,o,%mxChange i '$d(%CON(%FILE)) s %1=%FILE d ^USX
+ x %CON(%FILE) s %mxChange="" i $d(^mxConfig("A")),'$$tAccess("A",%FILE) s %E=" access denied " HALT  q %E
+ i %Iold="DELETE" s %mxChange="-",%Iold=%Inew
+ i %Iold["^",$d(@%Iold)#10 s %Iold=$NAME(@%Iold),%Rold=$$r5(%Iold) d  q:%mxChange<0 ""
+ .  i $e(%mxChange)'="-",%Rold=%R,%Iold=%Inew s %mxChange=-1 q
+ .  N %R,%I,@($tr(%LI(%FILE),"~")) s %I=%Iold,%R=%Rold x %XI(%FILE),%XG(%FILE)
+ .  i 1_$$xglm(%I,-1) k @%Iold
+ .  f %=1:1:$l(%LI(%FILE),",") s %n=$tr($p(%LI(%FILE),",",%),"~") d
+ ..   i $p(%IRnew,$c(4),%)'=@%n s %mxChange=%mxChange_$c(10)_$c(13)_%n_"="_@%n_$c(10)_$c(13)
+ q:$e(%mxChange)="-" %Inew_$c(4)_"-DELETED"
+ i $$w5(%Inew,%R)_$$xglm(%Inew,1)
+ q %Inew_$c(4)_%mxChange
+vmALwr(%FILE,%Iold,%IRnew) 
+ n %R,%1,%,%I,%Rold,%N,o i %FILE'=$g(%W) s %refreAL=1 d pAL^USb
+ i mxConfig[("noChange:"_%FILE_":") q ""
+ i mxConfig[("noChange2:"_%FILE_":"),%Iold["^" d  q:%Iold="" ""
+ .  s o="^mM" f  s o=$q(@o) q:o=""  i o[(1_%Iold),$p(@o,%B)=%USID q
+ .  s %Iold=""
+ i '$d(%IRnew) s %IRnew=$$IR(%FILE)
+ i %Iold["^" k %WW i $d(@%Iold)#10,%IRnew="" d  s %I="-"_%Iold g vmALwrE
+ .  s %Iold=$NAME(@%Iold),%=$$xglm(%Iold,-1) k @%Iold
+ i %IRnew="" s %I="?"_%Iold g vmALwrE
+ f %=1:1:$l(%LI(%FILE),",") s %N=$tr($p(%LI(%FILE),",",%),"~"),(%G(%N),@%N)=$p(%IRnew,$c(4),%)
+ s %I=$NAME(@("^"_%FILE_"("_%LII(%FILE)_")"))
+ i %Iold'["^",$d(@%I)#10 s %Iold=%I ; exist old record with the same key
+ i '$d(%CON(%FILE)) s %1=%FILE d ^USX
+ x %CON(%FILE)
+ i %Iold["^",$d(@%Iold)#10 s %=$NAME(@%Iold),%Rold=$$r5(%Iold) q:%R=%Rold&(%=%I) ""  d  k @%Iold
+ .  N %R,%I s %I=%Iold,%R=%Rold
+ .  n @($TR(%LI(%FILE),"~")) x %XI(%FILE),%XG(%FILE)
+ .  i $$xglm(%I,-1)
+ .  f %=1:1:$l(%LI(%FILE),",") d  ; only for indicate changed fields..
+ ..   s %N=$tr($p(%LI(%FILE),",",%),"~")
+ ..   s $p(%IRnew,$c(4),%)=$s($g(@%N)=$p(%IRnew,$c(4),%):"",1:$g(@%N)_$c(10)_"~~~~~~~~~~~~~"_$c(10)_$c(13)_$p(%IRnew,$c(4),%))
+ i $$w5(%I,%R)_$$xglm(%I,1)
+vmALwrE q %I_$c(4)_%Iold_$c(4)_%IRnew
+vmALerr 
+ x:$zv["MS" "w $zerr_%I_"" ""_%Iold_"" ""_%IRnew"
+ q
+ALv(%Sx7r) 
+ s:'$g(%Sx7r) %Sx7r=1 s %LII=%LII(%FILE),%N=$tr(%N,"~") i %FILE'=$g(%W) s %refreAL=1 d pAL^USb
+ I %Sx7r=1 k %mxINFO d  i %G>2,$d(^mxConfig("A")),'$$tAccess("A",%FILE) s %E=%N_": access denied "_$c(10)_$c(13)_%K_$c(10)_$c(13)_%E_$c(10)_$c(13)_"ERROR" q %E
+ .s %LIn="",%KEI="",%KEM=$l(%LII(%FILE),",")
+ .s %KEY=$l($p(","_%LII(%FILE)_",",","_%N_","),",")
+ .i %G=1 s %maxList=1
+ .i %K[$c(10)," Kase Banka oBanka pers pam "[(" "_%FILE_" ") s %K=$tr(%K,$c(10),"^") f  q:"^ "'[$e(%K)  s %K=$e(%K,2,9999) s:%K="" %K="-"
+ .f  q:$c(10)_" "'[$e(%K)  s %K=$e(%K,2,9999) s:%K="" %K="-"
+ k %ErrorM s $zt="ALvErr^US" s %E="" i %K[" " s %K=$p(%K_"     ","     ") s:'$l(%K) %K="-"
+ALvNext s o=$g(%W(%N,%Sx7r)) s:o["$$pvn^fin" o="" s:$e(o)=";" o="" s %ALx=o
+ i o["[""P""",$e(%N)="s" s o=$$trw^UST(o,"[""P""","[""p""")
+ i $g(d)>20120700,o["""p"""!(o["""+""") n % d  s %ALx=o,o=""  
+ . f %=118,121,122 i o[% s o=$$trw^UST(o,%,"$$pvn^fin(d,100)") 
+ . f %=1.18,1.21,1.22 i o[% s o=$$trw^UST(o,%,"$$pvn^fin(d,100.01)") 
+ . f %=.18,.21,.22 i o[% s o=$$trw^UST(o,%,"$$pvn^fin(d,.01)") 
+ . f %=18,21,22 i o[% s o=$$trw^UST(o,%,"$$pvn^fin(d)") 
+ i $g(d)>20110000,o[18,o'[22,o["""p"""!(o["""+"""),o'["$s(d" s o=$$trw^UST(o,18,22)
+ i $g(d)>20110000,o[21,o'[22,o["""p"""!(o["""+"""),o'["$s(d" s o=$$trw^UST(o,21,22)
+ i $g(d)>20090000,o[18,o'[21,o["""p"""!(o["""+"""),o'["$s(d" s o=$$trw^UST(o,18,21)
+ i $zv["MiniM",o[" w "!(o[" w:")!($e(o)="w") s %E=o_" -- ""w"" not allowed in MiniM ! -- ",o=";" 
+ s:$l(o) %ALx=o
+ i " ; ?-"'[%ALx x %ALx
+ i %K["  ",%K'["q",%K'["f",%K'["=" f  q:$l(%K)<2  q:%K'["  "  s %K=$$trw^UST(%K,"  "," ")
+ i '$l(%E),%K?8n,%N="d"!(%N="d8"),mxConfig'[":%E.d8=NO:" s %E=$$d31^MXF(%K,8)
+ i $l(%E),%E'[" ok!" s %E=%N_":"_$g(^AL(%FILE,"%W",%N,-1))_$c(10)_$c(13)_%K_$c(10)_$c(13)_%E_$c(10)_$c(13)_"ERROR" q %E
+ i $l(%E),%E[" ok!" s %E=%N_$c(10,10)_%E q %E
+ I $d(%W(%N,%Sx7r+1)) s %Sx7r=%Sx7r+1 g ALvNext
+ s:$d(%mxINFO) %mxINFO=11
+ i $$n(%K,%N)
+ i " Kase oBanka pers pam "[(%FILE_" "),$l(%K,"^")>%maxList s %maxList=$l(%K,"^")
+ k %ALx q %Sx7r
+ q
+ALvErr s %ErrorM="%ALx="_$g(%ALx)_"  "_$ze_" ;"_$c(0)
+ q ""
+WR q
+F ; mx
+ N %,%R,%1
+ s %ZR=$NAME(@("^"_%FILE_"("_%LII(%FILE)_")"))
+ S %R=$g(@%ZR),%NEW=%R="",%KEI=%ZR
+ s:$l(%R)=500 %R=$$r5(%ZR) k %mxINFO(1,"'%NEW")
+ I %NEW S %gminm=0,%gmaxm=9999 q
+ x %XG(%FILE) s %mxINFO(1,"'%NEW")=%ZR ;; ,%="^mM("""")" 
+ i $d(^mxConfig("A")),'$$tAccess("A",%FILE) s %E="F^US ::: access denied " s %R=0 x %XG(%FILE)
+ q
+xgl(%F,%ZR) 
+ q:'$d(%ZR)!'%F "?"
+ n %,%lg  x %ZRT(%F>0)
+ i %AL("%F8")'["-m",$$%mM(%F>0,%ZR)
+ i %F>0 x %xgl(0),%xgl(1) q ""
+ n %R,%I s %I=%ZR,%R=$$r5(%ZR) n @($tr(%LI(%FILE),"~"))
+ x %XI(%FILE),%XG(%FILE),$g(%xgl(%FILE,0)),$g(%xgl(%FILE,-1)) k @%ZR
+xglE q ""
+xglER x "s %E=$zerr " g xglE
+xglm(%ZR,%F) 
+ q:'$d(%ZR)!'%F "?"  s %E="" i %FILE'=$g(%W) s %refreAL=1 d pAL^USb
+ i $g(mMdatums(%ZR)) s o=$g(mxConfig("mMdatums")) i o d  q:o
+ . i ","_%LI(%FILE)'[",d,",","_%LI(%FILE)'[",d8," s o="" q
+ . s:","_%LI(%FILE)[",d," %=d s:","_%LI(%FILE)[",d8," %=d8
+ . i mMdatums(%ZR)>($h-o) s o="" q
+ . s %E=mMdatums(%ZR),o=""
+ k ^ooC(%ZR),odsFlag,opD s %isChang=1,^gramatos=0
+ n %,%lg,%file,o s %file=$e($p(%ZR,"("),2,99)
+ i '$d(%xglm(%file)) d %xgl^USX
+ i $d(%ZRTm) x $g(%ZRTm(%file,%F>0))
+ i $g(%AL("%F8"))'["-m",%file'["mxConfig",%file'["kNo",%file'["mMail",$$%mM(%F>0,%ZR)
+ i %F>0,'$g(^otSelect(%USID,%file,0)) s %="^otSelect(%USID,%file,"_$p(%ZR,"(",2,9),@%@(%ZR)=1
+ i %F>0 x $g(%xglm(%file,0)),$g(%xglm(%file,1)) q ""
+ s %="" i $g(d),(","_%LI(%FILE)[",d,"),$d(^gramatos(d,%ZR)) s %=$zr
+ i $g(d8),(","_%LI(%FILE)[",d8,"),$d(^gramatos(d8,%ZR)) s %=$zr
+ i '$l(%),","_%LI(%FILE)[",d,"!(","_%LI(%FILE)[",d8,") f  s %=$o(^gramatos(%)) q:%=""  i $d(^gramatos(%,%ZR)) s %=$zr q
+ i $l(%) k @%
+ S %=$E(","_%LII(%FILE)_",",1,%),%KEY=$L(%,",")-2
+ n %R,%I s %I=%ZR,%R=$$r5(%ZR) n @($tr(%LI(%file),"~"))
+ x %XI(%file),%XG(%file)
+ x $g(%xglm(%file,0))
+ x $g(%xglm(%file,-1)) 
+ k @%ZR
+xglmE q ""
+xglmER x "s %E=$zerr " 
+ g xglE
+pLI(%I) 
+ n %R,oox,oor,%1,oon s %R=$g(@%I),%B=$c(254) q:%R="" ""
+ i $e(%I,1,4)="^mM(" s %I=$p(%I,",",2,99),%I=$e(%I,3,$l(%I)-2)
+ s %I=$$trw^UST(%I,"""""","""")
+ s %1=$e($p(%I,"("),2,99) q:'$l(%1) ""
+ x %XI(%1),%XG(%1) s oor="" i $d(^mxConfig("A")),'$$tAccess("A",%1) q ""
+ f oox=1:1:$l(%LI(%1),",") s oon=$tr($p(%LI(%1),",",oox),"~"),oor=oor_%B_@oon
+ q oor
+%mM(%F,zr,r) 
+ n o,%
+ s zr=$NAME(@zr) k ^ooC(zr)
+ i %F>0,$d(@zr)#10=0 q ""
+ s %=$tr($h,",",".") s:$l(%)<11 $p(%,".",2)=$e(100000+$p(%,".",2),2,9)
+ s o=1 f  q:'$d(^mM(%_o))  s o=o+1 q:o=9
+ s:'$d(r) r=$g(@zr) s:$e(r)=%B r=%USID_r s ^mM(%_o,(%F>0)_zr)=r
+ i $d(@zr)
+ q ""
+W S %WW(%N)=%K Q
+tnq(format,text,h) 
+ n t,tt,tt1,ttt,%1,%2,%3
+ s t="",tt1=text,ttt="",h=$g(h,";"),text=$g(text)
+ f %=1:1:$l(format,";") s tt=$p(format,";",%) d:tt'=""
+ . s %1=$p(tt," "),%2=$p(tt," ",2,99),%3=$p($p(text,%1,2,99),h)
+ . i %3="" s %3="?"
+ . s tt1=$p($p(tt1,%1),h),ttt=ttt_"||"_%2_"|"_%1_"|"_%3 s:tt1="" tt1=" "
+ q " | |"_tt1_ttt
+%BELL q
+%n1(%n) k %WW(%n) s:%NEW %WW(%n)=@%n\1+1 q ""
+N1 K %WW(%N) S:%NEW %WW(%N)=%K\1+1 Q
+%zb(h) q:%j ""
+ q ""
+w(y1,x1,y2,x2,w,s,c) 
+ q ""
+wT(a,y,x) q ""
+r5(%zr) n %,%R s $p(%zr,"(")="^"_%FILE,%R=$g(@%zr) q:$l(%R)<500 %R
+ f %=501:500 q:'$d(@%zr@(%))  q:$l(%R)#500  s %R=%R_^(%)
+ q:1_$d(@%zr) %R
+w5(%zr,%R) n %,r i $zv'["MS" s @%zr=%R q ""
+ i '$d(@%zr),$l(%R)<500 s @%zr=%R q ""
+ i $d(@%zr@(501))
+ f %=501:500 s r=$e(%R,%,%+499) q:r=""&'$d(^(%))  k ^(%) s:r'="" ^(%)=r
+ s @%zr=$e(%R,1,500)
+ q ""
+wkv(x) q:x'[$c(2) x  
+ n xx s xx=$p(x,$c(2))
+ f %=2:1:$l(x,$c(2))-1 s xx=xx_""""""_$p(x,$c(2),%)
+ q xx
+%T N %TIM,%TIM1,%NP
+ N %M S %M=$P($H,",",2)\60
+ N %I,%N S %TIM=%M\60_":"_(%M#60\10)_(%M#10)
+ S %N=" AM" S:%M'<720 %M=%M-720,%N=" PM" S:%M<60 %M=%M+720
+ S %I=%M\600 S:'%I %I=" " 
+ S %TIM1=%I_(%M\60#10)_":"_(%M#60\10)_(%M#10)_%N
+ I '$D(%NP) W:'%j %TIM1 K %TIM,%TIM1
+ K %NP Q
+%G(%N) ; mx
+ q:"o"_%B[$g(%FILE,"o") 1  q:'$d(^AL(%FILE)) 1
+ i '$d(%LII(%FILE)) n %1 s %1=%FILE d ^USX q:'$d(%LII(%FILE)) 1
+ s %KEM=$l(%LII(%FILE),",")
+ f %G=1:1:$l(%LI(%FILE),",") q:%N=$tr($p(%LI(%FILE),",",%G),"~")
+ q %G
+EnterAL(oo) 
+ ; mx
+ q:oo[";;" ""
+ s o=$p(oo,";"),oo=$tr($p(oo,";",2,999),"=",",")
+ s %FILE=$e($p(oo,"("),2,99),oo=$p(oo,"(",2,999)
+ s:o="" o=%FILE s ^AL(%FILE,"NAME")=o
+ s ^("%LII")=$p(oo,")"),^("%LG")="%SF"_$p(oo,")",2,999)
+ s ^("%LI")=$tr(oo,")")
+ f o=1:1:$l(oo,",") s n=$p(oo,",",o) i n[")" d  q
+ . s ^AL(%FILE,"%W",$p(n,")"),1)=" d F "
+ q ""
+oAL() n %FILE,oo,o,%
+ s %FILE=$p($g(oAL(0,1))," ",2) q:%FILE="" "ERROR - "_$g(oAL(0,1))
+ s ^AL(%FILE,"NAME")=$p(oAL(0,1)," ",3,9)
+ f g=1:1 s o=oAL(1,g) q:o=""  s:$d(oo) oo=oo_","_o,^AL(%FILE,"%LG")="%SF"_oo s:o[")" oo="" 
+ s oo="" f g=1:1 s o=oAL(1,g) q:o=""  s oo=oo_o_"," i o[")" s ^AL(%FILE,"%LII")=$p(oo,")") q
+ s oo="" f g=1:1 s o=oAL(1,g),oo=oo_$p(o,")")_"," i o="" s ^AL(%FILE,"%LI")=$p(oo,",,") q
+ f g=1:1 s o=oAL(1,g) q:o=""  d 
+ .f %=1:1:6 s ^AL(%FILE,"%W",$tr(o,")"),%)=oAL(%+4,g) k:@$zr="" @$zr
+ .s ^AL(%FILE,"%W",$tr(o,")"),-1)=oAL(2,g) k:@$zr="" @$zr ; name
+ .s ^AL(%FILE,"%W",$tr(o,")"),-2)=oAL(3,g) k:@$zr="" @$zr ; %SEL
+ .s ^AL(%FILE,"%W",$tr(o,")"),0)=oAL(4,g)  k:@$zr="" @$zr ; before show 
+ k oAL q $zr
+tAccess(%0,%1) 
+ s %1=$g(%1,%FILE) n %,%A,%zt s %zt=$zt,$zt="tAccessE^US"
+ i %0="A" q:'$d(^mxConfig("A")) 1 d  s $zt=%zt q %A
+ . i '$d(mxConfigA(%1)) s %="^mxConfig(""A"",%1)",mxConfigA(%1)=1 f  s %=$q(@%) q:%=""  q:$qs(%,1)'="A"  i $p($qs(%,2),"(")=%1 s mxConfigA(%1)=0 i $qs(%,3)=%USID s mxConfigA(%1,$qs(%,2)_%B_$qs(%,4))=$p(@%,%B,2)  
+ . m %A=mxConfigA(%1) q:%A
+ . s %=0 f  s %=$o(%A(%)) q:'$l(%)  s %A=1 d:%["("  i %A x "s %A="_%A(%) q:%A  ;; {1076}{1086}{1089}{1090}{1091}{1087} {1088}{1072}{1079}{1088}{1077}{1096}{1077}{1085} 
+ .. n o,%i,%ii s %ii=$p($p(%,"(",2),")")
+ .. f o=1:1:$l(%ii,",") s %i=$p(%LII(%1),",",o) q:'$l(%i)  i $g(@%i)'=$p(%ii,",",o) s %A=0 q  
+tAccessE s $zt=%zt w ";",$c(0) q 0 ; not accessed
+ q

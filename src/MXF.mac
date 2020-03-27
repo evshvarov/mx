@@ -1,0 +1,485 @@
+ROUTINE MXF
+MXF ;  [ 04/26/2006  6:08 PM ]  ;[ 20090514 13:53:39 ]
+ ; MSM, CACHE, IRIS, GT.M,  MiniM
+ ; vmx Copyright(c) SIA ENTERS  2005-2020
+ ; 
+m(%) ; $$RunLine  $$omQuery
+ n %n i $d(%),% s %n=om n om s om=%n,$p(om,"/",2)=$e("         ",1,%-1)_$p($p(om,"/",2)," ",%) 
+ s ossso3ss=$p(om,"/",3),occco4cc=$p(om,"/",4),%5sv=$p(om,"/",5),%oiiio2i=$p(om,"/",2)
+ i $e(%5sv,1,2)="n " s o=$e(%5sv,3,999),%5sv="" f %=1:1:$l(o,",") s %n=$p(o,",",%),%3=@%n n @%n s @%n=%3
+ x $p(om,"/",7,99) s %n=$p(om,"/",6) s:$e(%n)=";" %n="" i %n="xmsm",$l(xmsm) s %n="i "_xmsm
+ i $l(%n)>2,"IF-if-i -If"[$e(%n,1,2),%n[" " x %n_" s %n="""" " q:$l(%n) -.1
+ i $l(%n),$d(@%n)>9 d  q:'$d(%n) -.2
+ . s %omUSIDn="" f  s %omUSIDn=$o(@%n@(%omUSIDn)) q:'$l(%omUSIDn)  x "s %="_@%n@(%omUSIDn)  i '% k %n q   
+ s:'$l(occco4cc) occco4cc="occco4cc" s %ztTQMm=$zt,$zt="ERRm^MXF" 
+ ;; i $d(%maxLoom) s %maxLoom=%maxLoom-1 i %maxLoom<0 s %mxWarng("$$m^MXF:%maxLoom:limitOff")=om q
+ f %oiiio2x=1:1:$l(%oiiio2i," ") s %i0=$p(%oiiio2i," ",%oiiio2x),(%ii,%iiB)=$tr(%i0,":-+",",") d:$l(%ii)
+ . s %omUSIDn=$s($e(om,1,20)["^||om(":"^||om(""",1:"^om(""")_%USID_""","_%oiiio2x_","_%iiB_",""%ii"")"
+ . s %omNewii=$o(@(%omUSIDn)) i '$l(%omNewii) s ^("%ii")=%ii d  q
+ .. f %=1:1:$l(ossso3ss," ") s ^($p(ossso3ss," ",%))=@($p(ossso3ss," ",%))
+ .. f %=1:1:$l(occco4cc," ") s ^($p(occco4cc," ",%))=@($p(occco4cc," ",%))
+ .. i $l(%5sv) f %=1:1:$l(%5sv," ") s ^($p(%5sv," ",%))=@($p(%5sv," ",%))
+ .. f %2=$l(%ii,","):-1:1 s $p(%omUSIDn,",",%2+2)=""""_$c(254)_"""" d:$p(%i0,":",%2)'["-"
+ ...  s @(%omUSIDn)=%ii
+ ...  f %=1:1:$l(ossso3ss," ") s %n=$p(ossso3ss," ",%) s:@%n ^(%n)=$g(^(%n))+@%n
+ ...  i $l(%5sv) f %=1:1:$l(%5sv," ") s %n=$p(%5sv," ",%) s:$l(@%n) %o5=$g(^(%n)),^(%n)=$$sv^fin("%o5++"_%n)
+ . i '%zvMSM f %=1:1:$l(occco4cc," ") s %n=$p(occco4cc," ",%),%8o=@%n i "  - .%"'[%8o s %8=^(%n) i %8'=%8o,%B_%8_%B'[(%B_%8o_%B),$l(%8)<20000 s ^(%n)=$s('$l(%8):%8o,1:%8_%B_%8o)
+ . i %zvMSM s o=$zr f %=1:1:$l(occco4cc," ") s %n=$p(occco4cc," ",%),%8o=@%n i "  - .%"'[%8o s %8=^(%n) i %8'=%8o,%B_%8_%B'[(%B_%8o_%B) d
+ .. i $l(%8)+$l(%8o)<510 s ^(%n)=$s('$l(%8):%8o,1:%8_%B_%8o) q
+ .. i %8=".!." s %zvMSMo1=$g(%zvMSMo1,1000111)+1,^(%n,%zvMSMo1)=$e(%8o,1,510+%zvMSM) q:1_$d(@o)
+ .. s ^(%n,1000000)=%8,^(1000001)=%8o s:1_$d(@o) ^(%n)=".!."
+ . f %=1:1:$l(ossso3ss," ") s %n=$p(ossso3ss," ",%) s:@%n ^(%n)=$g(^(%n))+@%n
+ . ;;   20191120    i $l(%5sv) f %=1:1:$l(%5sv," ") s %n=$p(%5sv," ",%) s:$l(@%n) %o5=$g(^(%n)),^(%n)=$$sv^fin("%o5++"_%n)
+ . f %2=$l(%ii,","):-1:1 s $p(%omUSIDn,",",%2+2)=""""_$c(254)_"""" d:$p(%i0,":",%2)'["-"
+ .. s @(%omUSIDn)=%ii
+ .. f %=1:1:$l(ossso3ss," ") s %n=$p(ossso3ss," ",%) s:@%n ^(%n)=$g(^(%n))+@%n
+ .. ;;  20191120  i $l(%5sv) f %=1:1:$l(%5sv," ") s %n=$p(%5sv," ",%) s:$l(@%n) %o5=$g(^(%n)),^(%n)=$$sv^fin("%o5++"_%n)
+ s $zt=%ztTQMm q 1
+ERRm n %n,% s $zt=%ztTQMm,%mxWarng("$$m^MXF:"_$ze_" row="_%YXy_" col="_%YXx)=$g(zi)_":::"_$g(%ii)_" :::"_$g(%oiiio2i)_":::"_$g(%oiiio2x)
+ i $l($g(%ii)) f %=1:1:$l(%ii,",") s %n=$p(%ii,",",%) i '$l($g(@%n)) s %mxWarng("$$m^MXF:"_$s('$d(@%n):"<undef>index",1:"empty_index:")_" y="_%YXy_" x="_%YXx)=%n_" ::: "_$g(zi)_" ::: "_%ii
+ q -1
+B(z,x) n %zrXXoo,%x2,%,%YXyy s %YXyy=%YXy  ; onSelect - izlecosas pogas
+ s %zrXXoo=$zr,%x2=$g(x),x=$g(x,%YXx),%=+$p(x,"-",2) s:%x2["c" x=%YXx s:% %YXyy=+x,%YXxx=%
+ i x s:x<2!(x["+")&(%x2'["c") x=x+%YXx s:x>1255 x=2
+ i $e(z,1,3)="$$B" s ^omxMacro(%USID,%mxForma,%YXyy,x)=z q:1_$d(@%zrXXoo) 1 
+ i " "[$e(z),z'["xForma=" s ^omxMacro(%USID,%mxForma,%YXyy,x)="$$B 9] 9 o[__ . 10/3:6 "_$e(z,2,480) q:1_$d(@%zrXXoo) 1
+ i "1 * "[$e(z,1,2) s ^omxMacro(%USID,%mxForma,%YXyy,x)="?$$B    xForma=1  "_$e(z,3,480) q:1_$d(@%zrXXoo) 1
+ ; xForma=a 5 s ... 
+ i $e(z)="^" s %=$p($e(z,2,99),"("),z="xForma="_$s($d(^AL(%)):"     s @(""x""_""Forma"")="""_$$kav2(z)_""" ",1:"xZRobj     s xZR="""_$$kav2(z)_"""")
+ i $e($tr(z," "),1,7)="xForma=" s ^omxMacro(%USID,%mxForma,%YXyy,x)="$$B 9-6"_$s(%x2["c":%x2,1:"")_" 9-2 o[__ xForma="_$p($p(z,"xForma=",2)," ")_" 10/3:6 "_$p($p(z,"xForma=",2,9)," ",3,999)  q:1_$d(@%zrXXoo) 1
+ q:1_$d(@%zrXXoo) 0
+R(z,x) n %zrXXoo s %zrXXoo=$zr,x=$g(x,%YXx)  ; on-Right-Click
+ i x s:x<2!(x["+") x=x+%YXx s:x>1255 x=2
+ i $e(z)="^",$d(@z),'$d(^AL($e($p(z,"("),2,99))) q:1_$d(@%zrXXoo) z
+ i $e(z)="^",'$d(@z) q:1_$d(@%zrXXoo) z
+ i $e(z)="^" s ^omxGlobR(%USID,%mxForma,%YXy,x)=z q:1_$d(@%zrXXoo) 1
+ k ^omxGlobR(%USID,%mxForma,%YXy,x)
+ i "1 * "[$e(z,1,2) s ^omxRight(%USID,%mxForma,%YXy,x)="?$$B    xForma=*  n %N s %N="""_$g(%N,"o")_""" "_$e(z,3,480) q:1_$d(@%zrXXoo) 1
+ ; xForma=a 5 s ... 
+ i $e(z,1,7)="xForma=" d  s ^omxRight(%USID,%mxForma,%YXy,x)="?$$B       n %N s %N="""_%N_""" "_z q:1_$d(@%zrXXoo) 1
+ . n % s %=$p(z," ",2,999) s:% %=$e(%,2,999) s:% %=$e(%,2,999) s z=$p(z," ")_"  "_%
+ q:1_$d(@%zrXXoo) 0
+T(oXecute,%YXxx,gotoYX)   ; on-Timer
+ n %zrXXoo,%1,%2 s %zrXXoo=$zr,%YXxx=$g(%YXxx,%YXx)
+ k ^onEvents("Timer",%USID,%mxForma,%YXy,%YXxx)
+ s ^onEvents("Timer",%mxForma,%YXy,%YXxx)="n %N,%K,%y,%x s %y="_+%YXy_",%x="_%YXxx_",%K=$g(^oYX(%USID,%mxSheet,%YXy,%YXxx)),%N="""_$g(%N,"o")_""" k gotoYXxx,gotoYXyy,oo,%YXo "_oXecute_"  s:$d(oo) %YX(%y,%x)=oo"
+ q:1_$d(@%zrXXoo) 1
+S(oXecute,%YXxx,gotoYX)   ; on-Select
+ n %zrXXoo,%1,%2,%,%YXyy s %zrXXoo=$zr,%YXxx=$g(%YXxx,%YXx),%YXyy=%YXy,%=+$p(%YXxx,"-",2) s:% %YXyy=+%YXxx,%YXxx=%    
+ k ^onSelect(%USID,%mxForma,%YXyy,%YXxx)
+ s (%,^onSelect(%USID,%mxForma,%YXyy,%YXxx))="n %N,%K s %K=$g(^oYX(%USID,%mxSheet,%ySelect,%xSelect)),%N="""_$g(%N,"o")_""" k gotoYXxx,gotoYXyy,oo,%YXo "_oXecute_"  s:$d(oo) %YX(%ySelect,%xSelect)=oo s %ySelect(0)=%ySelect,%xSelect(0)=%xSelect"
+ k ^onEvents("cellSelect",%USID,%mxForma,%YXyy,%YXxx) s @$zr=%
+ ;;;s ^(%YXxx)="k gotoYXxx,gotoYXyy,oo i $$noTrack^MXF() k %YXo "_oXecute_"  s:$d(oo) %YX(%YXy,"_%YXxx_")=oo "  ;; ?????????? loop !!!
+ q:1_$d(@%zrXXoo) 1
+noTrack() n % q 1  q:'$d(%YXo) 1
+C(oXecute,%YXxx) 
+   ; on-Change   ;; %qChange = last_changed_cell_new_value
+ n %zr,%1,%2,%,%YXyy s %zr=$zr,%YXyy=%YXy,%YXxx=$g(%YXxx,%YXx),%=+$p(%YXxx,"-",2) s:% %YXyy=+%YXxx,%YXxx=%    
+ i %YXxx s:%YXxx<2!(%YXxx["+") %YXxx=%YXxx+%YXx s:%YXxx>1255 %YXxx=2
+ s (%,^onChange(%USID,%mxForma,%YXyy,%YXxx))="n %N s %N="""_$g(%N,"o")_""" k gotoYXxx,gotoYXyy,oo "_oXecute_"  s:$d(oo) %YX(%yChange,%xChange)=oo k oo "
+ k ^onEvents("cellChange",%USID,%mxForma,%YXyy,%YXxx) s @$zr=%
+ q:1_$d(@%zr) 1
+D(%,x) ; on-DD-click
+ n %zr s:$e(%,1,2)="^ " $e(%)="" s x=$g(x,%YXx) i x s:x<2!(x["+") x=x+%YXx
+ s %zr=$zr,%=$$trw^UST($$trw^UST(%,";;; ",";||2 "),";|| ",";||2 ")
+ s ^onSeleDD(%USID,%mxForma,%YXy,x)="n %N s %N="""_$g(%N,"o")_""" k gotoYXxx,gotoYXyy,oo "_%
+ q:1_$d(@%zr) 1
+L(%indeSEL,%textSEL,%mxForma) 
+ ; on-left-click:  set dropDown and form-Call from list (with param.)
+ n %,o,%n,%i s %i="" f %=1:1:$l(%indeSEL,",") s %n=$p(%indeSEL,",",%) i $g(@%n)="" k %textSEL q
+ q:'$d(%textSEL) -1 s o="" f %=1:1:$l(%textSEL,",") s %n=$p(%indeSEL,",",%),o=o_%B_$g(@%n)
+ x "s ^oYXiSeLi(%USID,%mxForma,%YXy,%YXx,"_%indeSEL_")=%mxForma_o"
+ q %indeSEL_%B_%textSEL_%B_%mxForma
+IR(%i,%di) 
+ n %,%I,%R,%IR,%n,%1,o
+ i '%i,$zv'["MiniM" s $zt="Ervb^USX"
+ s %1=$e($p(%i,"("),2,99)
+ i $g(%LII(%1))=""!($g(%LI(%1))="") d
+ .  n %i,%di,%MV d ^USX s %LI(%1)=$g(^AL(%1,"%LI"))
+ i '%di s %I=$NAME(@%i),%R=$g(@%I) d:$l(%R)=500  i 1
+ . f %=501:500 q:$g(@%I@(%))=""  s %R=%R_^(%)
+ e  s %I=$$zo500^UST(%i,%di) s:%I="" %I=%i s %R=$g(@%I) d:$l(%R)=500
+ . f %=501:500 q:$g(@%I@(%))=""  s %R=%R_^(%)
+ q:'$l(%R) -1  x %XG(%1),%XI(%1) s %IR=%I
+ f %=1:1 s %n=$p(%LI(%1),",",%) q:'$l(%n)  d:%n["~"    s %IR=%IR_$c(9)_$s($l(@%n)<1023:@%n,1:$l(@%n)_">1023")
+ . i %n'["~~" s %n=$tr(%n,"~") q
+ . s %n=$tr(%n,"~") s:'$d(%XG0(%1,%)) %XG0(%1,%)=$p($g(^AL(%1,"%W",%n,0)),";",2,99)
+ . s o=%XG0(%1,%) n %K,%1,% x o s:$d(%K) @%n=%K
+ q %IR
+sel(mode,from,t) 
+ ; select 1 items from nodes or list
+ q:t="" t
+ n i,oo,o,omax,y,ymax,o1,o2,x,zr,q
+ s omax=0,ymax="$$sel^USF(...) - not selected item "_t_" from "_from
+ d:'$d(%LAT) %lat^fin s o1=%LAT,o2=%lat,t=$tr(t,o1,o2)
+ i mode="maxtrue",$e(from)="^",from[",y," d  q:ymax>1 $p(ymax," ",2,99)
+ .s x=+$p(from,",y,",2),zr=$p(from,",y,")_")",zr=$NAME(@zr)
+ .s y="" f  s y=$o(@zr@(y)) q:y=""  s q=$g(^(y,x)) i q'="" d  q:o=2
+ .. s oo=$e($tr(q,o1,o2),1,$l(t)+2),o=$l(t)-$l($tr(t,oo))
+ .. f i=1:1:$l(t)+1 q:oo'[$e(t,1,i)
+ .. s o=o+i-1/$l(t) i o>omax s omax=o,ymax=o_" "_y_" "_o_" "_q
+ q -1
+XQ(%oXecute) s $zt="Xerror^MXF" n Q x %oXecute q $g(Q)
+X1(%oXecute) s $zt="Xerror^MXF" x %oXecute q 1
+X(%oXecute) s $zt="Xerror^MXF" x %oXecute q 1
+mks(%reportN,%kursSta) s:'$d(%kursSta) %kursSta=kursStar
+ i $g(%reportN) s o=$$m(+%reportN) x %kursSta_" i 11_$$m(+%reportN) q" q .2
+ s o=$$m x %kursSta_" i 11_$$m q" q .2
+ q 0
+Xerror s mxERROR=$g(%mxForma)_" ERROR ::: "_$tr(%oXecute,$c(0))_" ::: $ZTRAP="_$ZTRAP_" $$X^MXF: $ZERROR="_$ZERROR
+ q mxERROR
+pD(%H,t) ;CONVERTS %H,$H to ggggmmdd
+ q:'$d(%H) $$pD^MXD q:'$d(t) $$pD^MXD(%H) q $$pD^MXD(%H,t)
+dmE(%d,%8) 
+ q:'$d(%d) $$dmE^MXD q:'$d(%8) $$dmE^MXD(%d) q $$dmE^MXD(%d,%8)
+dmg(d8,p2) 
+ q:'$d(p2) $$dmg^MXD(d8)  q $$dmg^MXD(d8,p2) 
+d8t(d8,mm) 
+ q:'$d(mm) $$d8t^MXD(d8)  q $$d8t^MXD(d8,mm)
+d8(d,d31,dBas) 
+ s d=$g(d)
+ i d="",$g(%YXy),$g(%YXx) q:+$g(oYX(%YXy-1,%YXx-1))?8n +oYX(%YXy-1,%YXx-1)  q:+$g(oYX(%YXy-1,%YXx))?8n +oYX(%YXy-1,%YXx)
+ i $l(d)>4!'d,+d'?8n q $$pD($h)
+ i +d?8n!'$d(dBas) q:$$d31(+d,$g(d31))'="" $$d31(+d,$g(d31)) q +d
+ s:+dBas'?8n dBas=$$pD($h+dBas) s:d<10 d=0_+d s:$l(d)=3&(d=+d) d=0_d s:$l(d)<5 d=$e(+dBas,1,8-$l(d))_d q:$$d31(d,8)'="" $$d31(d,8)
+ q d
+d31(d,N) 
+ q:'$g(N) 28+$e(3_($e(d,1,4)#4=0)_3232332323,$e(d,5,6))  q $$d31^MXD(d,N)
+d8plus(d8,p) 
+ q:'p d8  q $$d8plus^MXD(d8,p)
+daStatus(%d,%0) 
+ s %0=$g(%0,$$d8) s:$p(%d,".",2) %d=$$dmg(%d) q:%d'?8n ""  s:$p(%0,".",2) %0=$$dmg(%0)
+ q:%d<%0 "EX<mx ic7"  q:%d<(%0+100) "W<mx ic44"
+ q "ok<mx ic2 fc10"
+Week(d8,%2) 
+ q 0
+p(oo,o,o2) 
+ s o2=$g(o2," ") q $p($p(oo,o_"=",2),o2)
+m2u(oo) ; msm8code  --> &#unicode;
+ n o,uu,o1,x s uu="" d:'$d(%msm8uni) %msm8uni
+ f o=1:1:$l(oo) s o1=$e(oo,o),x=$f(%msm8uni,o1) s:x o1="&#"_$e(%msm8uni,x,x+3)_";" s:o1=" " o1="&nbsp;" s uu=uu_o1
+ q uu
+u2m(oo) ; &#unicode; --> msm8code
+ n o,uu,o1,x,% s uu="" d:'$d(%msm8uni) %msm8uni  s:oo["&nbsp;" oo=$$trw^UST(oo,"&nbsp;"," ")
+ f %=2:1:$l(oo,"&#") s %=$p(oo,"&#",%) s:%'[";" uu=uu_"&#"_% i %[";" s x=$f(%msm8uni,$e(10000+$p(%,";"),2,9)) s:'x uu=uu_"&#"_x s:x uu=uu_$e(%msm8uni,x-5)_$p(%,";",2,999)
+ q uu
+quot(o) 
+ i o["&" s o=$$trw^UST(o,"&","&amp;")  ; &#38;
+ i o[">" s o=$$trw^UST(o,">","&gt;")   ; &#62;
+ i o["'" s o=$$trw^UST(o,"'","&apos;") ; 
+ i o["""" s o=$$trw^UST(o,"""","&quot;")  ; &#34;
+ ;; i o[$c(8364) s o=$$trw^UST(o,$c(8364),"&euro;")    ; &euro; = &#8364;   {1040}
+ q o
+%msm8uni n %,%1,o k %msm8uni  s %msm8uni="",%msm8uni(1)="",%msm8uni(2)=""
+ s %=".2548226.1810256.1980257.2110268.2100269.2400274.2410275.2420290.2140291.2150298.2160299.2440310.2430311.2460315.2450316.2520325.1830326.2080352.2530353.2220362.2210363.2480381.2470382.1281040."
+ s %=%_"1291041.1301042.1311043.1321044.1331045.1341046.1351047.1361048.1371049.1381050.1391051.1401052.1411053.1421054.1431055.1441056.1451057.1461058.1471059.1481060.1491061.1501062.1511063.1521064.1531065.1541066.1551067.1561068."
+ s %=%_"1571069.1581070.1591071.1601072.1611073.1621074.1631075.1641076.1651077.1661078.1671079.1681080.1691081.1701082.1711083.1721084.1731085.1741086.1751087.2241088.2251089.2261090.2271091.2281092.2291093.2301094.2311095.2321096."
+ s %=%_"2331097.2341098.2351099.2361100.2371101.2381102.2391103.1841105.1898470.1888721."
+ i $zv'["U) " f %1=2:1 s o=$p(%,".",%1) q:'$l(o)  s ^unicode(+$e(o,4,7))=$c(+$e(o,1,3)),%msm8uni=%msm8uni_$c(+$e(o,1,3))_$e(o,4,7)
+ i $zv["U) " f %1=2:1 s o=$p(%,".",%1) q:'$l(o)  s ^unicode(+$e(o,4,7))=$c(+$e(o,4,7)),%msm8uni=%msm8uni_$c(+$e(o,4,7))_$e(o,4,7)
+ f %1=2:1 s o=$p(%,".",%1) q:'$l(o)  s:$e(o,1,3)<254 %msm8uni(1)=%msm8uni(1)_$c(+$e(o,1,3)),%msm8uni(2)=%msm8uni(2)_$c(+$e(o,4,7))
+ s %unicode=%
+ q
+kav2(t) i $zv["Ca"!($zv["IRIS") q $replace(t,"""","""""")
+ q $$trw^UST(t,"""","""""")
+U(t) ; to UNICODE { >253 }
+ q:$d(%dba8bit) t  i $d(%mxWeb),$zv'["U) " q $$U8(t)
+ n U,%,fu i $zv'["U) ",'$d(%mxWeb) s %dba8bit=8 q $$U8(t)
+ f %=1:1:$l(t) i $a($e(t,%))>254 s fu=% q  
+ q:'$d(fu) t  s U=$e(t,1,fu-1)
+ f %=fu:1:$l(t) s U=U_$s($a($e(t,%))<254:$e(t,%),$a($e(t,%))>255:"{"_$a($e(t,%))_"}",$a($e(t,%))=254:"{"_8226_"}",1:$e(t,%))  
+ q U
+Uu(t) q:t'["{" t  q:$zv'["U) " $$u8(t) n %,s,s8,%1 ; from { unicode } to unicode  $c(U) 16-bit
+ f %=1:1:$l(t) i $e(t,%)="{" f %1=4,5,6 s s=$e(t,%+%1) i s="}" s s=$e(t,%+1,%+%1-1) s:s=8226 s=254 i s\1=s,s<66200,s>253 s $e(t,%,%+%1)=$c(s) q
+ q t
+U8(t) ; msm 8 bit to {UNICODE>253}
+ i $zv["U) " q:'$d(%mxWeb) t  k %dba8bit q $$U(t)  
+ q:$tr(t," 0123456789.-+:~=[]{}()qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM")="" t
+ n U,%,fu,%1  d:'$d(%msm8uni) %msm8uni
+ f %=1:1:$l(t) i " 0123456789.-+:~=[]{}()qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"'[$e(t,%),%msm8uni[$e(t,%) s fu=% q
+ q:'$d(fu) t  s U=$e(t,1,fu-1),%1=0
+ f %=fu:1:$l(t) s %1=1 s:" 0123456789.-+:~=[]{}()qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"[$e(t,%) U=U_$e(t,%),%1=0 s:%1 %1=$f(%msm8uni,$e(t,%)),U=U_$s(%1:"{"_+$e(%msm8uni,%1,%1+3)_"}",1:$e(t,%))
+ q U
+u8(t) q:t'["{" t  q:$zv["U) " $$Uu(t)  n %,s,s8,%1 d:'$d(%msm8uni) %msm8uni ; {unicode} --> msm8code
+ f %=1:1:$l(t) i $e(t,%)="{" f %1=4,5 s s=$e(t,%+%1) i s="}" s s=$e(t,%+1,%+%1-1) i s\1=s,s<66200,s>255 s s8=$f(%msm8uni,$e(10000+s,2,9)) i s8 s $e(t,%,%+%1)=$e(%msm8uni,s8-5) q
+ q t
+SaveXML(%j,%USID,file,b,codePage) 
+ ; Save ^oXMLf(y,x) to file
+ s %code3=$c(231)_$c(199)_$c(251)_$c(219)_$c(238)_$c(206)_$c(226)_$c(194)_$c(240)_$c(208)_$c(236)_$c(204)_$c(237)_$c(205)_$c(239)_$c(207)_$c(254)_$c(222)_$c(232)_$c(200)_$c(242)_$c(210)
+ n q,qq,y,x,%10 s %10=$c(10),%code3="eEuUiIaAsSgGkKlLzZcCnN"
+ s (qq,y,x)="",codePage=$g(codePage)
+ i $zv["MS" o 51:(file:"W"):0 u 51
+ i $zv'["MS" OPEN file:"NWS":1 u file
+ f  s y=$o(^oXMLf(y)) q:'y  s x=1 f  s x=$o(^oXMLf(y,x)) q:'x  s q=^(x) i "?="'[$e(q),"   -       . "'[q d
+ .  i codePage=1257 s q=$tr(q,$$Uu("{275}{274}{363}{362}{299}{298}{257}{256}{353}{352}{291}{290}{311}{310}{316}{315}{382}{381}{269}{268}{326}{325}"),%code3)
+ .  i $g(b)'="" s:$e(q,$l(q))'="=" q=q_b
+ .  s qq=qq_q i '$o(^(x)) d:qq[%10  w qq,%10 s qq=""
+ ..  s o=qq_%10_"!! {1074} {1090}{1077}{1082}{1089} {1077}{1089}{1090}{1100} {1085}{1077}{1085}{1091} : "_%10_$p(qq,%10)_"*"_%10_" - {1101}{1090}{1086}{1090} {1083}{1080}{1096} <Alt/Enter> {1091}{1076}{1072}{1083}{1077} SaveXML^MXF !!"
+ ..  s ^omxWarng(%USID,file_" row="_$e(y+100000,2,9)_",column="_x)=o_%10_%10,qq=$tr(qq,%10)
+ i $zv["MS" x "close 51 h 1" q:%j
+ i $zv'["MS" x "close file h 1" q:%j
+ q file
+%latRU n %1,%2
+ s %2="{1081}{1094}{1091}{1082}{1077}{1085}{1075}{1096}{1097}{1079}{1093}{1098}{1092}{1099}{1074}{1072}{1087}{1088}{1086}{1083}{1076}{1078}{1101}{1103}{1095}{1089}{1084}{1080}{1090}{1100}{1073}{1102}"
+ s %1="{1049}{1062}{1059}{1050}{1045}{1053}{1043}{1064}{1065}{1047}{1061}{1066}{1060}{1067}{1042}{1040}{1055}{1056}{1054}{1051}{1044}{1046}{1069}{1071}{1063}{1057}{1052}{1048}{1058}{1068}{1041}{1070}"
+ S %LAT=$$Uu(%1_"QWERTYUIOPASDFGHJKLZXCVBNM{274}{362}{298}{256}{352}{290}{310}{315}{381}{268}{325}{275}{363}{299}{257}{353}{291}{311}{316}{382}{269}{326}{1105} ""/-.'`&")
+ s %lat=$$Uu(%2_"qwertyuiopasdfghjklzxcvbnmeuiasgklzcneuiasgklzcn{1077} ")
+ s oLat1=$$Uu(%1_"QWERTYUIOPASDFGHJKLZXCVBNM{274}{362}{298}{256}{352}{290}{310}{315}{381}{268}{325}{275}{363}{299}{257}{353}{291}{311}{316}{382}{269}{326}{1105}")
+ s oLat2=$$Uu(%2_"qwertyuiopasdfghjklzxcvbnmeuiasgklzcneuiasgklzcn{1077}")
+ q 
+%lat n %1,%2 s (%1,%2)=""
+ s %rus=$$Uu("{1081}{1094}{1091}{1082}{1077}{1085}{1075}{1096}{1097}{1079}{1093}{1098}{1092}{1099}{1074}{1072}{1087}{1088}{1086}{1083}{1076}{1078}{1101}{1103}{1095}{1089}{1084}{1080}{1090}{1100}{1073}{1102}")
+ s %RUS=$$Uu("{1049}{1062}{1059}{1050}{1045}{1053}{1043}{1064}{1065}{1047}{1061}{1066}{1060}{1067}{1042}{1040}{1055}{1056}{1054}{1051}{1044}{1046}{1069}{1071}{1063}{1057}{1052}{1048}{1058}{1068}{1041}{1070}")
+ i $g(%LANG)["RU" d %latRU q
+ S %LAT=$$Uu(%1_"QWERTYUIOPASDFGHJKLZXCVBNM{274}{362}{298}{256}{352}{290}{310}{315}{381}{268}{325}{275}{363}{299}{257} ""/-.'`&")
+ s %lat=$$Uu(%2_"qwertyuiopasdfghjklzxcvbnmeuia{353}{291}{311}{316}{382}{269}{326}euia ")
+ s oLat1=$$Uu(%1_"QWERTYUIOPASDFGHJKLZXCVBNM{274}{362}{298}{256}{352}{290}{310}{315}{381}{268}{325}{275}{363}{299}{257}{353}{291}{311}{316}{382}{269}{326}")
+ s oLat2=$$Uu(%2_"qwertyuiopasdfghjklzxcvbnmeuiasgklzcneuiasgklzcn")
+ q 
+AddrR1C1(a) 
+ n R,C s oCellAdr=a,a=$tr(a,"$")
+ s a=$tr(a,"qwertyuiopasdfghjklzxcvbnm","QWERTYUIOPASDFGHJKLZXCVBNM")
+ s R=+$tr(a,"1234567890"_a,"1234567890")
+ s:$l(a,2) C=$a(a)-64 s:'$l(a,2) C=$a(a)-64*26+$a($e(a,2))-64
+ s oCellRow=+R,oCellCol=+C
+ q "R"_+R_"C"_+C
+AB(x) 
+ s x=x\1 q:x>255!'x "oo"_x  q:x<27 $e("ABCDEFGHIJKLMNOPQRSTUVWXYZ",x)
+ q $e("ABCDEFGHIJKLMNOPQRSTUVWXYZ",x-1\26)_$e("ABCDEFGHIJKLMNOPQRSTUVWXYZ",x-1#26+1)
+EAN13(o) 
+ ; MX : printing barcode with font EAN-13
+ n S,oAB,x,b1,EAN13,o7
+ s o=$tr(o,1234567890_o,1234567890),b1=$e(o),o=$e(o_"0000000000",1,12)
+ s S=$e(o,12)+$e(o,10)+$e(o,8)+$e(o,6)+$e(o,4)+$e(o,2)*3
+ s S=S+$e(o,11)+$e(o,9)+$e(o,7)+$e(o,5)+$e(o,3)+$e(o,1)#10*-1+10#10
+ s oAB=$p("oooooo.oo1o11.oo11o1.oo111o.o1oo11.o11oo1.o111oo.o1o1o1.o1o11o.o11o1o.",".",$e(o)+1)
+ s o=$e(o,2,12)_S
+ s o7=$tr($e(o,7,12),"0123456789","PQRSTUVWXY")
+ f x=1:1:6 s:$e(oAB,x) $e(o,x)=$tr($e(o,x),"0123456789","@ABCDEFGHI")
+ s EAN13=$e("!""#$%&'()*",b1+1)_"|"_$e(o,1,6)_"|"_o7_"|"
+ q:$e(EAN13)="'" "'"_EAN13 q EAN13
+code35(t) 
+ s:'$d(%code35) %code35=$c(231)_$c(199)_$c(251)_$c(219)_$c(238)_$c(206)_$c(226)_$c(194)_$c(240)_$c(208)_$c(236)_$c(204)_$c(237)_$c(205)_$c(239)_$c(207)_$c(254)_$c(222)_$c(232)_$c(200)_$c(242)_$c(210)_$c(6)_$c(20)
+ q $tr(t,%code35,$$Uu("{275}{274}{363}{362}{299}{298}{257}{256}{353}{352}{291}{290}{311}{310}{316}{315}{382}{381}{269}{268}{326}{325}"_$c(254)_$c(254)))
+code1257(t) 
+ s:'$d(code1257) code1257=$c(231)_$c(199)_$c(251)_$c(219)_$c(238)_$c(206)_$c(226)_$c(194)_$c(240)_$c(208)_$c(236)_$c(204)_$c(237)_$c(205)_$c(239)_$c(207)_$c(254)_$c(222)_$c(232)_$c(200)_$c(242)_$c(210)
+ q $tr(t,$$Uu("{275}{274}{363}{362}{299}{298}{257}{256}{353}{352}{291}{290}{311}{310}{316}{315}{382}{381}{269}{268}{326}{325}"),code1257)
+nodeComp(n1,n2,leno) 
+ q:'$d(@n1) "-"_n1  q:'$d(@n2) "-"_n2  
+ n %1,%2,%,o,%1o,%2o s n1=$name(@n1),n2=$name(@n2),%1=$ql(n1),%2=$ql(n2)
+ s o="",leno=$g(leno,15000),%1o=$e(n1,1,$l(n1)-1),%2o=$e(n2,1,$l(n2)-1)
+ f  s n1=$q(@n1) q:n1=""  q:$ql(n1)<%1  q:$name(n1,%1)'=n1  s %=%2o_$p(n1,%1o,2,9) i $g(@n1)'=$g(@%) s o=o_$qs(n1,$ql(n1))_"="_$g(@n1)_"  "_$c(254) q:leno=1  i $l(o)>leno s o=o_" ... "_n1_" ... " q
+ q:leno=1&$l(o) o
+ f  s n2=$q(@n2) q:'$l(n2)  q:$ql(n2)<%2  q:$name(n2,%2)'=n2  s %=%1o_$p(n2,%2o,2,9) i '$d(@%),$l(@n2) s o=o_$c(254)_$qs(n2,$ql(n2))_$c(254) i $l(o)>leno q:leno=1  s o=o_" ... "_n2 q
+ q o
+globComp(globNode,UCI2) 
+ n n,i0,i2,zr,ii,zr0
+ k ^ogloComp(%USID) k ^ogloCom(%USID) m ^ogloComp(%USID,0)=@globNode
+ x "m ^ogloComp(%USID,2)=^|UCI2|"_$e(globNode,2,999)
+ m ^ogloCom(%USID)=^ogloComp(%USID,0) m ^ogloCom(%USID)=^ogloComp(%USID,2)
+ k globComp s zr=$NAME(^ogloCom(%USID)),n=0,zr0=$e(zr,1,$l(zr)-1)
+ f i=1:1 s zr=$q(@zr) q:zr'[zr0  s ii=$p(zr,",",2,99) d
+ .i globNode["^AL",zr["ColumnWidth"!(zr[",""t_") q
+ .s:ii="" ii="1)"
+ .s i0="^ogloComp(%USID,0,"_ii,i2="^ogloComp(%USID,2,"_ii
+ .i $g(@i0)'=$g(@i2) s n=n+1,globComp(i)=ii
+ q n
+ ;
+SUM(rr) q 0
+sume(ss,se,o) 
+ s:$g(o)="" o="^" i se[$c(10),se'[o s o=$c(10)
+ q:se'[o ss+se  n e
+ f e=1:1:$l(se,o) s ss=ss+$p(se,o,e)
+ q ss
+re(%R,%B,o,ee) 
+ n e,%,max,g,gg k re s gg="",max=1,o=$g(o,"^"),%B=$g(%B,$c(254)) 
+ i o s gg=o,o="^"
+ i %R'[o,$g(ee)'["*" s re(1)=%R q %R
+ f %=1:1:$l(%R,%B) s g=$p(%R,%B,%) s:$l(g,o)>max max=$l(g,o)
+ s:$g(ee)<1 ee=max
+ f %=1:1:$l(%R,%B) s g=$p(%R,%B,%) f e=1:1:max s ge=$p(g,o,e) d
+ .  i ge="",gg'[% s ge=$p(g,o,e-1),$p(g,o,e)=ge
+ .  s $p(re(e),%B,%)=ge,re(e,%)=ge
+ q $g(re(+ee\1))
+reSplit(%I,%e) 
+ k %re n %R,%FILE,o,%,%n,%max,%eee 
+ s %max=1,%eee=9999,%e=$g(%e) s:%e %eee=+%e,%e=$p(%e,+%e,2) s:'$l($g(%e)) %e="^" 
+ s %FILE=$e($p(%I,"("),2,99) i '$d(%LI(%FILE)) s %1=%FILE d ^USX
+ s %R=$g(@%I) s:$l(%R)=500 %R=%R_$g(@%I@(501)) s:$l(%R)=1000 %R=%R_$g(@%I@(1001))
+ f %=1:1 s %n=$tr($p(%LI(%FILE),",",%),"~") q:'$l(%n)  d 
+ .f %ee=1:1 s o=$p(@%n,%e,%ee) s:%ee=1!$l(o) %re(%n,%ee)=o s:%ee>%max %max=%ee q:$p(@%n,%e,%ee+1,999)=""
+ .s o=$o(%re(%n,%eee+.1),-1) s:o @%n=%re(%n,o)
+ q %max
+zrJoin(%zr,%n) 
+ q:'$d(@%zr) ""  s:'$d(%n) %n=999999 q:'%n $g(@%zr@(%n))
+ n %R s %R=$g(@%zr) s:%R=".!." %R="" i $d(@%zr@(%n))
+ f  s %n=$o(^(%n)) q:'$l(%n)  i %n,$d(^(%n))#2 s %R=%R_$s($l(%R):%B,1:"")_^(%n)  
+ q %R
+reJoin(%) 
+ q %R
+checkSyn(code)  ;; cache  iris  only
+ s code(0)=1,code(1)=" "_code n o,e,l
+ i $zv["Ca"!($zv["IRIS") d  q $s($l(o)<4!(o["<NOLINE>"):"",1:$g(%mxForma)_" syntax_error: "_o)
+ . s o=$$CHECK^%R(.code,.e,0),o=$$FMTERR^%R(.e,.code,.l),o=$p($g(l(1)),":",3,33)
+ . i o["Command not valid within" s o="" 
+ q ""
+checkVrs(%code) 
+ n %1,%2,%,%3,%oo s %oo=""
+ s %1="QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890%"
+ s %2="",$p(%2," ",$l(%code))=" "
+ s %code=$tr(%code,%1_%code,%1_%2)
+ f %=1:1:$l(%code," ") s %3=$p(%code," ",%) d
+ . i $l(%3),$l(%3)<9,'%3,$e(%3,2,9)'["%" s %oo(%3)=$g(%3)
+ s %3="" f  s %3=$o(%oo(%3)) q:%3=""  s %oo=%oo_%3_"="_%oo(%3)_"  "
+ q %oo
+mxLock(%ZR,lockTime,%E) 
+ i '$g(lockTime) k ^omxLock(%ZR) q ""
+ n o,Lock s Lock=$h_%B_lockTime_%B_%USID_%B_$g(%E)
+ s o=$g(^omxLock(%ZR)) i $p(o,%B,3)=%USID!'o s ^(%ZR)=Lock q ""
+ i $p($h,",",2)-$p(o,",",2)>$p(o,%B,2) s ^(%ZR)=Lock q ""
+ i $h-o s ^(%ZR)=Lock q ""
+ q o
+EnterAL(oo) 
+ ;?$$EnterAL ^FILE(i1,i2,i3)=f1,f2,f3,f4 name m-command-start
+ q:oo[";;" ""
+ n o,%FILE
+ s %FILE=$p($p(oo,"("),"^",2),o=$p(oo," ",3) s:o="" o=%FILE s ^AL(%FILE,"NAME")=o
+ s ^("START")=$p(oo," ",4,999)
+ s o=$p(oo," ",2),o=$p(o,"(",2,99),^("%LI")=$$trw^UST(o,")=",",")
+ s ^("%LG")="%SF,"_$p(o,")=",2,999)
+ s o=$p(o,")="),^("%LII")=o,o=$p(o,",",$l(o,",")),^AL(%FILE,"%W",o,1)=" d F "
+ q ""
+ZR(%ZR,%na,%set) 
+ i $e(%ZR)'="^" q "er:???:%ZR="_%ZR_":%na="_%na  ; error %ZR
+ i $g(%na)="" q "er:$l(%na)=0:%ZRdelete:%ZR="_%ZR_":%na="_%na
+ i '$d(%set) n %1,%,%2 d  q %2  ; read property
+ .i $d(^ZR(%ZR,%na)) s %2=$g(^(%na)) q
+ .s %1=$e($p(%ZR,"("),2,99)
+ .i '$d(^AL(%1,"%LG")) s %2="er:?%LG?:%ZR="_%ZR_":%na="_%na q
+ .s %1=^("%LG")
+ .f %=1:1:$l(%1,",") i $tr($p(%1,",",%),"~")=%na s %2=$p($g(@%ZR),%B,%) q
+ .i '$d(%2) s (%na,%2)="er:???%LG???:%ZR="_%ZR_":%na="_%na
+ q:'%set "ok:get:%ZR="_%ZR_":%na="_%na
+ i $d(@%na)#2=0 s @%na=0 q "er:%na<UNDEF>:%ZR="_%ZR_":%na="_%na
+ i $g(^ZR(%ZR,%na))'=@%na s ^ZR(%ZR,%na)=@%na i $l(@%na) s ^ZR(%na,$e(@%na,1,55))=%ZR
+ q "ok:set:%ZR="_%ZR_":%na="_%na
+ZRnaList(%na,%K) 
+ n %ZR,o,% s o="" d %lat 
+ s %K=$tr($p(%K,";;"),oLat1_" ""/-.'`&",oLat2)
+ f  s o=$o(^ZR(%na,o)) q:o=""  s %ZR=^(o)  d
+ . q:$tr(o,oLat1_" ""/-.'`&",oLat2)'[%K
+ . i '$d(@%ZR) k ^ZR(%ZR) q
+ . i $d(^ZR(%ZR,%na)) s %(o)=^ZR(%ZR,%na) q
+ . s %="^" f  s %=$o(^ZR(%)) q:%'["^"  i '$d(@%) k ^ZR(%)
+ . s %="^" f  s %=$o(^ZR(%)) q:%'["^"  i $d(^ZR(%,%na)) d  q
+ . . s ^ZR(%na,$e(^ZR(%,%na),1,55))=%
+ . . s %(o)=^ZR(%,%na)
+ q:$d(%)<2 %na_"?"_%K
+ s o="",%=1 k ^ose(%USID)
+ f  s o=$o(%(o)) q:o=""  s ^(%)=$g(^ose(%USID,%))_%(o)_$c(4) s:$l(^(%))>12000 %=%+1
+ q:%=1 ^(1)  q ""
+wR(%F,%I,%LIST,%1,%2,%3,%4,%5,%6,%7,%8,%9,%10,%11,%12,%13,%14,%15) 
+ n %n,%,%0,%FILE,%R f %=1:1:$l(%LIST,",") s %n=$p(%LIST,",",%),%0="%"_%,@%n=@%0
+ s %FILE=$$%XG^USX(%I),%R="" x %CON(%FILE)
+ s:%F>0 @%I=%R
+ i $$%mM^US(%F,%I)
+ q 1
+orFiltr(oo,o1,o2) 
+ s:$e(o1)="-" o1=$e(o1,2,99) i $d(o2) s:$e(o2)="-" o2=$e(o2,2,99) 
+ i oo["=" n o s o="="_$tr(oo,"+- ","==")_"=" q:o[("="_o1_"=") 1  q:'$d(o2) 0 q:o[("="_o2_"=") 1 q 0
+ i $e(oo)["-" s o=oo n oo s oo=$tr(o,"-","+")
+ n o,f,x s f=0 q:'$l(oo) 1
+ f x=1:1:$l(oo,"+") s o=$p(oo,"+",x) i $l(o),"-"_o1[("-"_o) s f=1 q
+ q:f 1 i $d(o2) f x=1:1:$l(oo,"+") s o=$p(oo,"+",x) i $l(o),"-"_o2[("-"_o) s f=1 q
+ q f
+save1rou(R) 
+ n x,f,% s f="c:\m\"_R_".1",x="f %=1:1:9999 s t=$t(+%) w:$l(t) !,t"
+ i $zv'["MS" x "zl "_R_"   o f:""WNS"":1 u f w $zv,$h,!,$zu(5),!,R x x  c f" q
+ x "zl "_R_"   o 51:(f:""W""):0 u 51 w $zv,$h,!,$zu(0),!,R x x  c 51 "
+ q
+rest1rou(R) 
+ s f="c:\m\"_R_".1"
+ i $zv'["MS" x "o f:""RS"":1 u f ZLOAD  c f  ZSAVE "_R q
+ x "o 51:(f:""R""):1 u 51 ZLOAD  c 51 ZSAVE "_R
+ q
+AL1(%ZR,%na) 
+ q $$q(%ZR,%na)
+q(%ZR,%na) 
+ i $e(%ZR)'="^" q "er:???:%ZR="_%ZR_":%na="_%na  ; error %ZR
+ i $g(%na)="" q "er:$l(%na)=0:%ZR="_%ZR_":%na="_%na
+ n %1,%,%2 s %1=$e($p(%ZR,"("),2,99)
+ i '$d(%LG(%1)) d ^USX i $g(%LG(%1))'["," q "er:?%LG?:%ZR="_%ZR_":%na="_%na
+ s %1=%LG(%1)
+ f %=1:1:$l(%1,",") i $tr($p(%1,",",%),"~")=%na s %2=$p($g(@%ZR)_$g(@%ZR@(501)),%B,%) q
+ q:$d(%2) %2 
+ s err="er:???%LG???:%ZR="_%ZR_":%na="_%na_"  %LG="_%1
+ q ""
+iiiLine s (iii,%mxIndex)=$o(^oMX(%USID,%V,iii)) q:'iii  s o=99
+ f  s o=$o(^oMX(%USID,%V,iii,o)) q:'$l(o)  s @o=^(o) s:@o="*" @o=@o_"<mx ic15.99"
+ q
+%YX(%yxq,%YXyy,%YXxx) 
+ n %q,%x,%y,%,%1,%2,%yy,%xx,%e,oo,%n s %y=$g(%YXy,1),%x=$g(%YXx,1),%e=""
+ i $e(%yxq)="?" s %n=$p(%yxq," "),%yy=0 d  q 1_%yxq
+ . i %n'["_" s %n=$e(%n,2,99),%=$p($g(^oRC(%USID,%mxForma,"?var",%n)),";",2,999) x % s:$d(@%n) %YX(%n)=$g(@%n) s:$d(oo) %YX(%n)=$g(oo) k oo q
+ . f  s %yy=$o(^oRC(%USID,%mxForma,%yy)) q:'%yy  s %xx=1 f  s %xx=$o(^oRC(%USID,%mxForma,%yy,%xx)) q:'%xx  i $e(^(%xx),1,$l(%n))=%n s %=$p(^(%xx),";",2,999) x % s %=$tr(%n,"?_") s:'$d(oo)&$d(@%) oo=$g(@%) d  k oo  
+ .. i $d(oo) s %YX($s($g(%YXyy):%YXyy,%n["_":%YXy,1:%yy),$s($g(%YXxx):%YXxx,1:%xx))=oo
+ f %=1:1:$l(%yxq," ") s %1=$p(%yxq," ",%),%q=$p(%1,"=",2,999) s:%q="" %q="%e" d:$l(%1)
+ . i %1'["=" s %q=$$trw^UST(%1,"[]"," ") s:$e(%q,1,3)="<mx" %q="<mx "_$e(%q,4,999),%q=$g(%YXq)_%q s %YX(%y,%x)=%q q
+ . s %2=$p($p(%1,",",2),"="),%1=$p(%1,",") s:%1 %y=%1,%1="" s:%2 %x=%2,%2=""
+ . x:$l(%1) "s %y="_%1 x:$l(%2) "s %x="_%2
+ . x "s %YX(+%y,+%x)="_%q q:%y_%x'[":"
+ . f %yy=+%y:1:+$p(%y,":",2) f %xx=+%x:1:+$p(%x,":",2) x "s %YX(%yy,%xx)="_%q
+ q 1
+CalcF11(%t) 
+ n %x,%,%1,%d,%b,o s %x="",%d="|",%b="    ---------------------------"
+ q:%t["::" ""  q:%t=""&0000 "EXIT" q:$e(%t,1,4)="EXIT" %t_%b q:%t'[%d %t_%d
+ q:"zw"[%t %t  i $e(%t,1,3)[" ","wWzZsS"[$e(%t) q %t
+ q:%t[(%b_%d_%b_%d_%b_%d) "EXIT" ;; q:%t[(%b_%d_%b_%d_%b_%d) ""
+ f %=1:1:$l(%t,%d) s %1=$p($p(%t,%d,%),"  "),$p(%t,%d,%)=%1 d
+ . i %1["---" s %t="" q
+ . i "QWERTYUIOPASDFGHJKLZXCVBNM%$qwertyuiopasdfghjklzxcvbnm"[$e(%1_1),%1'[" ",%1'="zw",%1'="w" x "s o="_%1 s $p(%t,%d,%)=o_"    "_%1,%1=o
+ . i "+...+0..+//+::+**+======"[%1 s %1="" s:%>1 $p(%t,%d,%)=%b q
+ . i $l($p(%1,"="))>0,$l($p(%1,"=",2,99))>0,'%1 x "s "_%1 q
+ . i %>1!(%1'=+%1) s:"1234567890."[$e(%1) %1="+"_%1
+ . s %x=%x_%1 q:%=1&($e(%1)'="+")  q:$l($p($p(%t,%d,%+1),"  "))
+ . s %1=$p($p(%t,%d,%),"  ")_"   ",%1=%1_$e("                                ",$l(%1),15)
+ . x "s %x="_%x s $p(%t,%d,%)=%1_"= "_%x_"  =",%x=""  
+ q:$l(%t) %t_%d q ""
+mJournal(%t,%y,%x,%q,%n) 
+ q:'%t "" q:'$d(^mJournal(%t,0)) "" q:$zv["MS" "" s %mxSheet=$p(^(0),%B,2) 
+ n %,o,%Yrc s:$l($g(%n)) %=$tr($g(@%n),%B) i $$%0Yrc^MXTQM2(%y)
+ s:'$d(%) %=$tr($g(^oYX(%USID,%mxSheet,%y,%x)),%B),%n=$e($p($g(^oRC(%USID,%mxForma,%Yrc,%x))," "),2,99)
+ s o=$o(^mJournal(%t,999999),-1)+1,^(o)=%y_%B_%x_%B_$g(%n)_%B_%_%B_%q
+ q %
+getJourn(%1,%2) 
+ q $$getJourn^MXTQM(%1,%2)
+ooo2(o) n ooo,% s ooo="" f  s o=$q(@o) q:'$l(o)  d  s ooo=ooo_$c(4)_@o_$c(5)
+ . f %=1:1:$ql(o) s ooo=ooo_$s($qs(o,%)["<:>":$p($qs(o,%),"<:>",2),1:$qs(o,%))_$c(4)
+ q ooo
+oooYX() n ooo,y,x,%,%Yrc s ooo="",%="%"
+ f  s %=$o(%YX(%)) q:'$l(%)  s x=$g(^oRC(%USID,%mxForma,"?var",%)) s:x %YX(+x,+$p(x,"-",2))=%YX(%) k %YX(%)
+ s y=0 f  s y=$o(%YX(y)) q:'y  s %="%" f  s %=$o(%YX(y,%)) q:'%  d:$$%0Yrc^MXTQM2(y)  k %YX(y,%)
+ . s x=0 f  s x=$o(^oRC(%USID,%mxForma,%Yrc,x)) q:'x  i $p($p(@$zr,"?_",2)," ")=% s %YX(y,x)=%YX(y,%) q
+ f  s y=$o(%YX(y)) q:'y  s x=0 f  s x=$o(%YX(y,x)) q:'x  q:$l(ooo)+$l(%YX(y,x))>22000  s ooo=ooo_y_-x_"-"_%YX(y,x)_$c(4) k %YX(y,x)
+ k:$l(ooo)<10000 %YX
+ q ooo
+%SEL(%f,%k) ;; q:'$d(%ALx)
+ s %f=$name(@%f,0),%k=$tr(%k,oLat1_" .",oLat2) q:$l($g(%E))!$d(%SEL)!($l(%k)<2)
+ f  s %f=$q(@%f) q:'$l(%f)  i $d(@%f)#2,$tr(%f_@%f,oLat1_" .",oLat2)[%k s %SEL($qs(%f,1))=@%f,%E="%SEL"
+ q
+comment(s,mode) 
+ ; ^list from comment of the cell
+ n %,o,n,q s n=0 q:mode'="^" 0  q:s'[mode ""
+ s s=$tr(s,$c(10)_$c(13),%B_%B) i $l(s,"^")>2,s'[%B s s=$$trw^UST(s,"^",%B_"^")
+ s s=s_%B
+ f %=1:1 q:'$l(s)  s o=$p(s,"^"),s=$p(s,"^",2,999),o="^"_$p(s,")"_%B)_")"_%B_o,s=$p(s,")"_%B,2,999) d 
+ . s %SEL($p(o,%B))=$g(%SEL($p(o,%B)))_%B_$p(o,%B,2,99)
+ q %
+ q
+omReplace(z,%re,%de,%xe) 
+ k ^omo(%USID) n zz,o
+ for  s z=$q(@z) q:'$l(z)  q:$qs(z,1)'=%USID  s zz=$replace(z,"^om(","^omo(") d:z[(%re_%de)  s @zz=@z 
+ . s o=$g(^(%re)) x:$d(%xe) "s "_%re_"=o,o="_%xe s zz=$replace(zz,%re_%de,o_%de)
+ i $d(o) k ^om(%USID) m ^om(%USID)=^omo(%USID)
+ q $d(o)
+ q

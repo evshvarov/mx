@@ -1,0 +1,4 @@
+ROUTINE ZSTU
+mx ; d TCPSTART^APIMGR  ;[ 20200122 21:00:24 ]
+tcp j tcp^MX1  ;; j trm^MX1   ;; j web^MX1
+ q

@@ -1,0 +1,333 @@
+ROUTINE MX1
+MX1 ; ;[ 20200217 19:30:53 ]
+ ; MSM, CACHE, GT.M, MiniM
+ ; vmx Copyright(c) SIA ENTERS  2005-2020
+ q
+trm 
+ s i=$io,p=$p,io="|TRM|:|"_$j 
+ ;; close $p   OPEN io:(:5533:"MA"):200 
+ ;; USE io:(:5533:"RAWCD":"":32000:32000)
+ s ^mxMonito($$ts,"trm",$j)=$znspace_" -- START trm^MX1 $io="_$io_"  i="_i_"  p="_p
+ ;; s ^mxMonito($$ts,"trm",$j)=io_"   terminal "
+ q  ;;; 
+trmRead READ R:99     j:000 webChild:(:5:$io:$io)  s ^mxMonito($$ts,"trm",$j)=io_" %="_%
+ w "terminal-",R,!!!
+ h 1 g trmRead
+ q
+c2(m,server,port,uci) 
+ n %io,%,r s %io=$p s %15=$c(15)
+ i $g(port) CLOSE "|TCP|2" d  i '%chanel2 u %io s %mxWarng(-1)=%chanel2 q %chanel2
+ . s %chanel2="ERRO"_"R ::: -- not connected to :"_server_":"_port_":"_uci 
+ . OPEN "|TCP|2":(server:port::$c(15)):2 s %="w $j,"" "",$zv ;; UCI="_uci_"  "_%15
+ . i $t USE "|TCP|2" d:$zv[-64  WRITE %,*-3 READ r:1 WRITE %,*-3 READ r:1 s %chanel2=$e(r,1,$l(r)-2)_" "_server_":"_port_":"_uci q
+ .. i $zv["Ca" n curdev x "s curdev=##class(%SYS.NLS.Device).%New() s curdevState0=curdev.State,curdev.State=0,curdevState1=curdev.State"
+ s r=%chanel2
+ i r u "|TCP|2" w m," ; ",$c(0),%15,*-3 r r:7 s r=$e(r,1,$l(r)-2)
+ u %io i m[(";CL"_"OSE;"),%chanel2 CLOSE "|TCP|2" s %chanel2=";CLO"_"SED; "_%chanel2
+ q r
+tcpMiniM ; vmx-CONCURRENT-SERVER with tcp port 5233  (minim)  ;
+ k ^mxMonito s io="|TCP|:5233"  s ^mxMonito($$ts,1,-$j)="START tcpMiniM "
+ OPEN io ;;  USE io:(/MODE="rwb":/TERM=$c(0))
+tcpLmi k:000 ^oooRead1 s $ztrap="tcpErrMi^MX1"
+ USE io:/ACCEPT ;;  h 1 r *%1 ;; i %1<0 g tcpLmi 
+ ;; s %=$c(%1) i %1>-1 f  r *%1:0 q:%1<0  s:%1>0 %=%_$c(%1)
+ ;; s ^mxMonito($$ts,1,$j)=%_-$l(%) i %'["UCI=" u 0 g tcpMiniM  ;; d:000  close $io  g tcpMiniM
+ . i %'["Accept" w 0,$c(15),$c(0),*-3 q
+ . s %=$c(13)_$c(10) n %mxWeb
+ . s %mxWeb="HTTP/1.1 200 OK"_%_"Content-type: text/html"_%_"Access-Control-Allow-Origin: *"_%_"Cache-Control: no-cache"_%_"Content-Length: "
+ . w %mxWeb_1_%_%_$c(0),*-3
+ s ^mxMonito($$ts,1,-$j)="START tcpMiniM "_io
+ s:000 ^oooRead1=% g:111 tcpChild^MX1   j:000 tcpChild^MX1:(:$io) ;;  h 1
+ s ^mxMonito($$ts,1,-$j)="START tcpMiniM ->> j tcpChild^MX1 "
+ g tcpLmi
+ q
+web s io="|TCP|"_$j OPEN io:(:80:"MA"):200 USE io:(:80:"RAWCD":"":32765:32765)
+ s ^mxMonito($$ts,0,-$j)=io_"  --- 80 "
+ READ %  j webChild:(:5:$io:$io)  s ^mxMonito($$ts,1,-$j)=io_"  --- 80 "
+ h 1 g web+2
+ q
+webChild USE $io:(:80:"RAWCD":"":32765:32765) s:000 ^mxMonito($$ts,0,-$j)=$io
+ READ:1 ooo s o=$p($p(ooo,"MX=",2),"-"),port=$s(+o=3:5233,$zv[-64:2264,1:2232),uci=$p(o,+o,2,22)
+ s %USID="web",shee=0,^mxMonito($$ts,0,-$j)=$io_";;"_ooo
+ i 'o s ooo="",port=80,uci="%SYS" d  n o g webReply
+ . s:o["{" o=$$u8^MXF(.o) s o=$p(o,";;") s:'$l(o) o="s ooo=1234567890"
+ . f %=$l(o)-2:-1:1 s x=$e(o,%) i x="%" s x=$e(o,%,%+2),x=$f("%20  %22""  %23#  %3E> %3C<",x) s:x $e(o,%,%+2)=$e("%20  %22""  %23#  %3E> %3C<",x)
+ . k %,x x o
+ . s Html=$$U8^MXF(ooo),^mxMonito($$ts,1,-$j)=$g(o)_";;"_$l(ooo)_";;"_$e(ooo,1,333)
+ f %=3:1:99 i $e(uci,%)?1n!($e(uci,%)=" ") s shee=$p($e(uci,%,99)," "),uci=$e(uci,1,%-1) q
+ s:$l(shee)<2 shee="1_" ;; s:$l(uci)<3 uci="VMX"
+ i o,uci'["%" zn uci
+ d getStart s $p(ooo,";--;",2)=" %mxPort="_port_";"_uci_";"_shee_";"_%session_";"_%USID_"; "
+ s Html=$$U8^MXF(ooo) s ^mxMonito($$ts,1,-$j)=$p(ooo,";--;",2)
+webReply s %=$c(13)_$c(10),%1=$l(Html)
+ s %mxWeb="HTTP/1.1 200 OK"_%_"Content-type: text/html"_%_"Access-Control-Allow-Origin: *"_%_"Cache-Control: no-cache"_%_"Content-Length: "
+ w %mxWeb_%1_%_%_Html,*-3 k:000 ooo,Html,uci,port,shee d:$d(o) saveMem
+ q
+tcpErrMi h 1 x "s view=$view(""err"",1)" s ^mxMonito($$ts,999,$j)=$ze_"  io="_$g(io)_" view="_view
+ ;; close io  g tcpMiniM
+ q
+tcpError h 1 s ^mxMonito($$ts,999,$j)=$ze_"  io="_$g(io)
+ c:$d(io) io h 1   ;; goto tcp+2
+tcp ; MX-CONCURRENT-SERVER with tcp on port 2232(32-bit) or 2264(64-bit) or 5233(minim) or 5264 (IRIS) ;
+ s i=$io,p=$p
+ g:$zv["MiniM" tcpMiniM  g:$zv["MS" tcpMSM  q:$zv'["Ca"&($zv'["IRIS")  s io="|TCP|"_$j
+ i $zv["IRIS" OPEN io:(:5264:"MA"):200  USE io:(:5264:"RAWCD":"":32765:32765) g tcpL   ;; 32767=7FFF
+ OPEN:$zv'["-64" io:(:2232:"MA"):200   OPEN:$zv["-64" io:(:2264:"MA"):200 
+ USE:$zv'["-64" io:(:2232:"RAWCD":"":32765:32765)   USE:$zv["-64" io:(:2264:"RAWCD":"":32765:32765)
+ s ^mxMonito($$ts,0,$j)=$znspace_" -- START tcp^MX1 $io="_$io_"  i="_i_"  p="_p
+tcpL 
+ s $ztrap="tcpError^MX1"
+ READ %   j tcpChild^MX1:(:5:$io:$io)
+ ;; s ^mxMonito($$ts,0,$j)=$znspace_" -- START j tcpChild^MX1 "_$g(%)
+ h 1 g tcpL
+ q
+ ;; i $zv["Ca" s ip=$zu(67,15,$j),o=$d(^mxSYSTEM("mxDenyIP",ip_1)) d  g:o tcpL
+ ;; . s ^mxMonito($$ts,0,$j)=ip_" "_p_" "_$tr(%accept_" job="_$j_" $za="_$za_" $zb="_$zb_" $zc="_$zc,$c(0),"o")
+ ;; . i o s o=o_$zr,@$zr=@$zr_" ::: access denyed ::: "_o
+tcpChild ;; s ^mxMonito($$ts,0,$j)=$znspace_" -- START j tcpChild^MX1 "
+ k ooo s ooo="" 
+ i $zv["MS" USE 56 g tcpChilR^MX1
+ i $zv["MS" USE 56 s uci=-1 d  g:'u tcpChild  V 2:$J:v*32+u:2 g tcpChilR^MX1   ;; msm-mx---EXCEL  -- not web
+ . n r,zu,% s r="" f  read *%:1 q:%<0  s r=r_$c(%)
+ . s uci=$e($tr($p($p(r," UCI=",2)," "),""""),1,3) x r w 0_$c(0)_$c(15),*-3 i $l(uci)<3 s v=0 q
+ . S zu=$ZU(uci_",MXM"),u=$P(zu,","),v=$P(zu,",",2) ;; V 2:$J:v*32+u:2
+ . h 2 s ^mxMonito($$ts,2,-$j)=uci_"   r="_r 
+ i $zv["MiniM" USE $io:(/MODE="rwb":/TERM=$c(0))
+ i $zv["Ca" USE:$zv'[-64 $io:(:2232:"RAWCD":"":32765:32765) USE:$zv[-64 $io:(:2264:"RAWCD":"":32765:32765)
+ i $zv["IRIS" USE $io:(:5264:"RAWCD":"":32765:32765)
+ s ^mxMonito($$ts,1,$j,"$io")=$io
+ ;; i $d(^oooRead1) s ooo=^oooRead1,o=$tr($p($p(ooo," UCI=",2)," "),"""") s:$e(ooo,1,3)="GET" o=$p($p(ooo,"UCI=",2),";") s ^mxMonito($$ts,2,-$j)=ooo k ^oooRead1
+tcpChil2 s $ztrap="saveMem^MX1",ooo=""
+ i $zv'["MiniM" f  READ:600 ooo d:ooo=""  s uci=$tr($p($p(ooo," UCI=",2)," "),"""") s:ooo["OPTIONS" ^mxMonito($$ts,0,-$j)=ooo s:$e(ooo,1,3)="GET" o=$p($p($p(ooo,"UCI=",2),";",1,6)," "),uci=$p(o,";") q:$l(uci)>2
+ . i $g(%session),$d(%mxWeb),$znspace'="%SYS",$g(%gm),$g(^oAllVars($g(%USID,-2.2),-%session,"$j"))=$j s %=%session n YX,Y,X,ooo,%session,%mxWeb  i $$SaveMem^USX(%USID,-%)
+ i $zv["MiniM" f  READ *%:60  d:%>-1  s uci=$tr($p($p(ooo," UCI=",2)," "),"""") s:$e(ooo,1,3)="GET" o=$p($p($p(ooo,"UCI=",2),";",1,6)," "),uci=$p(o,";") q:$l(uci)>2
+ . s ^mxMonito($$ts,3.1,-$j)=% 
+ . s:%>0 ooo=$c(%) f  READ *%:0 q:%<0  s:%>0 ooo=ooo_$c(%)
+ . s ^mxMonito($$ts,3.2,-$j)=ooo
+ . ;;  i '$l(ooo),$g(%session),$d(%mxWeb),$znspace'="%SYS" k YX,Y,X,ooo i $$SaveMem^USX(%USID,-%session)
+ ;; q:'$l(o)
+ s ooooREAD=-99 s $ztrap="mxErrChR^MX1"
+ i $l(uci)>2,$l(uci)<9,$znspace'=uci zn uci
+ i $e(ooo,1,3)'="GET" w uci,0,$c(0),$c(15),*-3 g tcpChilR^MX1  ;; mx-EXCEL
+ q:'$l(uci)
+ ;; s ^mxMonito($$ts,3,$j)="START tcpChild^MX1  ooo="_ooo_-$l(o)_$g(o)
+ i $e(ooo,1,3)="GET" s %mxWeb=1 d    ;; mx-WEB
+ . ;; s %1=+$g(%session)
+ . i o["%session" f %="YX","%USID","%mxSheet","%session" s @%=$p($p(o,";"_%_"=",2),";")
+ . i o'["%session" s %USID=$p(o,";",3),%mxSheet=$p(o,";",2),%session=0,YX="" 
+ . i '%session s ^mxMonito($$ts,3.3,$j)="START tcpChild^MX1  o="_o h 1
+ . s %1omCode=$p($p(ooo,";=",2,999),";];") s:%1omCode["{" %1omCode=$$u8^MXF(.%1omCode)
+ . f %=$l(%1omCode)-2:-1:1 s o=$e(%1omCode,%) i o="%" s o=$e(%1omCode,%,%+2),o=$f("%20  %22""  %23#  %3E> %3C<",o) i o s o=$e("%20  %22""  %23#  %3E> %3C<",o),$e(%1omCode,%,%+2)=o
+ . s %mxForma=%mxSheet i '%session d getStart q
+ . ;
+ . ;; s ^mxMonito($$ts,4,$j)=YX_" "_%USID_" "_%mxSheet_" %session="_%session_" ooo="_ooo_"   o="_o
+ . i YX="-2" s:000 %session=$g(^ooomxWeb(%USID,0)) s %=0,ooo="" x "f  s %=$o(^oSaveAsT(%USID,""web_MX_JS"",%)) q:'%  s o=$p(^(%),""// "") s ooo=ooo_o" q
+ . s %oldJob=$g(^oAllVars(%USID,-%session,"$j")) 
+ . i %oldJob'=$job s %=%session x "n YX,ooo,%session,%1omCode,%mxSheet,%mxForma  i $$RestMem^USX(%USID,-%)" s ^oAllVars(%USID,-%session,"$j")=$job,%mxWeb=1
+ . i YX=%mxSheet d getForma q
+ . i $l(%1omCode)>11,'YX s %changed=$g(%changed)+1
+ . s Y=+YX,X=+$p(YX,"-",2),%qSelect=$g(%qSelect),%ySelect=$g(%ySelect,1),%xSelect=$g(%xSelect,1),%B=$c(254)
+ . s %1ooooYX=YX,ooo=""
+ . i Y&X!(YX="0"),$l(%1omCode)>1 d  q
+ .. s:Y Yrc=$g(^oYrc(%USID,%mxSheet,Y),Y),%YXy=Y,%YXx=X
+ .. i Y,X s %1=$g(^oTQMo(%USID,%mxSheet,Yrc,X)),%2=$g(^oRC(%USID,%mxSheet,Yrc\1,X)),%3=$g(^oYX(%USID,%mxSheet,Y,X)) 
+ .. x "n %1,%2,%3,%1ooooYX "_%1omCode s ooo=$g(ooo),YX=%1ooooYX
+ .. i ooo="",YX d
+ ... i $e(%2,1,6)="?$$B~ " f %=3:2 s o=$p($p(%2," ",1,15),"?",%) q:'$l(o)  x "n %,YX s $p(%2,""?"","_%_")="_o
+ ... s ooo=%1_";;oRC="_%2_";;oRC=;;oYX="_%3
+ s Html=YX_";"_%USID_";"_%mxSheet_";"_%session_";="_$$U8^MXF(.ooo)
+ s %=$c(13)_$c(10),%1=$l(Html)+1
+ ;; s %mxWeb="HTTP/1.1 206 Partial Content"_%_"Content-type: text/html"_%_"Access-Control-Allow-Origin: *"_%_"Accept-Ranges: bytes"_%_"Content-Range: bytes 1-"_%1_"/"_%1_%_"Cache-Control: no-cache"_%_"Connection: " ;; ..
+ s %mxWeb="HTTP/1.1 200 OK"_%_"Content-type: text/html"_%_"Access-Control-Allow-Origin: *"_%_"Cache-Control: no-cache"_%_"Content-Length: "
+ ;; s %mxWeb="HTTP/1.1 200 OK"_%_"Content-type: text/html"_%_"Access-Control-Allow-Origin: http://www.armex.pro/links.txt"_%_"Cache-Control: no-cache"_%_"Content-Length: "
+ ;; s ^mxMonito($$ts,7,$j)=$g(%1omCode)_"  ooo="_ooo
+ w %mxWeb_%1_%_%_Html_$c(0),*-3
+ i $g(%1omCode)[";$$SaveMem;" x "n YX,Y,X,Html,ooo,%mxWeb,o,%1omCode i $$SaveMem^USX(%USID,-%session)"
+ k Html,ooo,%accept s %mxWeb=1
+ g tcpChil2
+saveMem i $l($g(%USID)),$g(%session)>0,$g(%gm) n ooo i $$SaveMem^USX(%USID,-%session)
+ q
+getStart 
+ s:'$l(%USID) %USID=$e($p($p($p(ooo,"UCI=",2),";",3)," "),1,22) 
+ ;; s (^(0),%session)=$g(^ooomxWeb(%USID,0),1)+1
+ i '$l(%USID) s ooo="<HTML><BODY> -- "_ooo_$zv_" -- user not exists -- ERROR -- </BODY></HTML>" q
+ i '$d(^oRC(%USID)) s ooo="<!DOCTYPE HTML><BODY> -- "_ooo_$zv_" -- not exists in "_$zr_" -- ERROR -- </BODY></HTML>" q
+ s (^ooomxWeb(%USID,0),%session)=$g(^ooomxWeb(%USID,0))+1
+ s %=0,ooo="" d  s:000 ^mxMonito($$ts,7,$j)=$l(ooo)
+ . f  s %=$o(^oSaveAsT(%USID,"web_MX_HTML",%)) q:'%  s o=$p(^(%),"// ") s ooo=ooo_o
+ . s %="" f  s %=$o(^oAllVars(%USID,%)) q:'%  i %<(-%session) k ^(%)
+ x "n YX,Y,X,Html,ooo,%mxWeb,o,%1omCode s %=%session n %session i $$SaveMem^USX(%USID,-%)"
+ s ^mxMonito($$ts,6,$j)=$g(YX)_" web %USID="_$g(%USID)_" "_%mxSheet_" $l(ooo)="_$l(ooo)_$zv
+ q
+getForma n %
+ s ooo="",%=%USID n %USID s %USID=$p(%,".")
+ i $l(%1omCode)>11 x:'$d(%DatUMs)!'$d(%gm) ";; n %mxSheet,%mxForma,%1omCode,YX,ooo ;; i $$RestMem^USX(%USID,-%session)" d
+ . s %="%" f  s %=$o(^oRC(%USID,%mxForma,"?.var",%)) q:'$l(%)  s:'% @%=^(%)
+ . x %1omCode  n %mxSheet,%mxForma,%1omCode,YX,ooo  i $$SaveMem^USX(%USID,-%session)
+ s %=$o(^oYrc(%USID,%mxSheet,0,0)) i % s YX="[=",ooo=^(%) k ^(%) q 
+ q:'$l(%1omCode)
+ n %0,Yrc,%insRows,ym,xm,xi,X,Y,%11,%,%1,%22,%123,%formatC
+ s Yrc=0,%insRows=0,ym=2,xm=5,xi=5,%formatC=$g(^vmxExcel(%USID,%mxSheet,".format"))
+ s Y=0 f  s Y=$o(^cYX(%USID,%mxSheet,Y)) q:'Y  s X=1 f  s X=$o(^cYX(%USID,%mxSheet,Y,X)) q:'X  i $d(^(X,2)) s ^oTQMo(%USID,%mxSheet,Y,X)=$g(^oTQMo(%USID,%mxSheet,Y,X))_";;oRC=?$$Image cYX Size=222"
+ f  s Yrc=$o(^oTQMo(%USID,%mxSheet,Yrc)) d:Yrc  i 'Yrc s ^oYrc(%USID,%mxSheet,0,999999)=ooo q
+ . s:Yrc["." %insRows=%insRows+1 s Y=Yrc\1+%insRows,o="",X=.2,%123=.123,%11=0 s:Y>ym ym=Y
+ . i Yrc'["." f  s X=$o(^oTQMo(%USID,%mxSheet,Yrc,X)) q:'X  s %1=$g(^(X)),%2=$g(^oRC(%USID,%mxSheet,Yrc,X)) d  q:$l(o)>10000
+ .. s %="" i X>1,$l(%2)!$l(%1) s %=$f(%formatC,"]"_Yrc_-X_":") i % s %=$p($e(%formatC,%,%+210),"]")
+ .. i $e(%2,1,3)="?$$" d  s %=""
+ ...  n % s %=$p($p(%2," "),"::",2,9) i $l(%) s %0=%2,%2="" i @% s %2=%0 
+ .. s:%2'=%1&$l(%2) %1=%1_";;oRC="_%2 s:$l(%) %1=%1_" ;f;"_% q:'$l(%1)  s:"00.0-  "'[%1 %11=X 
+ .. s o=o_"[="_$s(%123+1=X:"~",1:Y_-X_"-")_%1,%123=X
+ . i Yrc["." f  s X=$o(^oTQMo(%USID,%mxSheet,Yrc,X)) q:'X  s %1=$g(^(X)) i $l(%1) s o=o_"[="_$s(%123+1=X:"~",1:Y_-X_"-")_%1,%123=X  s:"00.0-  "'[%1 %11=X q:$l(o)>10000
+ . i $l(ooo)+$l(o)>10000 s ^oYrc(%USID,%mxSheet,0,Yrc)=ooo,ooo=""
+ . s:%123>xm xm=%123 s:%11>xi xi=%11 s:Y'=Yrc ^oYrc(%USID,%mxSheet,Y)=Yrc s ooo=ooo_o
+ k ^oY m ^oY=^oYrc(%USID,%mxSheet,0)   s YX="[=",o=$o(^oYrc(%USID,%mxSheet,0,0)),ooo=ym_-xm_-xi_^(o) k ^(o)
+ ;; s ^mxMonito($$ts,6,$j)=YX_" web "_%USID_" "_%mxSheet_" $l(ooo)="_$l(ooo)
+ q
+tcpChilR 
+ i $zv'["MiniM" READ %1omCode
+ i $zv["MiniM" READ *% s %1omCode=$c(%) f  READ *% q:%<1  s %1omCode=%1omCode_$c(%)
+ s:$e(%1omCode,1,4)["zw" ^mxMonito($$ts,0_$g(%USID))=%1omCode_" ::: "_$zt
+ s $ztrap="mxErrChR^MX1",%oorxxxw="1"
+ i $e(%1omCode,1,5)="CLOSE" w $j,":CLOSE:",0,$c(0),$c(15),*-3 close $p hang 2 HALT
+ i '$d(%oorxxxU) s %oorxxxU="" s:$zv["U) " %oorxxxU=1
+ i $l(%oorxxxU) s %oorxxxU=$f(%1omCode,"{") d:%oorxxxU
+ . n %1,%,s f %=%oorxxxU-1:1:$l(%1omCode) i $e(%1omCode,%)="{" f %1=4,5,6 s s=$e(%1omCode,%+%1) i s="}" s s=$e(%1omCode,%+1,%+%1-1) i s\1=s,s<66200,s>250 s $e(%1omCode,%,%+%1)=$c(s) q
+ x %1omCode w 0_$c(0)_$c(15),*-3  ;; w:$g(%oorxxxw)'="0" 0,$c(0),$c(15),*-3
+ g tcpChilR
+ q
+tcpChilRformsm ;; not correct  work
+ i $zv["Ca"!($zv["IRIS") READ %1omCode i 1 ;; i $zv["MS" s ^mxMonito($$ts,$g(%USID)_" ")=$e(%1omCode,1,500)
+ else  s %1omCode="" f  READ *% q:%<1  s %1omCode=%1omCode_$c(%)
+ i $zv["MS" s ^mxMonito($$ts,0)=$e(%1omCode,1,500)
+ i $e(%1omCode),$e(%1omCode,1,7)-1000000>0 s %1omCode=$e(%1omCode,8,999999) f %2=1:1:999 d  q:%<0
+ . s ^mxMonito($$ts,%2)=1000000_$e(%1omCode,1,500)
+ . w 0_$c(0)_$c(15),*-3 s %1="" f  READ *% q:%<1  s %1=%1_$c(%)
+ . s ^mxMonito($$ts,%2)=$e(%1,1,500)
+ . s %=$e(%1,1,8)-1000000 s:%>0 %1=$e(%1,8,999999) s %1omCode=%1omCode_%1  
+ s $ztrap="mxErrChR^MX1",%oorxxxw="1"
+ i $e(%1omCode,1,5)="CLOSE" w $j,":CLOSE:",0,$c(0),$c(15),*-3 close $p hang 2 q
+ i '$d(%oorxxxU) s %oorxxxU="" s:$zv["U) " %oorxxxU=1
+ ;; i $zv["MS" s ^mxMonito($$ts,$g(%USID)_2)=$e(%1omCode,1,500)
+ . n %1,%,s f %=%oorxxxU-1:1:$l(%1omCode) i $e(%1omCode,%)="{" f %1=4,5,6 s s=$e(%1omCode,%+%1) i s="}" s s=$e(%1omCode,%+1,%+%1-1) i s\1=s,s<66200,s>250 s $e(%1omCode,%,%+%1)=$c(s) q
+ x %1omCode w 0_$c(0)_$c(15),*-3  ;; w:$g(%oorxxxw)'="0" 0,$c(0),$c(15),*-3
+ ;; i $zv["MS" s ^mxMonito($$ts,$g(%USID)_2)=$e(%1omCode,1,500)
+ g tcpChilR
+ q
+mxErrChR n e
+ s ^mxMonito($g(ooooREAD)+.1,$g(%USID)_" ::: ERROR in : ")=$g(%1omCode)_$ze_" $zt="_$zt_" %mxForma="_$g(%mxForma)_" y="_$g(%YXy)_" x="_$g(%YXx),$zt=""
+ s e=$tr(@$zr,$c(0))_" ERRO"_"R ::: "_$ze_" ::: "_$g(%1omCode) s:$zv["U) " e=$$U8^MXF(e)
+ s %=$ze,^mxMonito($$ts,$g(%USID)_" ::: ERROR in : ")=e_" ::: "_% s e=$$trw^UST(e,"<mx","<.mx")
+ i %["<DISCONNECT>" close $p hang 1 HALT   ;; hang 120
+ i %["<WRITE>" close $p hang 1 HALT   ;; hang 120
+ s $ec=""  w:'$d(%mxWeb) "ERRO"_"R ::: ",$$trw^UST(e,"<mx","<.mx"),0,$c(0),$c(15),*-3 
+ s %=$c(13)_$c(10)
+ i $d(%mxWeb) s %mxWeb="HTTP/1.1 200 OK"_%_"Content-type: text/html"_%_"Access-Control-Allow-Origin: *"_%_"Cache-Control: no-cache"_%_"Content-Length: "
+ i $d(%mxWeb) s Html=$g(YX)_";"_$g(%USID)_";"_$g(%mxSheet)_";=ERRO"_"R ::: "_$$U8^MXF(e) w %mxWeb_($l(Html)+1)_%_%_Html,$c(0),*-3  s ooo=""  g tcpChil2   ;;; HALT
+ I %["<NAMESPACE>" h 1 close $p h 1 HALT
+ g tcpChilR
+ q
+TCP(PORT) 
+o ;  Start MX-SERVER with TCP.
+audi 
+x 
+xx 
+getPORT 
+mxRead 
+readX 
+erMXserv q 
+W(%) w $c(0,0),$c($l(%)\256),$c($l(%)#256),%
+ q
+GTMread ;;w !,"gtm : WRITE /WAIT(%ZNTimeS) :  %ZNCmd=",%ZNCmd,"  SOCKET=",%ZNSock
+ q
+enterYX(%USID,%mxSheet,%y,%x,%N,%K) q:'$d(%mxWeb) 0
+ ;;  20190503  ;; i $e(%K)="<",$e(%K,1,3)'="<mx" q " "_%y_"-"_(%x+1)
+ n %,%1,oo,%mxForma,%ooSheet,%mxIndex,%in,%n,%E,oRCresult,%oldoYXq,ooooooYX,%G,%goY,%goX
+ n gotoYXyy,gotoYXxx,%oRCmCod,%TQMmCod s %ooSheet=%mxSheet,%qChange=%K
+ s %mxForma=$p(%mxSheet,"--"),%G=0,%YXy=%y,%YXx=%x,%E="",%GM=0,%flagEdi=$g(%flagEdi),%K(0)=%K 
+ s (%nn,%tabRow)=$$%0Yrc^MXTQM2(%y) s:$e($g(^oRC(%USID,%mxForma,%y,%x)),1,2)["?_" %Yrc=%y
+ s %oldoYXq=$g(^oYX(%USID,%mxSheet,%y,%x)),%in=$g(^oRC(%USID,%mxForma,%Yrc,%x))
+ i %oldoYXq'=%K,$d(^onChange(%USID,%mxForma,%y,%x)) s %oRCmCod=^(%x),%qChange=%K,%yChange=%y,%xChange=%x
+ i %tabRow,%Yrc<%YXy,%YXy-%Yrc+1'=%tabRow s %E=%tabRow_" %Yrc="_%Yrc_"  %YXy="_%YXy g enterYXe
+ i $e(%in)="?",$e(%in,1,3)'="?$$" s %N=$tr($p(%in," "),"?_") i "%oo"'[%N,%in[" ;;; ",%N'="%mxIndex" s %oRCmCod=$p(%in," ;;; ",2,99) s:$e($g(^(%x+1)),1,3)="?.." %oRCmCod=%oRCmCod_$e(^(%x+1),4,999)
+ i '%tabRow,$e(%K)="="!($e(%K,$l(%K))="=") d  g:$l($g(%E)) enterYXe i $d(%1) x:$e(%K)="=" "s %K"_%K x:$e(%K,$l(%K))="=" "s %K="_$e(%K,1,$l(%K)-1)    ;;  ;;  to-do !! $$formuExc()  
+ . s %1=$tr(%K,"+-/*()^_=[]':\#,.;","                 ") i $tr(%1," """)="" k %1 q
+ . q:%K["$"!(%K["^")!(%K["_")!(%K["'")!(%K["%")!(%K["[")!(%K["""")!($e(%K)'="=")!%K
+ . f %=1:1:$l(%1," ") s %n=$p(%1," ",%) i $l(%n),'%n,$e(%n)'="$",'$d(@%n) s %E=$g(%E)_%n_"--< undef >  "
+ i $e(%in)'="?"!($e(%in,1,3)="?$$"),'%tabRow,'$d(%oRCmCod) s ^oYX(%USID,%mxSheet,%y,%x)=%K g enterYXe
+ i 0_%mxForma["0t." s %FILE=$e(%mxForma,3,99),%GM=$l(%LI(%FILE),",") 
+ else  i %tabRow s %=$g(^oRC(%USID,%mxForma,"?$$TQM",1)),%=$p(%," ",3) i $e(%)="^",%[")" d
+ . s %oRCmCod="i '$l($g(%E)),1_$d("_%_") s @$zr@(%N)=%K",%FILE=$e($p(%,"("),2,99),%LII(%FILE)=$e($p(%,"(",2,99),1,$l(%)-1),%GM=0 
+ i %tabRow s %=1,%1=-1 f  s %=$o(^oRC(%USID,%mxForma,%Yrc,%)) q:'%  s o=^(%),%n=$p(o," ") i $e(%n,1,2)="?_" s %n=$e(%n,3,99),%1=%1+1,@%n=$p($g(^oYX(%USID,%mxSheet,%y,%)),"<mx ") s:%n["%mxIndex" @%n=%_o s:%n=%N %G=%1 i %G>1 s:$p(o,";")[" ] " %GM=%1
+ i %tabRow,%x'>%mxIndex!(%G<2)!'%GM,%flagEdi'[(%y_" "_%mxSheet_" ") d
+ . s %flagEdi=%y_" "_%mxSheet_" ",%YX(%y,2)="<mx ic19.-2"
+ . n %x x $p(%mxIndex,";;;",2) i '%G,%K="-" s o=$p(%mxIndex,";-;",2) i $l(o) x o s oo="<mx ic46.-2",%E=1
+ ;
+ i ($e(%K)="=")!($e(%K,$l(%K))="=") d  g:$l(%E) enterYXe i $d(%1) x:$e(%K)="=" "s (oo,%K)"_%K x:$e(%K,$l(%K))="=" "s (oo,%K)="_$e(%K,1,$l(%K)-1)  ;;  ;;  to-do !! $$formuExc()  
+ . s %1=$tr(%K,"+-/*()^_=[]':\#,.;","                 ") i $tr(%1," """)="" k %1 q
+ . q:%K["$"!(%K["^")!(%K["_")!(%K["'")!(%K["%")!(%K["[")!(%K["""")!($e(%K)'="=")!%K
+ . f %=1:1:$l(%1," ") s %n=$p(%1," ",%) i $l(%n),'%n,$e(%n)'="$",'$d(@%n) s %E=$g(%E)_%n_"--< undef >  "
+ i '$d(%oRCmCod) g:'%G&%E!(%N="%mxIndex") enterYXe 
+ i %tabRow,%flagEdi'[(%y_" "_%mxSheet_" ") s:%G&%GM %YXx=+%mxIndex g enterYXe
+ i '$d(%oRCmCod),'$l(%N) s ^oYX(%USID,%mxSheet,%y,%x)=%K g enterYXe
+ s:'$l(%K) %K=$g(%WW(%N)) s:%K["<mx "!($e(%K)="?") oo=%K
+ i 0_%mxForma["0t.",%G d  i '$l(%K) s:%tabRow>1&'$l(%oldoYXq)&(%'=%N) %K=$g(^oYX(%USID,%mxSheet,%y-1,%x)),oo=%K i '$l(%K) s %E="-- enter info in this cell ! --" g enterYXe
+ . s %=%LII(%FILE),%=$p(%,",",$l(%,",")) q:%'=%N  s:$l(%K) @%N=%K,%NEW=$d(@("^"_%FILE_"("_%LII(%FILE)_")"))
+ ;;;;;;;;;;;;;;;;;; i %GM!'%tabRow s oRCresult=$$oRC^MXTQM2(%K,%mxForma,%y,%x)
+ ;; k ^ERR f %="%YXy","%YXx","%y","%x","%mxIndex","%G","%GM","%goY","%goX","%N","%Yrc","%tabRow","%flagEdi","%TQMformu","%oRCformu" s ^ERR(%)=$g(@%,"<undef>")
+  s @%N=%K  x $g(%oRCmCod) x:%tabRow $g(%TQMmCod)
+ i $l($g(%E)),$e(%E,1,4)'="%SEL" s @%N=%oldoYXq q " - "_%G_%N_";;=%E=;;"_$$trw^UST(%E,$c(10),"<br>   ")
+ i %K(0)'="=%N","ooo"'[%N,%N'?1"%".n s (@%N,^oYX(%USID,%mxSheet,%YXy,%YXx))=$p(%K,"<mx ")   
+ i %ooSheet'=%mxSheet q %mxSheet 
+ i $d(%SEL) q " - "_%G_%N_";;=%E=;;"_$g(%E)_";;=%E=;;=SEL=;;"_$$ooo2^MXF("%SEL")
+ i $d(%YX) x "n %YXy,%YXx  s ooooooYX=$$oYXshowM^MXTQM2(%mxSheet)"
+enterYXe s %goY=%YXy,%goX=%YXx+1 s:%K(0)'=%K&'$d(oo) oo=%K 
+ ;;  s:$l(%oldoYXq)&(%K'=%oldoYXq)&'$d(oo) oo=%K_"<mx ic19 fb @"_%oldoYXq i $d(oo),'$l(oo) s oo="  "
+ i %G,%GM'<%G s:%YXx'>%mxIndex %YXx=+%mxIndex  s:%G=+$g(%GM) %YXx=+%mxIndex,%goY=%YXy+1 s %goX=+$o(^oRC(%USID,%mxForma,%Yrc,%YXx)) s:'%goX %goX=+$o(^oRC(%USID,%mxForma,%Yrc,+%mxIndex))
+ i '%G,$l(%N),'%tabRow s o=$g(%EnterLi(%mxForma)) d:'$l(o)  i o[%N s o=$p(o," "_%N_" ",2,9) i $l(o) f %=1:1:9 s %n=$p(o," ",%) q:%n="//"  i $l(%n) s o=$g(^oRC(%USID,%mxForma,"?var",%n)) s:o gotoYXyy=o+(%n=%N),gotoYXxx=+$p(o,"-",2) q
+ . s %=0 f  s %=$o(^oRC(%USID,%mxForma,"?$$EnterList",%)) q:'%  s o=o_" "_$p(^(%)," ",2,99) 
+ . s %EnterLi(%mxForma)=o_" "
+  ;; k ^ERR f %="%YXy","%YXx","%y","%x","%mxIndex","%G","%GM","%goY","%goX","%N","%Yrc","%tabRow","%flagEdi","%oRCmCod","oo","%oldoYXq" s ^ERR(%)=$g(@%,"<undef>")
+ q:$g(%n)[":)" 1
+ s:$g(gotoYXyy) %goY=gotoYXyy s:$g(gotoYXxx) %goX=gotoYXxx s:$g(%E) %E=";;=%E=;;"_%E_";;=%E=;;"
+ q " "_%goY_"-"_%goX_" "_%G_%N_$g(%E)_";;=YX=;;"_$g(ooooooYX)_";;=YX=;;=oo=;;"_$g(oo)
+ q
+ts() q $$pD^MXD($h,2)
+mxMSMtcp 
+tcpMSM ; vmx-CONCURRENT-SERVER with tcp port 2666  (msm)  ;
+ k ^mxMonito s io=56,^mxMonito($$ts,1,-$j)="START tcpMSM port 2666 "
+initMSM ; Process the init state MSM
+ x "S nt=($ZB($V(0,-4,2),#F,1)=10)"    ; Determine OS type, NT or not NT
+ close 56 open 56:(:nt*8):"TCP"   ; Open and initialize the device
+ ;; s %=$c(%1) i %1>-1 f  r *%1:0 q:%1<0  s:%1>0 %=%_$c(%1)
+ ;; s ^mxMonito($$ts,1,$j)=%_-$l(%) i %'["UCI=" u 0 g tcpMiniM  ;; d:000  close $io  g tcpMiniM
+ use 56   s %lddb=$KEY,rr(0)=%lddb g listeMSM
+ q
+listeMSM ; Process the ntlisten state
+ use 56:(%lddb)
+ s ^mxMonito($$ts,1,-$j)="listeMSM %lddb="_%lddb_"   nt="_nt  h 1 
+  x "W /SOCKET("""",2666) S %xddb=$KEY,lza=$ZA,lzb=$ZB,lzc=$ZC,%ddb=$ZH(%xddb)"
+ s ^mxMonito($$ts,1,-$j)="%xddb="_%xddb_" lza="_lza_"  lzb="_lzb_"  lzc="_lzc_"  %ddb="_%ddb h 1 
+ I lzc&(lzb=-8) G listeMSM
+ I lzc G initMSM
+ ; Save the caller address
+ x "S addr=$V(%ddb+16,-3,0)"
+ x "S %(""ADDRESS"")=$V(addr+13,-3,$V(addr+12,-3,1),9)"
+ x "U 56:$ZH(+%ddb)"
+ ;
+ ;;; Associate the ddb with this job :
+ ;;x "V %ddb+46::$J-$V(272,-4,4):2"
+ ;;; Check for accept error :
+ ;;I lzc&(lzb=-8) G listeMSM
+ ;;I lzc G initMSM
+ ;; g x
+ s ^mxMonito($$ts,1,-$j)="START MSM "_io
+ ;
+ d tcpChild^MX1
+ h 2 g listeMSM
+ q
+nspace(name) 
+  ; zn "%SYS" d ^DATABASE
+  zn "%SYS"
+  x "s o=##class(Config.Configuration).AddNamespace(name,name,name)" 
+  q o
+ q

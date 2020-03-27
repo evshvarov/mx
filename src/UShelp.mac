@@ -1,0 +1,41 @@
+ROUTINE UShelp
+UShelp  ;[ 20191012 17:58:34 ]
+ ; MSM, CACHE, GT.M, MiniM
+ ; vmx Copyright(c) SIA ENTERS 2005-2018
+ q ""
+Rcomp(f,Rout,UCI2) ; f=0/1 (short/full form)
+ ; routines compare between UCI's
+ k oRcomp n %UCI x:$zv["MiniM"!($zv["Ca")!($zv["IRIS") "s %UCI=$znspace"  x:'$d(%UCI) "s %UCI=$zu(0)"
+ n o,%,x,z,zz,t,m,n,e,xzr s e="" s:'$d(UCI2) UCI2=%UCI
+ i " "[$g(Rout) q " Rout=?? "
+ i $zv["Ca"!($zv["MiniM")!($zv["IRIS") q:'$d(^$ROUTINE(Rout)) Rout_" - not exist in "_%UCI
+ i $zv["Ca"!($zv["MiniM")!($zv["IRIS") x "zn UCI2 s %=$d(^$ROUTINE(Rout)) zn %UCI" q:'% Rout_" - not exist in "_UCI2
+ i $zv["MS" d
+ . x "S %UI=$S(UCI2?3U:$ZU(UCI2),1:$ZU($P(UCI2,"",""),$P(UCI2,"","",2)))"
+ . x "S %UI=32*$P(%UI,"","",2)+%UI,%HI=$V(2,$J,2)"       ; %HI=0  %UI=1
+ k ^r s zz=1
+ s ^r(1)=" ;"_Rout_"_1_"_UCI2
+ s ^r(0)=" ;"_Rout_"_0_"_%UCI
+ s %="V 2:$J:%UI:2  zr  zl:$d(^ (Rout)) @Rout  V 2:$J:%HI:2"
+ ;
+ i $zv["Ca"!($zv["MiniM")!($zv["IRIS") d
+ . zn UCI2 n r f %=1:1 Q:'$l($t(+%^@Rout))  S r(%)=$t(+%^@Rout)
+ . zn %UCI m ^r(1)=r s m(1)=+$o(^r(1,9999),-1)
+ i $zv["MS" x "x %  f %=1:1 q:'$l($T(+%))  s ^r(1,%)=$t(+%),m(1)=%"
+ f %=1:1 q:'$l($t(+%^@Rout))  S ^r(0,%)=$t(+%^@Rout),m(0)=%
+ i '$d(^r(1,1)) q " ..not exist in "_UCI2
+ s o="" i $g(m(0))-$g(m(1)) s o=$g(m(0))_":"_$g(m(1))
+ i o="" f n=2:1:m(1) i $$Uu^MXF(^r(0,n))'=$$Uu^MXF(^r(1,n)) s o=n_".."_$e(^r(0,n),1,12) q
+ ;
+ q:o=""!'f o
+ ;
+ f x=0,1 s me=-1,nn=0 f n=1:1:m(x) d
+ .s t=$p(^r(x,n)," ") i t'="" s me=$p(t,"("),nn=0,t(me,x)="   ----- "_n
+ .s nn=nn+1,(t(me,x,nn),t)=^r(x,n)
+ .f %=-7:1:7 i t=$g(t(me,'x,nn+%)) k t(me,x,nn),t(me,'x,nn+%) q
+ .q:'$d(t(me,x,nn))!'$d(t(me,'x,nn))  
+ .s t2=t(me,'x,nn) s t(me,x,nn)=t,t(me,'x,nn)=t2
+ s me="" f  s me=$o(t(me)) q:me=""  d  k:$d(t(me,0))+$d(t(me,1))<5 t(me)
+ .f x=0,1 s n=0 f  s n=$o(t(me,x,n)) q:'n  k:"     "[t(me,x,n) t(me,x,n)
+ k ^r m oRcomp=t 
+ q ""

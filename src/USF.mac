@@ -1,0 +1,172 @@
+ROUTINE USF
+USF ;  [ 04/05/2005  9:16 PM ]  ;[ 20170118 15:33:18 ]
+ ; MSM, CACHE, GT.M,  MiniM
+ ; MX Copyright(c) SIA ENTERS  2005-2016
+yx(y,x,c) 
+ q:%j ""
+ q:$d(c) $$yx^US(y,x,c) q:$d(x) $$yx^US(y,x) q $$yx^US(y)
+qs(%i,%KEY,%N,%d) 
+ n %,%I,%n s %I=$qs(%i,0),%N=$tr($g(%N),"~"),%d=$g(%d)
+ x:$zv'["GT.M" "f %=1:1:%KEY s %I=$d(@%I@($s(%=%KEY&$l(%N):%N,1:$qs(%i,%)))),%I=$zr"
+ q:$d(@%I)#2 %I
+ s:%d>0 %=$q(@%I) s:%d<0 %=$$zo500("%I@("""")",-1)
+                  s:%d<0 %=$$zo500("%I@("""")",-1)
+ i %'[%Zon q %I
+ i %'=%I,%'="" s %I=%
+ q %I
+Zo(%i,%d) 
+ n %,%1 s %d=$g(%d,1) s:'%d %d=1
+ i %Zon="" i '$d(@("^"_%FILE)) q "^"_%FILE
+ s:%i>%KEM!(%i=0) %i=%KEM
+ i %i s:%I'["(" %I="^"_%FILE s %i=$p(%I,"(")_"("_$p(%LII,",",1,%i)_")"
+ i %i'["("""")" s %i=$NAME(@%i)
+ i %i'["(" s %i=%i_"("""")"
+ s %=%i f  s %=$q(@%,%d) q:%=""  q:$l(%,",")=%KEM   ;;q:$ql(%)=%KEM
+ q:%'[%Zon %I q %
+r5(%zr) 
+ n %,%R s $p(%zr,"(")="^"_%FILE,%R=$g(@%zr) q:$l(%R)<500 %R
+ f %=501:500 q:'$d(@%zr@(%))  q:$l(%R)#500  s %R=%R_^(%)
+ q:$d(@%zr)+1 %R
+w5(%zr,%R) 
+ n %,r i '$d(@%zr),$l(%R)<500 s @%zr=%R q ""
+ i $d(@%zr@(501))
+ f %=501:500 s r=$e(%R,%,%+499) q:r=""&'$d(^(%))  k ^(%) s:r'="" ^(%)=r
+ s @%zr=$e(%R,1,500)
+nE q ""
+mxFsel(%i0,%N,%K,%SELflag) 
+ n %sym,%XG,%nK,%KmxFsel,%,%1,%2,%3,%seZona,o,oo,xoo,%FILE
+ k ^ose(%USID),^o60 s %N=$tr(%N,"~")
+ s:'$d(%LAT) %LAT=$$Uu^MXF("QWERTYUIOPASDFGHJKLZXCVBNM{274}{362}{298}{256}{352}{290}{310}{315}{381}{268}{325}{275}{363}{299}{257}{353}{291}{311}{316}{382}{269}{326} .:`""")
+ s:'$d(%lat) %lat="qwertyuiopasdfghjklzxcvbnmeuiasgklzcneuiasgklzcn"
+ s %sym="qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM%1234567890"
+ s %1=%LAT,%2=%lat n %LAT,%lat s %LAT=%1,%lat=%2
+ i $e(%K)="=" q:%K="="  s %K="("_%N_"="""_$p(%K,"=",2,9)_""").."
+ i $e(%K,$l(%K))="=" s %K="("_%N_"="""_$p(%K,"=")_""").."
+ i %K_"$1$a$s"[("....$1$a$s") q ""
+ i %K_"$1$a$s"[("...$1$a$s") s o=%K n %K s %K=$p(o_"$1$a$s","...$1$a$s") q:o="" o  d
+ . s o=$tr(%K,%LAT,%lat) s:o="" o=%K,%LAT=0,%lat=0 s %K="($tr(%I_%B_@%I,%LAT,%lat)["""_o_""").."
+ s %FILE=$e($p(%i0,"("),2,99) s %KmxFsel=%K
+ i $e(%i0)'="^" s (%1,%FILE)=$p(%i0,"(") d ^USX d:"PPR PAV"[%1
+ . s o=%FILE_"sp" 
+ . i '$d(^AL(%FILE,"%W",%N)),$d(^AL(o,"%W",%N)) s (%1,%FILE)=o d ^USX
+ s %="^"_%FILE
+ s:$d(%SeZona(%FILE))#2 %=%SeZona(%FILE)
+ i %["^" s %seZona=$e($NAME(@%),1,$l($NAME(@%))-1)
+ s %=$e(11_%K,$l(11_%K)-1,9999)
+ i "::;;"[% d  q:$d(%SEL) ""  s %KmxFsel="1%N.."_%K s:%K="" %K="1%N" s %K=%K_".."
+ .s %K=$p($p(%K,"::"),";;") k %SEL i $g(%SELflag),%K="" q  ;;;s:%K=$g(@%N) %K="" 
+ .s %=$g(^AL(%FILE,"%W",%N,-2)) q:%=""  x %  q:$g(%SELflag)
+ .s o="" f  s o=$o(%SEL(o)) q:o=""  w $$U^MXF(o),$c(9),$$U^MXF(%SEL(o)),$c(4)
+ ; F12
+ ; 
+ k %1
+ i $e($p(%K,";"))="[" s $p(%K,"[")="..;$p(%I,""("",2,99)_%R"
+ s %nK=" "_%N_" "_$tr(%K,%sym_%K,%sym_"                                                       ")_" "
+ s %XG="" f %=1:1:$l(%LG(%FILE),",") s %n=$tr($p(%LG(%FILE),",",%),"~") d
+  . s:%nK[(" "_%n_" ") %XG=%XG_" s "_%n_"=$p(%R,%B,"_%_") "
+ s:%K["^"!(%LI(%FILE)["~") %XG=%XG(%FILE)
+ s:%XG'="" %XG="s %R=@%I s:$l(%R)=500 %R=$$r5(%I) "_%XG
+ n %R,%NG,%GM,%nn,%nnn,%I,%I0,%KEM,%NSum,%n2
+ n %,%1,%2,%3,%x,%x2,%xx,%xx2,%x1,%xecute,%g,%i
+ ;; s %g=0 f %=1:1:$l(%LG(%FILE),",")  i $p(%LG(%FILE),",",%)=%N s %g=% q   ;; i $tr($p(%LG(%FILE),",",%),"~")=%N  s %g=% q
+ s %i=0 f %=1:1:$l(%LII(%FILE),",") i $p(%LII(%FILE),",",%)=%N s %i=% q  ;; i $tr($p(%LII(%FILE),",",%),"~")=%N s %i=% q
+ s %nn="%nn",%nnn="%nnn",%Nsum="%Nsum"
+ s %x1=0,(%xx,%xx2)="",%NSum=0,%GM=$l(%LI(%FILE),","),^US(%USID,"%K")=%K
+ f %=1:1:9 s (%x,%x2)=$p(%K,"..",%) d:%x'=""  I %x'="" s %xx=%xx_"("_%x_")&",%xx2=%xx2_"("_%x2_")&"
+ .q:%x="1%N"  ;; sorted by %N
+ .I %x="-%1" s %x="",%x1=-1 q
+ .I %x="?AL" s %x="",%xecute="",(%i,%g)=0 d  q
+ .. F %1=1:1:6 s %2=$g(%W(%N,%1)) I %2["%E" s %xecute(%1)=%2
+ .I $e(%x,1,2)="//" s %3=$p(%x,"//",3),%2=$p(%x,"//",2),%xecute=%2,(%i,%g)=0 I %3'="" s %xecute=%3 x %2 s %x="" q
+ .I $e(%x)="(",$e(%x,$l(%x))=")" s (%i,%g)=0 q
+ .I $e(%x)="." s (%x,%x2)="-13509.18_"_%N_"[(-13509.18_"""_$e(%x,2,99)_""")" q
+ .I "="[$e(%x) s %x=%N_"="""_$e(%x,2,99)_"""",%x2="%n2[(""^"_$e(%x2,2,99)_"^"")" q
+ .s %1=$tr(%x,%LAT,%lat) s:%1="" %1=%x,%LAT=0,%lat=0 s (%x,%x2)="$tr("_%N_",%LAT,%lat)["""_%1_""""
+ s %xx=$p(%xx_"&&&&&","&&&&&"),%xx2=$p(%xx2_"&&&&&","&&&&&")
+ I %xx="",'$d(%xecute),'$d(%q),$l(%K) q -1
+ k ^US(%USID,"mxFsel-1",%FILE) s %x=0
+ I %x1=-1 k ^oM3(%USID) m ^oM3(%USID)=^US(%USID,"mxFse",%FILE)
+ I %x1=-1 m ^US(%USID,"mxFse-1",%FILE)=^oM3(%USID) k ^oM3(%USID)
+ s ^US(%USID,"mxASK",%FILE,%K)=%xx
+ f %=1:1:%GM s %NG(%)=$tr($p(%LI(%FILE),",",%),"~") n @(%NG(%))
+r2Fsel k ^US(%USID,"mxFsel",%FILE),^US(%USID,"mxFse",%FILE)
+ s %I="^"_%FILE_"("""")",%nnn=0,%I0="^",%KEM=$l(%LII(%FILE),",")
+ s %KEM=$l(%LII(%FILE),",")
+ I $e(%i0)="^" s %=$d(@%i0) i %,%#2=0 s %I=$NAME(@%i0),%I0=$e(%I,1,$l(%I)-1)
+ i %KmxFsel'="1%N.." f %nn=0:1 s %I=$q(@%I)  q:%I'[%I0  d:$ql(%I)=%KEM
+ .i $d(%seZona) q:%I'[%seZona
+ .I %x1=-1 q:'$d(^US(%USID,"mxFse-1",%FILE,%I))
+ .x %XG,%XI(%FILE) i $d(^mxConfig("A")),'$$tAccess^US("A",%FILE) q  
+ .;; i $d(%XG0(%FILE)) n %K s %XG0=0 f  s %XG0=$o(%XG0(%FILE,%XG0)) q:'%XG0  x %XG0(%FILE,%XG0) i $d(%K) s @($tr($p(%LI(%FILE),",",%XG0),"~"))=%K k %K
+ .s %2=@%N
+ .I $e(%KmxFsel)="=" s:%2["." %2=$p(%2_".............",".............")
+ .s:%2="" %2="-"
+ .i %xx'="" s @%N=%2 x "s %="_%xx i '% q:%2'["^"  s %n2="^"_%2_"^" x "s %="_%xx2 q:'%
+ .s %NSum=%NSum+%2,@%N=%2
+ .I $d(%xecute) x %xecute q:%K'["?AL"  n %xAL,%E,%K  d  q:%E=""
+ .. s %E="",%xAL="",%K=@%N
+ .. f  s %xAL=$o(%xecute(%xAL)) q:%xAL=""  x %xecute(%xAL) q:%E'=""
+ .s %1=%I,%2=@%N q:%2=""  i "D8 d8 "[$p(%LII(%FILE),","),%KmxFsel'["1%N" s %2=0
+ .s:$l(%2)>60 %2=$e(%2,1,60)_"__",^o60(%2)=$e(@%N,1,500)
+ .I $d(^US(%USID,"mxFsel",%FILE,%2,1))!1 x " s ^("_%LII(%FILE)_")=%1"
+ .s %nnn=%nnn+1,^US(%USID,"mxFse",%FILE,%I)=1
+ ;
+ i %KmxFsel="1%N.." s mxTEST("1%N..")=%i0
+ i %KmxFsel="1%N..",%i=2,%i0["^",$qs(%i0,1)?6n s %I=%i0,%I0=$e(%I,1,$l(%I)-1)
+ i %KmxFsel="1%N.." f %nn=0:1 s %I=$q(@%I)  q:%I'[%I0  d:$ql(%I)=%KEM
+ .i $d(%seZona) q:%I'[%seZona  i $d(^mxConfig("A")),'$$tAccess^US("A",%FILE) q 
+ .s:%i @%N=$qs(%I,+%i) x:%XG'="" %XG
+ .f %3=1:1:$l(@%N,"^") s %2=$p(@%N,"^",%3) s:$l(%2)>60 %2=$e(%2,1,60)_"__",^o60(%2)=$e(@%N,1,500) d:$l(%2)
+ ..s ^US(%USID,"mxFsel",%FILE,%2,%nn_"."_%3_1)=%I
+ m ^ose(%USID)=^US(%USID,"mxFsel",%FILE)
+ i '$d(^ose(%USID)),%seZona["(" s %seZona="" g r2Fsel
+ose 
+ q:'$d(^ose(%USID)) "" k ^oseooooo(%USID,-1) i $g(%SELflag) m %SEL=^ose(%USID) q ""
+ n o,oo2,o2,oo,op,oMaxRetu,% s o=$NAME(^ose(%USID)),oo=0,oMaxRetu=16000 s:$zv["MiniM" oMaxRetu=7000
+ f xoo=0:1 s o=$q(@o),o2="" d  q:o=""  q:$qs(o,1)'=%USID
+ . i o'="",$qs(o,1)=%USID s o2=$qs(o,2)
+ . i xoo,o2'=oo2 s %=oo2_$c(9)_$s(oo>1:oo,1:@op),^oseooooo(%USID,-1,xoo)=%,oo2=o2,oo=0
+ . s oo=oo+1,op=o s:'$d(oo2) oo2=o2
+ q:$g(%SELflag)="0" ""
+ s o="" f  s o=$o(^oseooooo(%USID,-1,o),-1) q:'o  s oMaxRetu=oMaxRetu-$l(^(o))-2 q:oMaxRetu<0
+ f  s o=$o(^oseooooo(%USID,-1,o)) q:'o  w $$U^MXF(^(o)),$c(4)  
+ q ""
+oseGet(node) 
+ n o,oo,ll i '$d(node) g oseGetAl
+ i '$d(^ose(%USID,node)) s o=$o(^ose(%USID,node)) q:o'[node $NAME(^ose(%USID,node))  s node=o
+ s o=$NAME(^(node)),ll=0
+ f  s o=$q(@o) q:o=""  q:ll>15000  q:$qs(o,2)'=node  q:$qs(o,1)'=%USID  d
+ . s oo=$$zoIR^USX(@o,0),ll=ll+$l(oo)+2 i ll<15000 w $$U^MXF(oo),$c(4) k @o
+ q $c(4)
+oseGetAl ; get all
+ q:'$d(^ose(%USID)) $NAME(^ose(%USID))  
+ n o,oo,ll s o=$NAME(^ose(%USID)),ll=0
+ f  s o=$q(@o) q:o=""  q:ll>15000  q:$qs(o,1)'=%USID  d
+ . s oo=$$zoIR^USX(@o,0),ll=ll+$l(oo)+2 i ll<15000 w $$U^MXF(oo),$c(4) k @o
+ q $c(4)
+F6f 
+RET 
+FouStart 
+vF ; mv
+FOUND 
+vFnext ; mv
+FoundF12 
+ q
+%XG(%f,%n,%r) q:'$d(%XG(%f)) %n
+ n % s %=$p(%XG(%f),","_%n_"=$",2) s:%n %=$p(%XG(%f),"=$",%n)
+ q "$p("_%r_","_$p(%,",",2)_","_+$p(%,",",3)_")"
+%XI(%f,%n,%i) q:'$d(%XI(%f)) %n
+ n % s %=+$p($p(%XI(%f),","_%n_"=$",2),",",4) s:%n %=%n
+ q "$tr($p($p("""_%i_""",""("",2,9),"","","_%_"),"""""")"","""")"
+key 
+ s %KEM=$l(%LII,","),%KEY=$l($p(","_%LII_",",","_%N_","),",")
+ S:%KEY>%KEM %KEY=0 s:%KEY %NEW=%KEY
+ q
+zo500(%i,%d) 
+ i %d'<0 s %=$q(@%i) s:%'[%Zon %=%i q %
+ s %=%i
+ i $zv'["GT" f  s %=$q(@%,%d) q:%=""  q:$ql(%)=%KEM
+ i $zv["GT" f  s %=$q(@%,%d) q:%=""  q:$l(%,",")=%KEM
+ i %'[%Zon s %=%i
+ q %
+ q

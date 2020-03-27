@@ -1,0 +1,50 @@
+ROUTINE USb
+USb ; ;[ 20190219 13:36:55 ]
+ ; MSM, CACHE, GT.M, MiniM
+ ; vmx Copyright(c) SIA ENTERS  2005-2019
+ k koko,%NG,%xgl,%NEW,%US,%AL
+ i $$icFIRMA^fir
+ s %FILE=$tr(%FILE," ","") i $l(%FILE),$d(^mxConfig("A",%FILE)),'$d(^(%FILE,%USID)) q
+pAL n o,%,%n,%1,%zt,u s %="",o=""
+ f  s %=$o(^AL(%FILE,%)) q:%=""  s %(%)=$g(^(%)) d
+ . f  s o=$o(^AL(%FILE,%,o)) q:o=""  d
+ ..  i $e(o,1,2)="t_" d  q
+ ...    i %'=%USID s o(o)=^(o) ;; k:$h-%(%)>222 ^AL(%FILE,%) q
+ ...    else  s %AL(o)=^(o)  ;; s:%(%)-$h ^AL(%FILE,%)=$h,%(%)=$h ;; m %AL(%)=^AL(%FILE,%)
+ ..  m %AL(%)=^AL(%FILE,%)
+ ;
+ k %AL("blank"),%AL(1),^AL(%FILE,"t_FontName"),^("CAP"),^("%FOK")
+ k %W s %n=99,%W=%FILE f  s %n=$o(%AL("%W",%n)) q:%n=""  s %2=1 d
+ . f %=-2,-1,1:1:9 i $p($g(%AL("%W",%n,%)),";")'="" d
+ .. i %>0 s %W(%n,%2)=%AL("%W",%n,%),%2=%2+1 q
+ .. s (o,%W(%n,%))=%AL("%W",%n,%) i o[18,$e(%n)="s" d  s %W(%n,%)=o
+ k %AL("%W"),o("t_FontName"),o("t_Number")  m o=%AL m %AL=o k ^oAL m ^oAL=%AL
+ ;  s o="" f  s o=$o(o(o)) q:o=""  i '$d(%AL(%USID,o)) s %AL(%USID,o)=o(o)
+ S %1=%FILE D ^USX,%xgl^USX
+ q:'$d(%CON(%FILE))  ;; -------------------
+ s %gFILE="^"_%FILE,%SF=""
+ S %LI(%FILE)=$G(^AL(%FILE,"%LI")),%LII(%FILE)=$g(^AL(%FILE,"%LII"))
+ s %KEM=$L(%LII(%FILE),","),%LG="%SF"
+ F %=1:1 S %N=$P(%LI(%FILE),",",%) Q:%N=""  S:","_%LII(%FILE)_","'[(","_%N_",") %LG=%LG_","_%N
+ S %GM=%-1,%LG(%FILE)=%LG,o=0
+ ;; f  s o=$o(o(o)) q:'$l(o)  s:$l(o(o),":")>%GM (o(o),^AL(%FILE,o),%AL(%USID,o))=$p(o(o),":",1,%GM) s:'$d(%AL(%USID,o)) %AL(%USID,o)=o(o)
+ f %G=1:1:%GM s %N=$p(%LI(%FILE),",",%G) s:%N["~" %N=$tr(%N,"~") d
+ .s %NG(%G)=%N,@%N=$g(@%N,"-"),%G(%N)=@%N,%W(%N)=$g(%W(%N,0)),%W(%N,-1)=$g(%W(%N,-1))
+ S (%E,%K,%R)="",%B=$c(254),%G=1,%FIN=0
+ i $g(%refreAL) k %refreAL q
+CapEr s %zt=$zt,$zt="Err^USb" x $G(^AL(%FILE,"START")) s $zt=%zt
+ i $g(^AL(%FILE,"START"))[" show last ",'$d(^otSelect(%USID,%FILE)),$o(%tSelect("^"_%FILE_"("))'[("^"_%FILE_"(") d
+ . n o,%I,%1 s %1=0,%="^mM("""")" f o=1:1:9999 s %=$q(@%,-1) q:'$l(%)  i $qs(%,2)[("1^"_%FILE_"(") s %I=$e($qs(%,2),2,999) i $d(@%I) s ^otSelect(%USID,%FILE,%I)=1,%1=%1+1 i o>100 q:%1>2
+ k ^mxAL(%USID,%FILE)
+ k ^AL(%FILE,"ColumnWidth"),^("blank"),^("Fx"),^("prKadr") i "PPR PAV"[%FILE k ^("Tf")
+ g RUN^US
+e0 
+E0 
+%USID i '$d(%USID) s %USID="GTM" i $zv'["MiniM" x:$zv'["GT.M" "s %USID=$zu($s($zv[""Ca"":5,1:0))"
+ x:$zv["MiniM"&'$d(%USID) "s %USID=$znspace" s ^JOB(%USID)=$h
+ q
+Enter(%,%Ymn,%Ymx,%Xmn,%Xmx,%ww,%Zona) 
+ s:%["^" %=$e($p(%,"("),2,99) s %FILE=%
+ d USb
+ q ""
+Err s %mxWarng(0)=$g(^AL(%FILE,"START"))_" --- ERROR IN START-COMMAND --- "_$zr q

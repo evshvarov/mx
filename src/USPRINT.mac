@@ -1,0 +1,123 @@
+ROUTINE USPRINT
+USPRINT ; US* ; [ 08/01/2005  5:48 PM ]  ;[ 20140228 13:44:16 ]
+ ; MSM, CACHE, GT.M, MiniM
+ ; VMX cellSoft Copyright(c) SIA ENTERS  2005-2014
+%RUN 
+ d R^USOPEN q:%zb=27 
+ s %=$$%MMUSER^USX("^M")
+ n %W s %W=$c(255) s %VaL=$s(%gm>201400:"EUR",1:"LVL")
+ i '$l($g(flgPlusM)) s %="" f  s %=$o(^M(%V,%)) q:%=""  k:$p(%,":",2)=%USID ^M(%V,%) k ^rm(%USID,%V,%)
+ i $l($g(flgPlusM)) q:$d(flgPlusM(%V,+%ggmm))  s flgPlusM(%V,+%ggmm)=2 n %ggmm s %ggmm=flgPlusM_":"_%USID_":*" 
+ F %FileNum=1:1:33 S o=$p(%V(%V,6)," ",%FileNum) d:o'=""
+ . s:o o=$p(o,+o,2,99) s %V(%V,6,$p(o,"^"))=1
+ . d %FILE(o)
+ d %PRINT
+ q
+%FILE(o) 
+ n %R,%Rout,%FILE k %koko,koko,%SEL ;;s mxCHECK($h_o)=1
+ s %FILE=$p(o,"^"),%Rout=$p(o,"^",2) s $p(%R,%B_0,99)=""
+ s %=$$%xig^USX(%FILE) X %XG(%FILE)  s %VaL=$s(%gm>201400:"EUR",1:"LVL")
+ i $e($g(xmsm),1,6)="%FILE=",xmsm'[%FILE,%FILE'="ciko" q
+ i $t(@%FILE^@%Rout)'="" s oo="" d @%FILE^@%Rout q
+ s o="StatusBar=1 label "_%FILE_" in rout "_%Rout_" not exist ! "_%V
+ s oERROR(o)=%V,mxERROR=o
+ q
+%PRINT 
+ k %koko,koko i $$%PrNode(%V,"^M")
+ q
+%PrNode(%PrNode) 
+ k %d8start,ooLabels
+ s:$e(%PrNode)'="^" %PrNode="^"_%PrNode
+ d %Ru k ^rM($j,%V) i $l($g(flgPlusM)) s flgPlusM=""
+ q ""
+%Ru 
+%RuRest 
+ n %MiT,%Mi,%LGmax,%,%NNN,%NNE,%IT,%V4,%V4L,%V4M,%3,%i
+ n %W,%M,%OLD,%Rold,%Mold,%R,%E,%NEW,%NiT,%PrFile,%zr
+ s %W=$c(255),%PrFile=$p($g(%PrNode),"(")
+ i %PrNode'["(" s %PrNode=%PrNode_"(%V,%ggmm)"
+ i %PrNode["%V" s %PrNode=$p(%PrNode,"(")_"(%V,%ggmm"_$p(%PrNode,"%V,%ggmm",2,9) i %PrNode_"0"'[")0" s %PrNode=%PrNode_")"
+ i $d(@%PrNode)!1 s %PrNode=$NAME(@%PrNode)
+ k %Li
+ S (%NNN,%IT)=0
+ S %V4=%B_%V(%V,4.1) s:%V(%V,4.2)'="" %V4=%V4_%B_%V(%V,4.2)
+ s (%V4L,%V4ML)=$L(%V4,%B),%V4M=%V(%V,4.3)
+ s %3=%V(%V,3.1)
+ f %=1:1:$l(%3,%B) s %i=$p(%3,%B,%) d
+ .s %Mi(%)=%i,%Mi=%,%Mi(0,%)=%PrFile_"("_$tr($p(%3,%B,1,%),%B,",")_")"
+ .s %Mi("%E",%)=%Mi(0,%)
+ .i $qs(%PrNode,%)'="" n @%i s @%i=$qs(%PrNode,%)  
+ .s (%Mi(0,-%),%Mi(1,-%),%Mi(-%))=$s($p(%PrNode,",",%)'="":@%i,1:"")
+ .s %OLD(%Mi(%))="",%NEW=""
+ s %Mi("%R")="",%Mi("%M")="",%Li=1 d %LiDn
+ i %Li<%Mi k %Li q   ;;; dati nav atrasti ..........
+ s %Li=%Mi i $o(@(%Mi(0,%Li)))
+ f  s %R="" d  q:$g(%Li)<2!'$d(%V)  i %Li<%Mi,%Mi(-%Li)'="" d %LiDn q:%Li<2
+ .i %Mi(-%Li)'="" s %R=$g(^(%Mi(-%Li))),%Mi(0,%Li)=$NAME(^(%Mi(-%Li)))
+ .i %Mi(-%Li)="" s %Li=%Li-1
+ .x:$zv["GT" "s %zr=$r" x:$zv'["GT" "s %zr=$zr"
+ .i %Li=%Mi,%PrNode'[$e(%zr,1,$l(%PrNode)-1) s %Mi(-%)="",%Li=0 q
+ .i %Li=%Mi,%V(%V,3.5)'="",%R'="" s %i=$o(^(%Mi(-%Li),"")) d  ;;3.5
+ ..f  q:%i=""  s %MiT(%Li,%i)=^(%i),%i=$o(^(%i))              ;;3.5
+ .i %R="" s %R=$g(%MiT(%Li)),%MiT(%Li)=""
+ .i %R'="" d %R q:'$d(%V)  f %=1:1:%Mi s %OLD(%Mi(%))=%Mi(-%)
+ .q:$g(%Li)<2  i $o(@%Mi(0,%Li))
+ .s %Mi(-%Li)=$o(^(%Mi(-%Li))) s:%Li>2 @(%Mi(%Li))=%Mi(-%Li)
+ q
+%LiDn 
+ n % i $d(@(%Mi(0,%Li)))
+ F %=%Li+1:1:%Mi d  i %Mi(-%)="" s %=%-1 q
+ .s %Mi(-%)=$o(^(%Mi(-%+1),"")) s @(%Mi(%))=%Mi(-%)
+ .i %Mi(1,-%)'="" s (@(%Mi(%)),%Mi(-%))=%Mi(1,-%)
+ .q:%Mi(-%)=""
+ .s:1+$d(^(%Mi(-%))) %Mi(0,%)=$NAME(^(%Mi(-%)))
+ s %Li=%
+ q
+%R 
+ q:%Li<2  n %,%1,%2
+ s %M=%Mi(0,%Li)
+ s:%Li<%Mi %M=%M_%W
+ s %Rold=%Mi("%R"),%Mi("%R")=%R,%Mold=%Mi("%M"),%Mi("%M")=%M
+ S %IT=0,%OLD=%NEW,%NEW="",%E=%Mi(%Li)
+ s:'$d(%LGmax(%E)) %LGmax(%E)=$l(@%E)+1
+ s:$l(@%E)>%LGmax(%E) %LGmax(%E)=%LGmax(%E)+1
+ i %V(%V)["?",%Li+1=%Mi,%Mi(%Mi)="%I" s %M=$p(%M,%W)
+ i %V(%V,3.5)'="" x "s %=$$rv"_$p(%XV(%V),"$$wv",2)  ;;;;;(3.5)
+ f %=3:1:%Mi s @%Mi(%)=$s(%Mi(-%)="":"*",1:%Mi(-%))
+ s %1=$p(%V(%V,5),"-")
+ f %=1:1:%Mi s %NEW=%NEW_" "_%Mi(%)_"="_%Mi(-%) q:%Mi(%)=%1
+ i %V(%V,3.5)'="" s %v=%V(%V,3.5) n %r,%n
+ F %=2:1:%V4L s %1=$p(%V4,%B,%) i '%1 s @%1=$P(%R,%B,%) d
+ .s:'$d(%LGmax(%1)) %LGmax(%1)=$l(@%1)+1
+ .s:$l(@%1)>%LGmax(%1) %LGmax(%1)=%LGmax(%1)+1
+ I %V4M'="" S %1="" F %=%V4L+1:1 X "S %1=$O("_%V4M_"(%1))"  Q:%1=""  d
+ . X "S "_%V4M_"(%1)=$P(%R,%B,%),%V4ML=%"
+ S %2=$g(%MiT(%Li-1))    ;; $$%RsuM
+ F %=2:1:$l(%V(%V,4.1),%B)+1,%V4L+1:1:%V4ML d
+ . S $P(%2,%B,%)=$P(%2,%B,%)+$P(%R,%B,%)
+ i $d(%V(%V,"4.p")) F %=2:1:$l(%V(%V,4.1),%B)+1,%V4L+1:1:%V4ML d
+ .s %p=$p(%V(%V,"4.p"),%B,%-1) q:'%p
+ .s %1=$P(%R,%B,%),%1=%1-$j(%1,0,%p),$p(%2,%B,%)=$p(%2,%B,%)-%1
+ s %MiT(%Li-1)=%2
+ i $d(%V(%V,"4.rm")),%V(%V,5)_"-"'[("-"_%E_"-") d
+ . s %=$$rm^USX(%Mi("%E",%Li),%V(%V,"4.rm"))
+ q:%V(%V,5)_"-"[("-"_%E_"-")
+ S %NNE=" " i %M'[%W s %NNN=%NNN+1,%NNE=%NNN
+ q:'$d(%Li)
+ s %NiT=%E_"."_@%E
+ d @(%V_"L^"_%Rout)
+ q
+%RsuM(%p) 
+ q:%M[%W ""
+ s %p=$g(%p)
+ n %2,%sign S %2=$g(%MiT(%Li-1)) s %sign=$s(%p<0:-1,1:1)
+ F %=2:1:$l(%V(%V,4.1),%B)+1,%V4L+1:1:%V4ML d
+ .i %p s $P(%2,%B,%)=$P(%2,%B,%)+($P(%Mi("%R"),%B,%)*%sign) q
+ .n %n
+ .s %n=$p(%V(%V,4.1),%B,%-1),%n=$p(%Mi("%R"),%B,%)-@%n q:'%n
+ .s $p(%2,%B,%)=$p(%2,%B,%)-$p(%Mi("%R"),%B,%)+%n
+ s %MiT(%Li-1)=%2 k:%M'[%B @%M
+ i %p,$d(%V(%V,"4.rm")),%M'[%W!(%p<-1) s %=$$wm^USX(%p)
+ q ""
+l(%lN,%i) 
+ q:$d(%i) $$l^UST(%lN,%i) q:$d(%lN) $$l^UST(%lN) q $$l^UST

@@ -1,0 +1,256 @@
+ROUTINE MXTQM2
+MXTQM2   ;[ 20190127 21:31:45 ]
+ ; MSM, CACHE, GT.M, MiniM
+ ; VMX-technology  ( Virtual Multi-channel EXCEL incorporated into the database )
+ ; vmx Copyright(c) 2005-2018, SIA ENTERS, Latvia, Reg.Nr.42102022219
+ ; registered by Agency INTELS, Riga, Latvia, reg.40003134156, on June 28, 2005, Nr.178
+ ;
+RUN(%mxFormR) ; Processed %mxFormF from %mxForma 
+ i $g(%mxForma)=%mxFormR q "recursiv"
+ i '$d(^oRC(%USID,%mxFormR)) s (o,%mxWarng("RUN^MXTQM2("_%mxFormR))="  -- not exists "_$name(^oRC(%USID,%mxFormR)) q o
+ n %mxForma,%mxSheet,%YX,%mxWeb,o,%,%oRChange
+ s (%mxForma,%mxSheet)=%mxFormR,%mxWeb=1 ;; k ^oTQMo(%USID,%mxForma)
+ i $$TQM^MXTQM(1)
+ q 1_%mxFormR_"-ok."
+F9oo() 
+ q:'$g(%YXx) ""  q:$g(%mxForma)="" ""  n %zr s %zr=$zr
+ n oo,t,%,o s oo="" i $d(^ceChange(%USID,%mxForma,%YXx)) d
+ . s t=%B_$d(^(%YXx,1)) f o=1:1:9999 s t=$o(^(t),-1) q:t=""  i $p(t,"r",2)=%YXy s oo=^(t) q 
+ i $l(oo) s ^($h*1000000_"r"_%YXy)=oo q:1_$d(@%zr) oo
+ s %="" f  s %=$o(^ceChange(%)) q:%=""  i $d(^ceChange(%,%mxForma,%YXx)) d
+ . s t=%B_$d(^(%YXx,1)) f o=1:1:9999 s t=$o(^(t),-1) q:t=""  i $p(t,"r",2)=%YXy s oo=^(t) q 
+ i $l(oo) s ^($h*1000000_"r"_%YXy)=oo
+ q:1_$d(@%zr) $$U^MXF(oo)
+%0Yrc(y) n %
+ s %Yrc=$g(^oYX(%USID,%mxForma,+y,0)),%=$p(%Yrc,"-",2) i % s %Yrc=%Yrc-%+1 q +%
+ s %=+$e($p(%Yrc,".",2)_"000000",1,6),%Yrc=%Yrc\1 q:% %+1  s %=+$e($p($g(^oYX(%USID,%mxForma,1+y,0)),".",2)_"000000",1,6)  
+ q +%
+%0Yvar(y,x) 
+ i $$%0Yrc(y) 
+ i $e($g(^oRC(%USID,%mxForma,+y,+x)),1,2)["?_" q $tr($p($g(^oRC(%USID,%mxForma,+y,+x))," "),"?_")
+ q $tr($p($g(^oRC(%USID,%mxForma,+%Yrc,+x))," "),"?_")
+oYXshowM(%mxSheet) 
+ n %mxForma,%Yrco,%,%1,%2,%3,%y,%x,%0,%n,%nn,yxq s %mxForma=$p(%mxSheet,"--")
+ s %=$g(mxConfig("M=EXCEL",%mxForma)) s:'$l(%) %=$g(^oRC(%USID,%mxForma,"?$$TQM",1))
+ s %1=$p(%," "),%2=$p(%," ",2),%3=$p(%," ",3) s:$l($g(%E)) (%,%1,%2,%3)="" s:"o."[%2 %2="" s yxq="" s:$e(%1)'="^" %1=""
+ f o=2:1:9 s %n=$p($tr(%3,"()",",,"),",",o) q:'$l(%n)  i $g(@%n)="" s %3="" q 
+ s o=9999999 f  s o=$o(%YX(o)) q:'$l(o)   d:'o
+ . s %=$g(^oRC(%USID,%mxForma,o)) s:'% %=$g(^oRC(%USID,%mxForma,"?var",o)) 
+ . i % s %YX(+%,+$p(%,"-",2))=%YX(o) s:$p(%YX(o),"<mx ")'="." (^oYX(%USID,%mxSheet,+%,+$p(%,"-",2)),@o)=$p(%YX(o),"<mx ") k %YX(o) q
+ . s %y=+$g(%YXy),%0=$$%0Yrc(%y) i '%0 k %YX(o) q
+ . s %x=1 
+ . f  s %x=$o(^oRC(%USID,%mxForma,%Yrc,%x)) q:'%x  s %=$g(^(%x)) i $p($e(%,3,99)," ")=o s %YX(%y,%x)=%YX(o) s:$p(%YX(o),"<mx ")'="." (^oYX(%USID,%mxSheet,%y,o),^(%x))=$p(%YX(o),"<mx ") k %YX(o) q
+ ;
+ s %y=0 f  s %y=$o(%YX(%y)) q:'%y   s o=9999999 f  s o=$o(%YX(%y,o)) q:'$l(o)  d:'o
+ .s %=$g(^oRC(%USID,%mxForma,o)) s:'% %=$g(^oRC(%USID,%mxForma,"?var",o)) i % s %YX(+%,+$p(%,"-",2))=%YX(%y,o) k %YX(%y,o) q
+ .s %0=$$%0Yrc(%y) i '%0 k %YX(%y,o) q
+ .s %x=1 
+ .f  s %x=$o(^oRC(%USID,%mxForma,%Yrc,%x)) q:'%x  i $p($e($g(^(%x)),3,99)," ")=o s %=$p(%YX(%y,o),"<mx ") s:%'="." (^oYX(%USID,%mxSheet,%y,o),^(%x))=% s %YX(%y,%x)=%YX(%y,o) k %YX(%y,o) q
+ ;
+ s %y=0 f  s %y=$o(%YX(%y)) q:'%y  i $l(yxq)<9999 s %x=0,%0=$$%0Yrc(%y) f  s %x=$o(%YX(%y,%x)) q:'%x  d
+ . s (%n,%nn)=$g(^oRC(%USID,%mxForma,%Yrc,%x)) s:$e(%n)'="?" %n=""
+ . s yxq=yxq_%y_";"_%x_";"_%YX(%y,%x)_$c(4),%=$p(%YX(%y,%x),"<mx ") i $l(%)>511,$zv["MS" s %=$e(%,1,511) 
+ . k %YX(%y,%x) s %n=$p($e(%n,2,99)," ") s:$e(%n)="_" %n=$e(%n,2,99)
+ .  q:".@$*"[$e(%n)!%n  q:" %q %n % %1 %2 o oo %Y %X %q %y %x "[(" "_%n_" ")  q:%="."  i $e(%n)'="%",$g(%YXy)=%y s @%n=%
+ .  s (^oYX(%USID,%mxSheet,%y*''%0,%n),^oYX(%USID,%mxSheet,%y,%x))=% q:$p(%nn,";")["-"  
+ .  i $e(%)'="?" s:$l(%1)&'%1 @%1@(%y,%x)=% s:$l(%2)&'%2 @%2@(%y,%x)=%
+ .  q:'$l(%3)  i %3[%n q:","_$tr($p(%3,"(",2,9),")",",")[(","_%n_",")
+ .  i '%0,123'[%2 s @%3@(%n)=% q
+ .  i %0>0 s:123'[%2&$d(@%3@(%n,%0)) @%3@(%n,%0)=% s:%2>0&$d(@%3@(%n)) @%3@(%n)=%
+ ;
+ q $$U^MXF(yxq)
+newRC(%before,%SheetYX) 
+ n o,%yy,%xx,%n,%,%1,%2,%y,%33,%newVars,%mxForma s %newVars="%",%SheetYX=$g(%SheetYX,oSheetYX),%mxForma=$p(%SheetYX,"--")
+ ;; s %=$g(mxConfig("M=EXCEL",%mxForma)),%33=$p(%," ",3),%3=$g(%3,%33)
+ s %yy=0 f  s %yy=$o(^oRC(%USID,%mxForma,%yy)) q:'%yy  s %xx=0 d
+ . f  s %xx=$o(^oRC(%USID,%mxForma,%yy,%xx)) q:'%xx  s %=$p($g(^(%xx))," ") i $e(%)="?" d
+ .. s %n=$tr($e($p(%," "),2,99),"_?") q:".@$*0%"[$e(%n)  q:"ooo"[%n!%n
+ .. s:" "_%before_" "'[(" "_%n_" ") %newVars=%newVars_","_%n
+ q %newVars
+Otkat(%o1,%zr) 
+ s:'$d(%zr) %zr=$g(%zrOtkat)  q:$g(%E)'="" 0
+ q:%zr'["^" "" n %,%i,o,h,%zt ;;f %=$ql(%zr):-1:1 s %i=$qs(%zr,%) i %i="" s %zr="" q
+ s %zt=$zt,$zt="OtkatE^MXTQM2",%zr=$name(@%zr)
+ q:$h*100000+$p($h,",",2)-2<$g(^bJournal(%USID,%zr)) ""
+ i %o1="0" s ^bJournal(%USID,%zr)=$h*100000+$p($h,",",2),h=$$pD^MXD($h,2)
+ i %o1="0",$d(@%zr) d  q:o "" m ^bJournal(%USID,%zr,h)=@%zr s o=1 f  s o=$o(^bJournal(%USID,%zr,o)) q:'o  i o+999<h k ^bJournal(%USID,%zr,o)
+ . s o=$o(^bJournal(%USID,%zr,h),-1) q:'o 
+ . i $l($$nodeComp^MXF($name(^bJournal(%USID,%zr,o)),%zr,1)) s o=0 
+ . ;;f  s %z=$q(@%z) s:$l(%r) %r=$q(@%r) q:'$l(%r_%z)  s:'$l(%z)!'$l(%r) o=0 q:'o  i @%z'=@%r s o=0 q 
+ n %1 s %1="{1042}{1077}{1088}{1085}{1091}{1090}{1100} {1074} {1089}{1086}{1089}{1090}{1086}{1103}{1085}{1080}{1077} {1085}{1072}"
+ s %1=%1_" {1091}{1082}{1072}{1079}{1072}{1085}{1085}{1099}{1081} {1084}{1086}{1084}{1077}{1085}{1090} {1074}{1088}{1077}{1084}{1077}{1085}{1080}:"
+ i %o1="s" k %SEL s o=0 f  s o=$o(^bJournal(%USID,%zr,o)) q:'$l(o)  s %SEL("R")="",%SEL(0)=%1,%SEL(o)=$$nodeComp^MXF($name(^bJournal(%USID,%zr,o)),%zr,200) d 
+ . s %=0 f  s %=$o(%SEL(%)) q:%=o  i %SEL(%)=%SEL(o) k ^bJournal(%USID,%zr,%),%SEL(%) 
+ . ;;
+ . ;;f  s %z=$q(@%z) q:%z=""  s %r="%r"_$e(%z,3,99) i @%z'=$g(@%r) s %=$ql(%z),%SEL(o)=$e($g(%SEL(o))_"  "_%B_$qs(%z,%)_"="_@%z,1,250)
+ i %o1 k @%zr m @%zr=^bJournal(%USID,%zr,%o1) s ^bJournal(%USID,%zr)=$h*100000+$p($h,",",2)
+ q ""
+OtkatE s $zt=$g(%zt) q ""
+oRC(%q,%sheetNa,Y,X) 
+ n %0,%,%oldCell,oCeValue,%qoo s oCeValue=%q,%qoo=11 i $l(%q)>1 s %qoo=$e(%q,$l(%q)-1,$l(%q))
+ i %qoo=".." s %qSearch=$p(%q,"..") i $l(%qSearch) s %YXy=Y,%YXx=X,%qSelect=%q,%ySearch=Y,%xSearch=X,%YX("qSearch")=%q q %q
+ i $d(^oYXselec(%USID,%sheetNa,Y,X)) s %oldCell=^(X) 
+ k oRCerr,gotoYXyy,gotoYXxx s %YXsheet=%sheetNa n %mxSheet,%mxForma s %mxSheet=%sheetNa,%mxForma=$p(%mxSheet,"--")
+ ;; n $et s $et="s %E=$ze_$c(10)_$g(%in),$ec="""" "
+ n %in,%y,%x,%nn,%nALoooo,%N,%nNext,gotoName,%shin,%Xcomm,%E,o,%2,%3,%3flag s %shin=$p(%sheetNa,"--")
+ s (%0,%nn,%tabRow)=$$%0Yrc(Y) s:$e($g(^oRC(%USID,%mxForma,Y,X)),1,2)["?_" %Yrc=Y
+ s %in=$g(^oRC(%USID,%mxForma,%Yrc,X))
+ i $e(%in,1,3)="?_*" f %=+X:-1:2 i $e($g(^(%)),1,2)="?_",$e(^(%),1,3)'["*" s %in=^(%) q
+ q:'%0 "" i %q'="---" q:$e(%in,1,2)'="?_" ""    ;; only for %0>0 (mx-tabel)
+ f %=X+11:-1:0 i $e($g(^(%)),1,2)="?_",$p(^(%)," ; ")["[" q
+ q:'% ""
+ i %q="-",$e(%in,1,2)'="?_"!($e(%in,1,10)="?_%mxIndex"),$g(^oRC(%USID,%mxForma,%Yrc,X+1))["?_" d  q ""
+ . s o=$p(%in,";-;",2,99) i $l(o)>3 s %YX(Y,X)="<mx <$$B 30 12 o[--- . 5/2 "_o_"  s %YX("_+Y_","_+X_")="".<mx ic46.99"" ; %YX /$$B> ic19.99",gotoYXxx=X-1 q
+ . s %YX(Y,X)="<mx <$$B 30 12 o[--- . 1/2 k %E s o=$$oRC^MXTQM2(""---"","""_%sheetNa_""","_Y_","_(X+1)_") ; %YX /$$B> ic19.99",gotoYXxx=X-1
+ i %q'="---" q:$e(%in,1,10)="?_%mxIndex" ""
+ s:";;.."'[%qoo ^oYX(%USID,%mxSheet,Y,X)=%q s gotoYXyy=Y,gotoYXxx=X+1,oRCyyyyy=Y,oRCxxxxx=X
+ ;; %Yrc ;;  i %in[";_",%0<Y f %=+Y:-1:+%0 i $e($g(^oRC(%USID,%mxForma,%,X)),1,2)="?_" s %in=^(X) q
+ ;; i $e(%in,1,3)="?_*" f %x=+X:-1:2 i $e($g(^(%x)),1,2)="?_",$e(^(%x),1,3)'["*" s %in=^(%x) q
+ s (%command,%Xcomm)=$p(%in,";;;",2,9),(%n,%N,%nALoooo)=$p($e(%in,3,99)," "),oRCerr=Y_-X_" "_%nALoooo_" "_%Xcomm
+ i " o %1 %2 Y X y x %y %x "[%n s (%n,%nALoooo)=%n_"o1o2o3" n @%n s @%n=""  ;; =$g(@%n)
+ i %q="" s %=0 i $p(%in,";")'[" [",$g(%YXy(-1))-Y f %=X-1:-1:2,-99.65 q:$l($g(^oYX(%USID,%mxSheet,Y,%)))
+ i %q="",%<0 q ""
+ i %q="",$p(%in,";")["^",Y>1 s %q=$p($g(^oYX(%USID,%mxSheet,Y-1,X)),"<mx ") i $p(%in,";")["^+1" d  s:% %q=%q+1
+ . f %=X-1:-1:2 i $g(^oYX(%USID,%mxSheet,Y-1,%))'=$g(^oYX(%USID,%mxSheet,Y,%)) s %q=1,%=0 q
+ i %qoo=";;",%Xcomm'["%SEL",$l($g(%FILE)),$d(^AL(%FILE)) d  q:$d(%SEL) "%SEL:%E:"_%q
+ . n %K,%G,%N,% s %K=%q,%N=%nALoooo,%G(%N)="" k %SEL
+ . s o=$$mxFsel^USF(%FILE,%nALoooo,%q,1) m:'$d(%SEL) %SEL=^ose(%USID)
+ i %qoo=";;",%Xcomm'["%SEL",%Xcomm'["%SEL" d  q:$d(%SEL) "%SEL:%E:"_%q
+ . n %N s %N=%nALoooo,%=$g(ALanalog(%N))
+ . i $l(%) s %N=$p(%,"^"),%=$p(%,"^",2) s:$l(%) %FILE=% d  q:$d(%SEL)
+ .. n %K,%G,% s %K=%q,%G(%N)="" k %SEL
+ .. s o=$$mxFsel^USF(%FILE,%N,%q,1) m:'$d(%SEL) %SEL=^ose(%USID) 
+ . s %="" f  s %=$o(^AL(%)) q:%=""  i $d(@("^"_%)),$g(^AL(%,"%W",%nALoooo,-2))["$$" d  q:$d(%SEL)
+ .. n %K,%FILE,%G s %FILE=%,%K=%q,%G(%N)="" k %SEL n %
+ .. s o=$$mxFsel^USF(%FILE,%N,%q,1) m:'$d(%SEL) %SEL=^ose(%USID) 
+ i %q'["---",%Xcomm["%SEL" x "n %1,%2,%3,%0,o,%N,%K s (%K,o)=%q,%E="""",%N=%nALoooo "_%Xcomm i %E'="",$e(%E,1,4)'="%SEL" s @%nALoooo=$g(%oldCell) q %E_" -- not found --:%E:"_%q
+ i %Xcomm["%SEL" q:$d(%SEL) "%SEL:%E:"_%q 
+ s:%q="--"!(%q="__") %Xcomm="",%q="--"
+ i %q="--" s gotoYXyy=0,gotoYXxx=0,%1=1,%YX(Y,X)="" d  q:gotoYXyy ":%E:"_%q  s %1=0 d  q ":%E:"_%q
+ . n %0,%Yrc i %1 f %1=%YXy+1:1 s %0=$$%0Yrc(%1) i '%0 s %1=%Yrc-.2 q
+ . f  s %1=$o(^oRC(%USID,%mxForma,%1)) q:'%1  s %2=1 f  s %2=$o(^oRC(%USID,%mxForma,%1,%2)) q:'%2  d
+ .. s %=^(%2) q:$e(%)'="?"  q:".^*$ "[$e(%,2)
+ .. i %[" ;;; " s gotoYXyy=%1,gotoYXxx=%2,%2="e",%1="e"
+ i %q="~",%Xcomm'["~" s gotoYXyy=Y_"]",%Xcomm="",%=$o(^oYX(%USID,%mxSheet,Y,X,""),-1) i %,^(%)'="~" s %YX(Y,X)="~"_^(%)_"<mx ic9.99" x $g(^oRC(%USID,%mxForma,%Yrc,"~"))
+ s %nn=%0,%rowEmpty='$l(%q) i %q'="---","..;;"'[%qoo s @%nALoooo=%q
+ s %=$g(mxConfig("M=EXCEL",%shin)),%2=$p(%," ",2),%3=$p(%," ",3),%1=$p(%," ") s:$l($g(%E)) (%,%1,%2,%3)="" s:"o."[%2 %2=-9
+ i $l(%3),%q'["---" s o=$tr(%3,"()",",,") f %=2:1 s %x=$p(o,",",%) q:'$l(%x)  s:%x=%nALoooo!'$l($g(@%x))!(";;.."[%qoo) %3=""
+ i %q["---",%Xcomm'["=""---""",$l(%3) s (%command,%Xcomm)=""
+ i $g(%YXy(-1))-Y,%q'["---",'$l(%3)!%2 s %x=1 f  s %x=$o(^oRC(%USID,%mxForma,%Yrc,%x)) q:'%x  i %x-X s %=$g(^(%x)) i $e(%,1,2)="?_" s %=$e($p(%," "),3,99) d
+ . q:"   %nn %mxIndex Y X %y %x o oo * ^ "[(" "_%_" ")  q:%=%nALoooo
+ . s:$d(^oYX(%USID,%mxSheet,Y,%x))#2 @%=$p(^(%x),"<mx ") s:$d(^(%))#2 @%=$p(^(%),"<mx ") s:$l(@%) %rowEmpty=0 
+ . i "123"'[%2 i %q="~",%Xcomm'["~" s (@%@(%0),^oYX(%USID,%mxSheet,Y,%x),@%)="~"_@%  ;; -oRC()
+ k oo i ";;.."[%qoo,%Xcomm'[%qoo q:%Xcomm="" "" q %q
+ s %E="" i %q="----" s %in="]"_%in,%Xcomm=""
+ ;
+ i %q'["---",$l(%Xcomm)>2,'%Xcomm x "n %1,%2,%3,%0,o,%N,%q,%K s (%K,o)=$g(@%nALoooo),%E="""",%N=%nALoooo "_%Xcomm i %E'="",$e(%E,1,4)'="%SEL" s @%nALoooo=$g(%oldCell)
+ ;
+ s:%tabRow (%nn,%0)=+%tabRow s Y=oRCyyyyy,X=oRCxxxxx  ;; -oRC()
+ i $d(oo) s %YX(Y,X)=oo i ";;.."[%qoo,$l(oo)>1,";;.."[$e(oo,$l(oo)-1,$l(oo)) q oo 
+ q:%nALoooo["o1o2o3"!($e(%E,1,4)="%SEL") $g(%E)_":%E:"_$g(@%nALoooo)
+ i %q'["---","..;;"'[%qoo s ^oYX(%USID,%mxSheet,Y,X)=%q s:"o oo"'[%nALoooo ^(%nALoooo)=%q
+ i $l(%1),"M"'=%1,"o oo"'[%1,'%1 s @%1@(Y,X)=$p(@%nALoooo,"<mx ")
+ i 123'[%2 s:'%2 @%2@(Y,X)=$p(@%nALoooo,"<mx ") s:000 @%n@(%0)=$p(@%nALoooo,"<mx ")  ;; -oRC()
+ i %q="---" n %nx,%n,%x,%mxI s %x=1,%mxI="" d  q ":%E:---"
+ .f  s %x=$o(^oRC(%USID,%mxForma,%Yrc,%x)) q:'%x  s %nx=$g(^(%x)) i $e(%nx,1,2)="?_" d  q:$p(%nx,";")["]"
+ .. s %n=$e($p(%nx," "),3,99) s:%n["%mxIndex" %mxI=%nx q:"   %nn Y X %y %x o %nx %n * . $ "[(" "_%n_" ")
+ .. s @%n=$g(^oYX(%USID,%mxSheet,Y,%n)) i $l(%mxI) x $p(%mxI,";;;",2,99) i %mxI[";-;" s $p(mxI,";-;")=""
+ .. i $p(%nx,";")["]" x "n %1,%2,%3,%x,%y,%nx "_$p(%mxI,";-;",2) i %2>0 k:$l(%3) @%3
+ .. i %x'<X s %YX(Y,%x)=".<mx ic3" k:$l(%3) @%3@(%n,%0)  ;; -oYX()
+ i $l($g(gotoName)) s autoFill="",gotoYXyy=oRCyyyyy,%x=1 d
+ . f  s %x=$o(^oRC(%USID,%mxForma,%Yrc,%x)) q:'%x  i $tr($p(^(%x)," "),"?_")=gotoName s gotoYXxx=-%x q
+ i $p(%in,";")_gotoYXyy["]" s:$g(gotoYXxx)'<0 gotoYXyy=gotoYXyy+1,gotoYXxx=2 i $l(%3)!111,%q'="---" d:%0
+ . n %n f %x=+X:-1:2 s o=$g(^oRC(%USID,%mxForma,%Yrc,%x)) i $e(o,1,2)="?_" d  i $p(o,";")["[" s:$g(gotoYXxx)'<0 gotoYXxx=%x q
+ .. q:$p(o,";")[" -"  s %n=$e($p(o," "),3,99) q:"0oo..;?"[%n!%n   
+ .. i %sheetNa'[%mxForma n %mxForma s %mxForma=$p(%sheetNa,"--")
+ .. ;; i $d(%mxInput(%mxForma)) s %3=$name(@%3) s:%mxInput(%mxForma)=%n %mxInput(%mxForma)=%3 i %mxInput(%mxForma)'=%3 s %E=$g(%E)_"___  access denied "_%3 q
+ .. i $l(%3) s:123'[%2 @%3@(%n,%0)=$p($g(@%n),"<mx ") s:%2>0 @%3@(%n)=$p($g(@%n),"<mx ")
+ i gotoYXxx>-2,$p(%in,";")'["]",%q'="~"!(%Xcomm["~"),%q'="---" d:$g(^oRC(%USID,%mxForma,%Yrc,1))["_"
+ . i gotoYXxx>-1 s %x=X f  s %x=$o(^(%x)) q:'%x  i $e(^(%x),1,2)="?_" s gotoYXxx=%x q
+ . i gotoYXxx=-1 s %x=1 f  s %x=$o(^(%x)) q:'%x  s %=$p(^(%x),";") i $e(%,1,2)="?_",%[" [" s gotoYXxx=%x q
+ s:gotoYXxx<0 gotoYXxx=-gotoYXxx s:gotoYXyy<0 gotoYXyy=-gotoYXyy 
+ q:%nALoooo["o1o2o3" $g(%E)_":%E:"_@%nALoooo
+ s %=$p(@%nALoooo,"<mx ")
+ s:"o oo"'[%nALoooo (^oYX(%USID,%mxSheet,%nALoooo),^(%nALoooo,%nn),^oYX(%USID,%mxSheet,Y,X),^(%nALoooo),^oYX(%USID,%mxSheet,0,%nALoooo))=%
+ s:"o oo"[%nALoooo ^oYX(%USID,%mxSheet,Y,X)=%
+ ;; s oRC(Y,X)=%in,(oYX(Y,X),oYX(%nALoooo),oYX(%nALoooo,%nn))=% ;; -oRC()
+ i $l($g(%E)) s %E=%E_" :%N="_%nALoooo
+ q $$U^MXF($g(%E)_":%E:"_@%nALoooo)
+oYX123(%q,%sheetNa,%Y,%X,%mxRange) 
+ q:$g(%E)'="" 0 n %mxSheet,%mxForma s %mxSheet=%sheetNa,%mxForma=$p(%mxSheet,"--")  n %qMSM i %q["..",$e(%q,$l(%q)-1,99)=".." q ".."
+ s %qMSM=$p(%q,"<mx ") i $zv["MS" s:$l(%qMSM)>511 %qMSM=$e(%qMSM,1,511)
+ s ^oYX(%USID,%mxSheet,%Y,%X)=%qMSM,oYX(%Y,%X)=%q
+ n %,%n,%1,%2,%3 s %=$g(mxConfig("M=EXCEL",%mxForma)),%1=$p(%," "),%2=$p(%," ",2),%3=$p(%," ",3) s:$l($g(%E)) (%,%1,%2,%3)="" s:"o."[%2 %2=-9
+ i '%2,$e(%qMSM)'="?" s @%2@(%Y,%X)=%qMSM
+ i $l(%1),"M"'=%1,"o"'=%1,'%1 s @%1@(%Y,%X)=%qMSM 
+ q:'$l(%3) %1_" "_%2
+ s %0=$$%0Yrc(%Y),%=$g(^oRC(%USID,%mxForma,%Yrc,%X))
+ s:$p(%,";")["-" %3="" s %=$p(%," ")
+ i $e(%)="?",$l(%3) s %n=$tr($p(%," "),"_?") i "@$.*0"'[$e(%n),'%n d
+ .  q:" %q %n % %1 %2 o oo %Y %X %q "[(" "_%n_" ")
+ .  i %3[%n,","_$tr($p(%3,"(",2,9),")",",")[(","_%n_",") s @%n=%q q
+ .  ;;i $p(%sheetNa,"--")'=%mxForma n %mxForma s %mxForma=$p(%sheetNa,"--")
+ .  i $d(%mxInput(%mxSheet)) d  i %mxInput(%mxSheet)'=%3 q
+ ..  s %3=$name(@%3) s:%mxInput(%mxSheet)=%n %mxInput(%mxSheet)=%3 i %mxInput(%mxSheet)'=%3 s:%'["_" %mxInput(%mxSheet,%3,%n)=%q q
+ .  n %1 s %1=999 f  s %1=$o(%mxInput(%mxSheet,%3,%1)) q:%1=""  s @%3@(%1)=%mxInput(%mxSheet,%3,%1) k %mxInput(%mxSheet,%3,%1)
+ .  s:%["_" ^oYX(%USID,%mxSheet,%Y,%n)=%qMSM s:%'["_" ^oYX(%USID,%mxSheet,0,%n)=%qMSM
+ .  i %'["_" q:%2>0  s %=$g(@%3@(%n)),^oldGlobs(%USID,%mxSheet,%n)=$zr_"="_%,@%3@(%n)=%qMSM q
+ .  i %0 s:123'[%2 @%3@(%n,%0)=%qMSM s:%2>0 @%3@(%n)=%qMSM 
+ q:$zv'["U) " "1="_%1_" 2="_%2_" 3="_%3_" (%0,%tabRow)="_%0_" mComm="_%_" $zr="_$zr
+ q $$U^MXF("1="_%1_" 2="_%2_" 3="_%3_" (%0,%tabRow)="_%0_" mComm="_%_" $zr="_$zr)
+oYX(%q,%sheetNa,%Y,%X,%mxRange) 
+ ; select or change 
+ s %mxSheet=%sheetNa i %q["..",$e(%q,$l(%q)-1,99)=".." q ".."
+ i %Y>0,1_$$%YXo^MXTQM(%q,%sheetNa,%Y,%X) s oYXy=%Y,oYXx=%X,oYXy(%sheetNa)=%Y,oYXx(%sheetNa)=%X,oYXq=%q
+ n %qMSM,%,%123,%1,%2,%3,%0,%n,%nn,%nFormul,%11
+ s oSheetYX(-1)=$g(oSheetYX),oSheetYX=$p(%sheetNa,"--"),%qMSM=$p(%q,"<mx ") q:'%Y
+ i %Y>0,%Y-$g(%YXy)!(%X-$g(%YXx)) d  s oYXy=%Y,oYXx=%X,oYXy(%sheetNa)=%Y,oYXx(%sheetNa)=%X,oYXq=%q
+ . s:'$g(%YXy) %YXy=%Y s:'$g(%YXx) %YXx=%X
+ . s %YXy(-2)=$g(%YXy(-1)),%YXy(-1)=$g(%YXy),%YXx(-1)=$g(%YXx),%YXx(-1)=$g(%YXx),%YXy=%Y,%YXx=%X,%YXq(-2)=$g(%YXq(-1)),%YXq(-1)=$g(%YXq),%YXq=%q
+ . s oYXy(-2)=$g(oYXy(-1)),oYXy(-1)=$g(oYXy),oYXx(-1)=$g(oYXx),oYXq(-2)=$g(oYXq(-1)),oYXq(-1)=$g(oYXq)
+ i $zv["MS" s:$l(%qMSM)>511 %qMSM=$e(%qMSM,1,511)
+ s %123=$g(mxConfig("M=EXCEL",oSheetYX)),%1=$p(%123," ",1),%2=$p(%123," ",2),%3=$p(%123," ",3) s:$l($g(%E)) (%123,%1,%2,%3)="" s:"o."[%2 %2=-9
+ i %Y>0 s (%tabRow,%0)=$$%0Yrc(%Y),%n=$g(^oRC(%USID,%mxForma,%Yrc,%X)) s:$e(%n)'="?"!("$. ?%1234567890^-=*@!+"[$e(%n,2)) %n="" s %nFormul=%n,%n=$tr($p(%n," "),"?_")
+ i %Y<0 s ^oYX(%USID,%mxSheet,-%Y,%X)=%qMSM s:$l(%1)&("oM"'[%1)&'%1 @%1@(-%Y,%X)=%qMSM q "" 
+ s ^oYX(%USID,%mxSheet,%Y,%X)=%qMSM i $l(%n),"o oo"'[%n s ^(%n)=%qMSM s:'%0 ^oYX(%USID,%mxSheet,0,%n)=%qMSM
+ s %11=$o(^oYX(%USID,%mxSheet,%Y,%X,""),-1) s:'%11 ^($h*100000+$p($h,",",2))=%qMSM i %11>0,%q'=^(%11),"~ -- _ __"'[%q s ^($h*100000+$p($h,",",2))=%qMSM
+ s:$e(%1)'="^" %1="" s:$l(%1) @%1@(oYXy,oYXx)=%qMSM
+ i '%2,$e(%qMSM)'="?",$p(%nFormul,";")_" "'[" - " s @%2@(%Y,%X)=%qMSM
+ s o="" f %nn="%YXy","%YXx","%YXq" s o=o_%nn_0_"="_$g(@%nn)_$c(4) f %=1,2 s o=o_%nn_%_"="_$g(@%nn@(-%))_$c(4)
+ s %0=+%tabRow
+ q:'$l(%n) o_$c(4)_" %mxFormula="_%nFormul   s:$p(%nFormul,";")_" "[" - " %3="" s %=$p(%nFormul," ")  q:'$l(%) o_$c(4)_" %mxFormula="_%nFormul  
+ i $d(^oRC(%USID,%mxForma)) s o=o_" oRC0="_$p($e(%nFormul,1,25)," ")_$c(4) i $g(%YXy(-1)),$g(%YXx(-1)) d
+ . n %0,% s %0=$$%0Yrc(%YXy(-1)),%=$p($g(^oRC(%USID,%mxForma,%Yrc,%YXx(-1)))," "),o=o_" oRC1="_$p($e(%,1,25)," ")
+ i $l(%3) i "@$.*0"'[$e(%n),'%n d
+ .  q:" %q %n % %1 %2 o oo %Y %X %q "[(" "_%n_" ")
+ .  i %3[%n,","_$tr($p(%3,"(",2,9),")",",")[(","_%n_",") s @%n=%q q
+ .  q:%0  q:%2>0  q:$p(%nFormul," ")["_"  q:$g(@%3@(%n))=%qMSM
+ .  ;;i %sheetNa'[%mxForma n %mxForma s %mxForma=$p(%mxSheet,"--")
+ .  i '$d(%mxInput(%mxSheet)) s %=$g(@%3@(%n)),^oldGlobs(%USID,%mxSheet,%n)=$zr_"="_%,@%3@(%n)=%qMSM q
+ .  s %3=$name(@%3) s:%mxInput(%mxSheet)=%n %mxInput(%mxSheet)=%3 i %mxInput(%mxSheet)'=%3 s o=o_" input denied -->> "_$g(@%3@(%n))_" <<-- "_%q_$c(4),%mxInput(%mxSheet,%3,%n)=%q q
+ .  i $d(%mxInput(%mxSheet,%3)) s %=99 f  s %=$o(%mxInput(%mxSheet,%3,%)) q:%=""  s @%3@(%)=%mxInput(%mxSheet,%3,%) k %mxInput(%mxSheet,%3,%)
+ .  s %=$g(@%3@(%n)),^oldGlobs(%USID,%mxSheet,%n)=$zr_"="_%,@%3@(%n)=%qMSM
+ q:'$d(%mxRange) o_$c(4)_" %mxFormula="_%nFormul 
+ q:%mxRange=%q!'$l(%1_%2) o_$c(4)_" %mxFormula="_%nFormul 
+ q:o[" %E={1085}{1077}{1090} {1088}{1072}{1079}{1088}{1077}{1096}{1077}{1085}{1080}{1103} {1085}{1072} {1074}{1074}{1086}{1076} / access denied "_$c(4) o_$c(4)_" %mxFormula="_%nFormul
+ n %y0,%y,%x0,%x,%z s %y0=%mxRange,%x0=$p(%mxRange,"x",2),%z=1
+ q:'%x0 o_$c(4)_" %mxFormula="_%nFormul  q:$p(%y0,"+",2)<1 o_$c(4)_" %mxFormula="_%nFormul  q:$p(%x0,"+",2)<1 o_$c(4)_" %mxFormula="_%nFormul
+ f %y=+%y0:1:%y0+$p(%y0,"+",2)-1 f %x=+%x0:1:%x0+$p(%x0,"+",2)-1 s %z=%z+1 d
+ . s:'%2 @%2@(+%y,+%x)=$p(%mxRange,$c(4),%z)
+ q:$zv'["U) " o_$c(4)_" %mxFormula="_%nFormul q $$U^MXF(o_$c(4)_" %mxFormula="_%nFormul)
+InseRows(%mxFormA,%1,%InsRows) 
+ s %mxFormA=$g(%mxFormA,%mxForma),%1=$g(%1,%yChange),%InsRows=$g(%InsRows,1)
+ n %,o,%zr q:$g(^oRC(%USID,%mxFormA,%yChange,1))'["_" 0
+ f %=%1:-1:1 q:$g(^oRC(%USID,%mxFormA,%,1))'["_"
+ s o="",%=1 f  s %=$o(^(%)) q:'%  s o=o_$g(^(%))
+ q:o["%tabRow"!(o["""+""") 0
+ f %=%xChange+1:1:99,0 i $g(^(%))["?_",$p(^(%),";")[" [" q
+ q:'% 0 k ^oYX(%USID,%mxSheet,%yChange,%xChange)
+ f %=%1:1 i '$$%0Yrc(%) s %=%-1 q
+ f o=%:-1:%1+1 k ^oYX(%USID,%mxSheet,%) m ^oYX(%USID,%mxSheet,%)=^oYX(%USID,%mxSheet,%-1)
+ k ^oYX(%USID,%mxSheet,%1)
+ q $$U^MXF(o)
+eqvTree2(z1,z2) 
+ n %1,%2,%
+ s %1=0 f  s %1=$o(@z1@(%1)) q:'%1  s %2=0 f  s %2=$o(@z1@(%1,%2)) q:'%2  s %=$p($g(^(%2)),"<mx ") i $p($p($g(@z2@(%1,%2)),"<mx "),"?")'=% s %2=-1_" "_%1_-%2_"  "_%_" ::: "_$g(@z2@(%1,%2)),%1=" "_%1 q
+ q:%2<0 %2  q 0

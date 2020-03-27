@@ -1,0 +1,499 @@
+ROUTINE MX2
+MX2 ;[ 20191011 20:14:18 ]
+ ; M3-LITE, MSM, CACHE, GT.M-5x
+QQ ; TKWEB ; start mxWeb 
+ s %USID=$g(%("FORM","U")),oooo=$g(%("COMMAND")),a=$g(%("ADDRESS")) s:'$l(a) a="127.0.0.1"
+ i %USID="" s %USID=a s:%USID="127.0.0.1" %USID="es"
+ s:%USID %USID="u"_$p(%USID,".",4)
+ s:$l(a) ^o(a)=%USID
+ w "<html>" k ^oProc m ^oProc=% s ^oProc("ADDRESS")=a
+ ;;w "<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Frameset//EN"">",!
+ w "<head><title>mxWeb</title>",!
+ ;w "<SCRIPT></SCRIPT>",!
+ w "<HTA:APPLICATION ID=""WL"" APPLICATIONNAME=""WebLink"" ICON=""http://localhost/gb/weblink1.ico""",!
+ W " CONTEXTMENU=""NO"" SCROLL=""NO"" SINGLEINSTANCE=""YES"" VERSION=""2.0"" WINDOWSTATE=""maximize"">",!
+ w "</head>",!
+ w "<frameset frameborder=0 framespacing=0 border=0 cols=* rows=55,*>",!
+ w "<frame marginwidth=0 marginheight=0 src=""http://localhost/gb/QQTITL^MX"" application=yes name=QQTITL noresize scrolling=no >",!
+ w "<frameset frameborder=0 framespacing=0 border=0 cols=""225,*"" rows=""*"">",!
+ w "<frameset frameborder=0 framespacing=0 border=0 cols=""*"" rows=""0,*"">",!
+ w "<frame marginwidth=0 marginheight=0 application=yes name=""code"" noresize >",!
+ w "<frame marginwidth=0 marginheight=0 src=""http://localhost/gb/QQMENU^MX"" application=yes name=QQMENU noresize >",!
+ w "</frameset>",!
+ w "<frameset rows=95%,5% >",!
+ w "<SCRIPT> </SCRIPT>",!
+ w "<frame marginwidth=0 marginheight=0 src=""http://localhost/gb/QQFORM^MX"" application=yes name=QQFORM noresize scrolling=auto >",!
+ w "<frame marginwidth=0 marginheight=0 src=""http://localhost/gb/QQEMPT^MX"" application=yes name=QQCOMM noresize scrolling=no >",!
+ w "</frameset></html>"
+ Q
+QQTITL ; TKWEB ; frame title
+ s oooo=$g(%("COMMAND")),a=$g(%("ADDRESS")) s:'$l(a) (a,%("ADDRESS"))="127.0.0.1"  s %USID=^o(a)
+ s %USID=^o(a),oxxxo=$p(oooo,"&A=",2,99)
+ i oxxxo="" s oxxxo="d w7^MX"
+ d getVars
+ w "<HTML>"
+ w "<META http-equiv=""Content-Type"" content=""text/html; charset=windows-1257"">",!
+ w "<HEAD><TITLE>mx-QQTITL</TITLE></HEAD><BODY>",!
+ w "<table width=1020 border=0 cellspacing=0 cellpadding=0 "
+ w " align=center style=""position: absolute; left: 0; top: 0"">",!
+ ;;W "<tr valign=""top""> ",!
+ ;;w "<td width=1020 colspan=2 height=30 bgcolor=#FFFFFF>"
+ ;;w "<img src=""toppen.jpg"" width=""2100"" height=30 ></td></tr>",!
+ w "<tr><td width=1020 colspan=2 height=30>",!
+ f o=1:1:6 w "<img src=blaknapp.jpg width=170 height=30>"
+ w "</td></tr>",!
+ W "</table>",!
+ w "<SCRIPT></SCRIPT>",!
+ d oxxxo
+ Q
+w7 
+ f o=%USID k ^MsgVM(o),^MsgMV(o),^MsgMVM(o),^MsgVMV(o),^mxM(o)
+ ;;s $zt="Ervb^USX"
+ i $$NewDate^MXD
+ s %XD81=$g(%XD81,20020101),%XD82=$g(%XD82,20021231)
+ i $$icDate^MXD(%XD81,%XD82)
+ i $$icFIRMA^fir(1)
+ w "<table bgcolor=silver width=100% style=""position: absolute; left: 0; top: 30"">"
+ w "<tr><td> ",$$u^MX($g(%FIRMA)),"</td><td> ",$$u^MX($g(%DatUMs)),"</td> "
+ w "<td>",%UCI,"</td>"
+ w "</tr></table>"
+ Q
+QQMENU ; TKWEB  ; frame of the menu
+ s oooo=$g(%("COMMAND")),a=$g(%("ADDRESS")) s:'$l(a) (a,%("ADDRESS"))="127.0.0.1"  s %USID=^o(a)
+ s oxxxo=$p(oooo,"&A=",2,99) s:oxxxo="" oxxxo=" d mxMENU "
+ d getVars
+ W "<HTML>"
+ ;w "<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Frameset//EN"">",!
+ ;w "<META http-equiv=""Content-Type"" content=""text/html; charset=windows-1257"">",!
+ w "<HEAD><TITLE>mx-QQMENU</TITLE>",!
+ ;w "<SCRIPT type=""text/javascript"" language=""JavaScript"" >",!
+ ;------------------------- SCRIPT ---------------------------
+ w "<SCRIPT language=JavaScript >",!
+ w "function jsMXmenu(line) {",!
+ w "o21=new String; id=new String",!
+ w "yMax=MENU.rows.length;",!
+ w "if (line==yMax) {yMax=0;}",!
+ w "o21=MENU.rows(line).getAttribute('VALUE'); le=o21.length-1",!
+ w "vi=MENU.rows(line+1).style.display ; ",!
+ w "im=MENU.rows(line).all.length-1 ; ",!
+ w "id=MENU.rows(line).all[im].getAttribute('id') ;",!
+ w "if ((id.charAt(0)=='o')&&(vi=='none'))   {",!
+ w "  MENU.rows(line).all[im].style.display='inline'; ",!
+ w "  MENU.rows(line).all[im-1].style.display='none';}",!
+ w "if ((id.charAt(0)=='o')&&(vi=='inline')) {",!
+ w "  MENU.rows(line).all[im].style.display='none'    ; ",!
+ w "  MENU.rows(line).all[im-1].style.display='inline';}",!
+ ;
+ ;w "window.alert(id)",!
+ w "for (y=line+1; y<yMax; y++) {",!
+ w " o21=MENU.rows(y).getAttribute('VALUE');",!
+ w " if (o21.charAt(le)=='1') {MENU.rows(y).style.display='none';",!
+ w "   im=MENU.rows(y).all.length-1 ; ",!
+ w "   id=MENU.rows(y).all[im].getAttribute('id') ;",!
+ w "   if (id.charAt(0)=='o') {",!
+ w "     MENU.rows(y).all[im-1].style.display='inline'; ",!
+ w "     MENU.rows(y).all[im].style.display='none';}    ",!
+ w "  }",!
+ w " if (o21.charAt(le)!='1') break;",!
+ w "}",!
+ w "if (vi=='inline') {yMax=0;}",!
+ ;
+ w "for (y=line+1; y<yMax; y++) {",!
+ w " o21=MENU.rows(y).getAttribute('VALUE');",!
+ w " if (o21.charAt(le)!='1') break;",!
+ w " if ((o21.charAt(le)=='1')&&(o21.charAt(le+1)!='1')) "
+ w "              {MENU.rows(y).style.display='inline';}",!
+ w "}"
+ w "} </SCRIPT>",!
+ ;-------------------------------------------------------------
+ w "</HEAD>",!
+ w "<BODY bgcolor=#b6c4d5 >",! ;;onload='jsMXmenuStart()' >",!
+ d oxxxo
+ Q
+T1menuA ; Example : conv some enother table to '^T1menu'
+ s %B=$c(254)
+ s o="" f n=1000:1000 s o=$o(^menu(o)) q:o=""   d
+ . s ^T1menu(n)=%B_2_%B_%B_o_%B_%B_%B_"closed",oo=""
+ . f nn=100:100 s oo=$o(^menu(o,oo)) q:oo=""  d
+ ..  s ^T1menu(n+nn)=%B_1_%B_^menu(o,oo),%=$zr
+ ..  i nn=100 s $p(^T1menu(n),%B,5)=$p(^menu(o,oo),%B,3)
+ ..  s f=$p(^menu(o,oo),%B,2) q:f=""
+ ..  i $d(^AL(f)) s $p(@%,%B,5)=$g(^AL(f,"NAME"))
+ Q
+mxMENU ;  create frame 'QQMENU'
+ d:'$d(^T1menu) T1menuA
+ w "<table id=MENU border=0 cellpadding=0 cellspacing=0 >",!
+ s o="" f n=0:1 s o=$o(^T1menu(o)) q:o=""  s oo=^(o) d
+ . w:n#9=0 "<SCRIPT> </SCRIPT>",!
+ . s o21=$p(oo,%B,2),mo=$p(oo,%B,3),mtxt=$p(oo,%B,4),text=$p(oo,%B,5)
+ . s ref=$p(oo,%B,6),img=$p(oo,%B,7) s:"- "[text text=mo_" "_mtxt
+ . w "<tr title='",$$u^MX(text),"' value=",o21
+ . i o21[2 w " onclick=""jsMXmenu(",n,")""; "
+ . w " STYLE=""cursor: hand; "
+ . w:$e(o21)=1 " display:none; "
+ . w " font: icon; "
+ . w " margin: 0; padding: 0; border-width: 0; "
+ . w " overflow: hidden; color:#112299; "
+ . w " "" ><td VALIGN=TOP nowrap >"          ;;;;;;;;;;;;;
+ .f o1=1:1:$l(o21) i $e(o21,o1)=1 s oo21=$o(^T1menu(o)) d
+ .. i $e(o21,o1+1)=1 w "<img src='menu_bar.gif'>" q
+ .. i oo21'="" s oo21=$p(^(oo21),%B,2)
+ .. i o21=oo21 w "<img src='menu_tee.gif'>"
+ .. else    w "<img src='menu_corner.gif'>"
+ .d
+ .. i img["closed" d  q
+ ...    w "<img id=c",n," src='menu_folder_closed.gif'>"
+ ...    w "<img id=o",n," src='menu_folder_open.gif' "
+ ...    w " STYLE='display:none;'>"
+ .. i $l(img)<3    w "<img id=i",n," src='menu_link_ie.gif'>" q
+ .. w "<img id=i",n," src='",img,"'>"
+ . ;
+ .s x=" w """_n_"""",b=" -- ",tt="b,o21,b,mtxt,b,text,b,ref,b,img"
+ .f nn=1:1:$l(tt,",") s x=x_","""_$$u^MX(@($p(tt,",",nn)))_""""
+ .d
+ .. i $l(ref)>2 w "<a href='",ref,"' >",$$u^MX(text)," </a>" q
+ .. i o21_.2[2.2 w mtxt," ",$$u^MX(text) q
+ .. w "<a href='XX^MX?&A=",x," ;' target=QQCOMM >",$$u^MX(text)," </a>"
+ .w "</td></tr>",!
+ w "</table>"
+ Q
+QQFORM ; TKWEB   ; frame of forms
+ s oooo=$g(%("COMMAND")),a=$g(%("ADDRESS")) s:'$l(a) (a,%("ADDRESS"))="127.0.0.1"  s %USID=^o(a)
+ s oxxxo=$p(oooo,"&A=",2,99) s:oxxxo="" oxxxo=" k %XD81 i $$d8^MXD "
+ W "<HTML>"
+ d getVars
+ ;w "<META http-equiv=""Content-Type"" content=""text/html; charset=windows-1257"">",!
+ w "<HEAD><TITLE>mx-QQFORM</TITLE></HEAD>",!
+ W "<BODY alink=#437a70 bgcolor=#b6c4d5 leftmargin=0 link=#7d354b marginheight=2 marginwidth=0 text=#222222 topmargin=2 vlink=""#7d354b"" xxOnLoad=xOnLoad()>",!
+ W "<table border=0 valign=top cellpadding=0 cellspacing=0 width=542 height=425 style=""position: absolute; left: 44; top: 168"">",!
+ W "<tr valign=top> ",!
+ W "<td align=center height=61 width=500 > ",!
+ W "<p><b><font color=""#5B7693""><font face=""Britannic Bold"" size=""7""> - mxWeb - </font>",!
+ W "<font color=#5B7693><br><font size=5 >",$$u^MX($g(^mvars(%USID,0,"%FIRMA"))),"</font></td></tr></table>",!
+ ;;;
+ ;W "<tr><td valign=top align=center width=55 height=25 ><b>UserName </b></td>",!
+ W "<table border=1 valign=top cellpadding=0 cellspacing=0 style=""position: absolute; left: 155; top: 268"">",!
+ W "<tr><td valign=top align=center width=55 height=25 style=""align: right "" ><b>UserName </b></td>",!
+ W "<td valign=top width=211 height=25 > ",!
+ W "<input type=text size=26 maxlength=30 name=UserName tabindex=1 value=CASIO ></td></tr>",!
+ W "<tr><td valign=top align=center width=55 height=25 ><b>Password </b></td>",!
+ W "<td valign=top width=211 height=25 > ",!
+ W "<input type=password size=26 maxlength=25 name=Password tabindex=2 value=CASIO ></td></tr>",!
+ W "<tr><td></td><td align=left height=45 width=211> ",!
+ W "<p align=left> ",!
+ W "&nbsp; <input type=image src=""login.gif"" width=93 height=22 border=0 ></td></tr></table>",!
+ d oxxxo
+ Q
+QQCOMM ; TKWEB  ; frame of comments
+ s oooo=$g(%("COMMAND")),a=$g(%("ADDRESS")) s:'$l(a) (a,%("ADDRESS"))="127.0.0.1"  s %USID=^o(a)
+ s oxxxo=$p(oooo,"&A=",2,99)
+ W "<HTML>"
+ ;w "<META http-equiv=""Content-Type"" content=""text/html; charset=windows-1257"">",!
+ w "<HEAD><TITLE>mx-QQCOMM</TITLE></HEAD><BODY>",!
+ d oxxxo
+ Q
+XX ; TKWEB  ; execut &A=oxxxo
+ s oooo=$g(%("COMMAND")),a=$g(%("ADDRESS")) s:'$l(a) (a,%("ADDRESS"))="127.0.0.1"  s %USID=^o(a)
+ s oxxxo=$p(oooo,"&A=",2,99)
+ W "<HTML><HEAD><TITLE>mx-XX</TITLE></HEAD><BODY>",!
+ d oxxxo
+ q
+oxxxo ;        ; execut &A=oxxxo
+ n (%USID,oxxxo,%) s %j=7,^o("oxxxo")=oxxxo
+ i oxxxo'[";!fast!;" s %=$$RestMem^USX,oxxxo=$g(^o("oxxxo"))
+ d getVars
+ i oxxxo'[";/:\;" x oxxxo i 1
+ else  f zxxxo=1:1:$l(oxxxo,";/:\;") s o=$p(oxxxo,";/:\;",zxxxo) x o
+ i $g(oxxxo)'[";!fast!;",$g(oxxxo)'[";!rest!;",$$SaveMem^USX
+ w "</BODY></HTML>"
+ Q
+getVars ; get m-vars from enother frames
+ n o,oo
+ s oo="" f  s oo=$o(%("FORM",oo)) q:oo=""  i oo["_t" d
+ . s o=$p(oo,"_") i $l(o) s ^mvars(%USID,0,o)=%("FORM",oo)
+ Q
+bfRead(f) 
+ ; binary files reading
+ n o,x o "file":(f:"RI") k ^r
+ f o=1:1 u "file" r *x q:$zc  s ^(o\20)=$g(^r(f,o\20))_","_x
+ c "file" q o
+QQEMPT ; TKWEB  ; empty page
+ W "<html><body bgcolor=#b6c4d5>" x "s %UCI=$zu($zv[""Ca""*5)"
+ w "<p align=center>",$$d8t^MXD($$pD^MXD($h))," ",%UCI," ",$zv,"</p></body></html>"
+ Q
+MXTKWEB ; TKWEB   ; frame of ^oTQMret(%USID) --> ^|"%SYS"|omxTKWEB(%mxTKWEB)
+ ;;;s oooo=$g(%("COMMAND")),a=$g(%("ADDRESS")),%USID=^o(a)
+ ;;;s oxxxo=$p(oooo,"&A=",2,99) s:oxxxo="" oxxxo=" k %XD81 i $$d8^MXD "
+ s %mxTKWEB=1 s ^oMonito($h)=$g(oxxxo)_$g(%mxTKWEB)
+ s nuf=$g(^oe(%mxTKWEB)),y="",w="" f o="YY","XX" s @o=$g(^oExcelSh(nuf,o))
+ s %UCI=$p(nuf,":"),%USID=$p(nuf,":",2),%FORM=$p(nuf,":",3)
+ f %=1:1:$l(XX," ") s o=$p(XX," ",%),$p(w,":",+o)=$p(o,":",2)
+ f %=1:1:$l(w,":") s o=$p(w,":",%) s:o $p(w,":",%)=o*1.4\1 s:'$l(o) $p(w,":",%)=$p(w,":",%-1)
+ f %=1:1:$l(YY," ") s o=$p(YY," ",%),$p(y,":",+o)=$p(o,":",2),$p(y,":",+o)=($p(y,":",+o)\1)
+ ;;f %=1:1:$l(y,":")+99 s o=$p(y,":",%) s:o $p(y,":",%)=o*1 s:'$l(o) $p(y,":",%)=$p(y,":",%-1)
+ W "<HTML>"
+ ;;d getVars
+ ;w "<META http-equiv=""Content-Type"" content=""text/html; charset=windows-1257"">",!
+ w "<HEAD><TITLE>-mx-oTQMret-oTKW-</TITLE></HEAD>"
+ W "<BODY alink=#437a70 bgcolor=#b6c4d5 leftmargin=0 link=#7d354b marginheight=1 marginwidth=0 text=#222222 topmargin=2 vlink=""#7d354b"" xxOnLoad=xOnLoad()>"
+ ;;w y
+ W "<table border=0 valign=top cellpadding=0 cellspacing=0 >"
+ W "<tr valign=top> "
+ W "<td align=center height=6 width=500 > "
+ ;W "<p><b><font color=""#5B7693""><font face=""Britannic Bold"" size=""3"">mxWeb "_$g(%ns)_" "_$g(%USID)_" "_$g(%FORM)  ;;_" </font>",!
+ W "<p><b><font color=""#5B7693"">",nuf,"  %UCI=",%UCI," </font>"
+ ;;W "<font color=#5B7693><br><font size=5 >",$$u^MX($g(^mvars(%USID,0,"%FIRMA"))),"</font></td></tr></table>",!
+ ;;;
+ ;W "<tr><td valign=top align=center width=55 height=25 ><b>UserName </b></td>",!
+ ;;;W "<table border=1 valign=top cellpadding=0 cellspacing=0 style=""position: absolute; left: 155; top: 268"">",!
+ ;;;W "<tr><td valign=top align=center width=55 height=25 style=""align: right "" ><b>UserName </b></td>",!
+ ;;;W "<td valign=top width=211 height=25 > ",!
+ ;;;W "<input type=text size=26 maxlength=30 name=UserName tabindex=1 value=CASIO ></td></tr>",!
+ ;;;W "<tr><td valign=top align=center width=55 height=25 ><b>Password </b></td>",!
+ ;;;W "<td valign=top width=211 height=25 > ",!
+ ;;;W "<input type=password size=26 maxlength=25 name=Password tabindex=2 value=CASIO ></td></tr>",!
+ ;;;W "<tr><td></td><td align=left height=45 width=211> ",!
+ ;;;W "<p align=left> ",!
+ ;W "&nbsp; <input type=image src=""c:/mx/lamxxxer.gif"" width=55 height=22 border=0 ></td></tr></table>"
+ ;;;d oxxxo
+ ;;;W "<table border=1 valign=top cellpadding=0 cellspacing=0 style=""position: absolute; left: 155; top: 268"">",!
+ W "<table border=0 valign=top cellpadding=0 cellspacing=1 <font color=""#2B3633"" size=1 /font> >"
+ k flagTabl s %YXy=0,flagTabl=0,yy=10,h=1,y2=0,%YXxm=0,%th=0
+ f %2yy=1:1:99 s %YXy=$o(^oe(nuf,%YXy)),y2='flagTabl+y2 q:'%YXy  q:'$o(^oe(nuf,%YXy,2))  d:00 MXTKWEBt s ww=11,%=$p(y,":",y2) s:%="" %=h s h=% i h f %YXx=2:1 s:'$o(^oe(nuf,%YXy,%YXx-.1)) %YXx=0 d:%YXx  i '%YXx w "</tr>" s yy=yy+h+5+(''flagTabl*2) q
+ . i %YXx=2 s %0=$g(^oe(nuf,%YXy,0)) s:%0 %th=0,flagTabl=%0 i '%th,'%0,$g(^oe(nuf,%YXy+3,0))+$g(^oe(nuf,%YXy+4,0)) s %th=1 d MXTKWEBt
+ . i %YXx=2,flagTabl,'%0 k flagTabl s flagTabl=0 w "</table><table border=0 valign=top cellpadding=0 cellspacing=0 ><tr>" 
+ . i %YXx=2 w "<tr>"  ;;,"<td>",%th,"</td>","<td>",flagTabl,"</td>","<td>",%0,"</td>"
+ . q:'$p(w,":",%YXx)  s oo=$g(^(%YXx)) w:oo["$$B " $$ooB(oo) s:"?"[$e(oo) oo=""  s:%YXx>%YXx %YXxm=%YXx
+ . i flagTabl,oo=0!(oo&$p(oo,".",2)),%YXx>3 s oo=$j(oo,0,2),flagTabl(%YXx)=2 s:'oo oo=""
+ . i $g(flagTabl(%YXx))=2,oo=0!oo s oo=$j(oo,0,2) s:'oo oo=""
+ . s a=" " i %YXx>3&oo!$g(flagTabl(%YXx)) s a=" align=right " 
+ . s cc=" " i a=" ",$l(oo)>2,%th,$g(^oe(nuf,%YXy,%YXx+1))="" s cc=" COLSPAN=2 "
+ . s o="""#3B5673"" size=2" s:$e(oo)="=" o="""#2B2623"" size=2",oo=$$funExcel(oo) s font="<font color="_o_" /font>"
+ . ;;w "<td wrap height="_(h+5)_" style=""position: absolute; height: "_(h+5)_"; width:"_$p(w,":",%YXx)_"; left:"_ww_"; top:"_yy_""" "_a_cc_$$MXTKWEBf(.oo)_" >"_font_"<NOBR>",$$u^MX($e(" "_oo_" ",1,50)),"</NOBR></td>"
+ . i %th w "<th BGCOLOR=""#a6b4c5"" width="_$p(w,":",%YXx)_" wrap height="_(h+5)_" "_a_cc_$$MXTKWEBf(.oo)_" >",font,$$u^MX(" "_oo_" "),"</th>"
+ . i '%th w "<td width="_$p(w,":",%YXx)_" wrap height="_(h+5)_" "_a_cc_$$MXTKWEBf(.oo)_" >",font,"<NOBR>",$$u^MX(" "_oo_" "),"</NOBR></td>"
+ . ;;w "<td style=""border-right: 1px solid gray; border-bottom: 1px solid gray;"" width="_$p(w,":",%YXx)_a_$$MXTKWEBf(.oo)_" ><font color=""#6B8693"" size=2 /font>",$$u^MX(" "_oo),"</td>"
+ . s ww=ww+$p(w,":",%YXx)+1
+ . i cc[2 s %YXx=%YXx+1
+ w "</table>"
+ d
+ .W "<table border=0 valign=top cellpadding=0 cellspacing=1 style=""font: size=1"" >"
+ .s %YXy=0,%YXxm=20
+ .f  s %YXy=$o(^oe(nuf,%YXy)) q:'%YXy  w "<tr><td>",%YXy,"</td>" f %YXx=0:1:%YXxm s oo=$g(^oe(nuf,%YXy,%YXx)) s:$e(oo)="?" oo="" w "<td>",font,$$u^MX(oo),"</td>" i %YXx=%YXxm w "</tr>"
+ .w "</table>"
+ .q
+ w "<table border=1><tr><td> UCI=",%UCI,"</td><td> %USID=",%USID,"</td><td> %mxForma=",%FORM,"</td><td>   ",$$pD^MXD($H,2),"</td><td><input type=image src=""c:/mx/lamer.gif"" width=55 height=22 border=0 ></td></tr>"
+ w "</table>"
+ i $zv["Ca"!($zv["IRIS") x "s %fromUCI=$zu($zv[""Ca""*5)" i %fromUCI="%SYS" zn %UCI d  zn %fromUCI
+ .n %UCI,%fromUCU x "s %UCI=$zu($zv[""Ca""!($zv[""IRIS"")*5)"
+ .W "<table border=1 valign=top cellpadding=0 cellspacing=1 style=""font: size=1"" >"
+ .s %form=0  w "<tr><td>",%UCI,"</td>"
+ .f  s %form=$o(^oTKMe0(%USID,%form)) q:%form=""  w "<td>",%UCI,":",%USID,":",%form,"</td>"
+ .w "</tr></table>"
+ .q
+ i $zv["Ca"!($zv["IRIS") x "s %fromUCI=$zu($zv[""Ca""*5)" i %fromUCI="%SYS" zn %UCI d  zn %fromUCI
+ .s %mxForma=%FORM,%j=1,o=$$NewDate^MXD
+ .k ^oTQM(%USID) m ^oTQM(%USID)=^oTQMe0(%USID,%mxForma)  s o=$$TQM^MXTQM()
+ .W "<table border=0 valign=top cellpadding=0 cellspacing=1 style=""font: size=1; color=green "" >"
+ .s %YXy=0,%YXxm=20
+ .f  s %YXy=$o(^oTQMret(%USID,%YXy)) q:'%YXy  w "<tr><td>",%YXy,"</td>" f %YXx=0:1:%YXxm s oo=$g(^oTQMret(%USID,%YXy,%YXx)) s:$e(oo)="?" oo="" w "<td>",font,$$u^MX(oo),"</td>" i %YXx=%YXxm w "</tr>"
+ .w "</table>"
+ .q
+ w "<a href='http://www.gismeteo.ru/towns/26406.htm'><img src='http://informer.gismeteo.ru/graph/G26406-1.GIF' border=0></a>"
+ w "</BODY></HTML>"
+ Q
+MXTKWEBt s:$g(^oe(nuf,%YXy,1))="~" $p(y,":",%YXy)=0
+ ;;s o=$g(^oe(nuf,%YXy+1,1)) i o-1,$o(^oe(nuf,%YXy))'["." q
+ ;;i $g(^oe(nuf,%YXy,1))_$g(^oe(nuf,%YXy-1,1))="__" q
+ w "</table><table border=1 valign=top cellpadding=0 cellspacing=0 >" ;;s flagTabl=-%YXy
+ ;;s o=$o(^oe(nuf,%YXy)) i o["." s flagTabl=$p(o,".",2)+2 
+ ;;w "</table>" W "<table style=""border-left: 1px solid black; border-top: 1px solid black;"" valign=top cellpadding=0 cellspacing=1 >" s flagTabl=%YXy
+ q
+MXTKWEBf(oo) 
+ q:oo'["<mx " ""  s f=$p(oo,"<mx ",2,9),oo=$p(oo,"<mx ")
+ i $p(f,"ic",2) ;; w " BGCOLOR=""#b6d4d5""" 
+ q ""
+funExcel(oo,z,%y,%x) 
+ n %,%1,%2,y1,y2,o,o9,y  s o9="1234567890,:",%y=$g(%y,%YXy),%x=$g(%x,%YXx)
+ q:$e(oo)'="=" oo s:'$d(z) z=$name(^oe(nuf))
+ s %1=$p(oo,":"),%2=$p(oo,":",2),y1=$tr(%1,o9_%1,o9),y2=$tr(%2,o9_%2,o9)
+ s:oo["=SUBTOTAL(" y1=$p(y1,",",2) s y1=+y1,y2=+y2
+ i y1+1=y2,+$g(@z@(y2,0))=1 f %=y2:1 q:'$g(@z@(%,0))  s y2=% 
+ i 11111_oo["1111=SUM(" f y=y1:1:y2 s oo=oo+$g(@z@(y,%x))
+ i 1_oo["1=SUBTOTAL(9," f y=y1:1:y2 s oo=oo+$g(@z@(y,%x))
+ i 1_oo["1=SUBTOTAL(3," f y=y1:1:y2 s oo=oo+''$l($g(@z@(y,%x)))
+ q:oo["." $j(oo,0,2)  q oo
+sysTKWEB(%) s %sys="MGR,MXM" s:$zv["Ca" %sys="USER"  s:'$g(%) %=1
+ x "s %UCI=$zu($zv[""Ca""*5),nuf=%UCI_"":""_%USID_"":""_%mxForma"
+ k ^|%sys|oe(+%) m ^|%sys|oe(+%)=^oTQMe(%USID) s ^|%sys|oe(+%)=nuf
+ k ^|%sys|oe(nuf) m ^|%sys|oe(nuf)=^oTQMe(%USID)
+ k ^|%sys|oExcelSh(nuf) m ^|%sys|oExcelSh(nuf)=^oExcelSh(%USID,%mxForma)
+ q %
+ooB(oo) q ""  
+ w "<td><FORM width=5 height=4 NAME=""Form1"" ACTION="""_$$u^MX("//localhost.MXTKWEB^MX2:1")_""">"
+ ; {1072}<INPUT TYPE="hidden" NAME="info" VALUE="{1047}{1072}{1087}{1080}{1089}{1100} {1074}{1072}{1073}{1072}{1085}{1102} {1085}{1072}{1072}{1074}{1086}{1089}{1082}{1088}{1077}{1089}{1077}{1085}{1100}{1077}">
+ ;{1072} <INPUT TYPE="radio" NAME="sex" VALUE="Male" CHECKED> {1052}{1091}{1078}{1080}{1082}<BR>
+ ; {1072}<INPUT TYPE="radio" NAME="sex" VALUE="Female"> {1041}{1072}{1073}{1072}<BR>
+ ; {1072} {1048}{1084}{1103}:<BR>
+ ; {1072}<INPUT TYPE="text" NAME="textfield" VALUE="{1042}{1072}{1089}{1103} {1055}{1091}{1087}{1082}{1080}{1085}" SIZE="30" MAXLENGTH="60"><BR>
+ ; {1072} {1055}{1072}{1088}{1086}{1083}{1100}:<BR>
+ ;{1072} <INPUT TYPE="password" WIDTH="10" NAME="passwd"><BR><BR>
+ w "<INPUT TYPE=""submit"" VALUE="" "" width=4 height=3 >"
+ w "</FORM></td>"
+ q ""
+GTMLINK(port) 
+   ;Based on Socket Examples from fscwitte@users.sourceforge.net
+   ; NO ^ROUTINE ENTRY
+   n ver
+   s:port="" port=8000
+   s ver=$e($zv,1,10)
+     i ver["GT.M" j START^%MLINK(port) q
+     i ver["Cache" j srv^%MLINK(port) q
+   QUIT
+   ;
+START(%ZNPort)   ;Start the Server
+   ;S %ZNPort=800
+   S %ZNDev="SCK$"_$J
+   O %ZNDev:(ZLISTEN=%ZNPort_":TCP":NODELIMITER:ATTACH="listener"):60:"SOCKET"
+   E  Q
+   ; USE fills $KEY with "BOUND|socket_handle|portnumber"
+   U %ZNDev
+   ;
+   ; Start listening, sets $KEY to "LISTENING|socket_handle|portnumber"
+   W /LISTEN(1)
+   ;
+   ; Wait for connection, $KEY will be "CONNECT|socket_handle|remote_ipaddress"
+1 
+   F  D  q:$KEY]""
+   . W /WAIT(60)
+   . I $KEY]"" Q
+   ;
+   ; Store the connection socket in local variable,
+   S %ZNSock=$piece($KEY,"|",2)
+   C %ZNDev:(SOCKET="listener") J START^GTMLINK ;close listener and start another GT.M Link to listen port
+   S $ZTRAP="GOTO ERROR^GTMLINK"
+2   U %ZNDev:(SOCKET=%ZNSock)
+   W "glc_READY:",$c(0)
+   ;
+   s qqnump=$j
+   x "s qW=##class(%Library.qWORD).%New()"
+   x "s qARM=##class(%Library.TqARM).%New()"
+     s qqlang=1
+3       F  D      
+   . s %ZNData=$$GETDATA() q:%ZNData=""
+   . i %ZNData="" q
+   . q:%ZNData=$c(1)
+   . I %ZNData="glc_EXIT:" W "glc_DISCONNECTED:",$c(0) s ^tmplink("close",$j)=$h_"~EXIT" C %ZNDev H
+   . I $P(%ZNData,":",1)="glc_EXECUTE" D
+   .. W $c(1,2,3,4,5,6,7,8,9)
+   .. I %ZNData["getsessionid=1" k:$d(^%session($JOB)) ^%session($JOB) s ^%session($JOB)=$h
+   .. F %ZTemp=0:1:9 s %Var="P"_%ZTemp,@%Var=$p(%ZNData,$c(1),%ZTemp+2)
+   .. S %ZNCommand=$P($P(%ZNData,":",2,9999),$c(1),1)
+   .. S:%ZNCommand[($c(5)_"xmldata=1") %ZNCommand=$p(%ZNCommand,$c(5)_"xmldata=1",1)
+   .. S P9=""  
+   .. X:%ZNData'["getsessionid=1" %ZNCommand
+   .. s:%ZNData["getsessionid=1" P0=$JOB
+   .. F %ZTemp=0:1:9 S %Var="P"_%ZTemp I '$D(@%Var) S @%Var=""
+   .. W "glc_EXRESPONSE:<registry>",P0,$C(1),P1,$C(1),P2,$C(1),P3,$C(1),P4,$C(1),P5,$C(1),P6,$C(1),P7,$C(1),P8,$C(1),P9,$c(1)
+   .. W $c(9,8,7,6,5,4,3,2,1)
+   s ^tmlink("close",$j)=$h
+   C $I
+   H
+GETDATA() 
+         n c,d,end,c1
+         S (d,end,c1,c)=""
+         d FINDST
+         f  d  q:end=1
+         .R *c:60 q:'$T
+         .S d=d_$C(c)
+         .S c1=c1_c
+         .s:c1[987654321 d=$p(d,$c(9,8,7,6,5,4,3,2,1),1),end=1
+         .q
+         s ^tmlink("open",$j)=d
+         q d
+FINDST 
+         n c,end,str
+         s (c,end,str)=""
+         f  d  q:end=1
+         .R *c:60 q:'$T
+         .q:(c<1)!(c>9)
+         .s str=str_c
+         .s:str[123456789 end=1
+         .q
+         q
+ERROR 
+   W $c(1,2,3,4,5,6,7,8,9)
+   F %ZTemp=0:1:9 S %Var="P"_%ZTemp I '$D(@%Var) S @%Var=""
+   s ^GTMERROR($j,$h)=$TR($ZSTATUS,$C(13,10),"")
+   U %ZNDev:(SOCKET=%ZNSock)
+   W "glc_ERROR:"_$TR($ZSTATUS,$C(13,10),""),$C(1),"<registry>",P0,$C(1),P1,$C(1),P2,$C(1),P3,$C(1),P4,$C(1),P5,$C(1),P6,$C(1),P7,$C(1),P8,$C(1),P9,$C(1),$c(9,8,7,6,5,4,3,2,1)
+   g 3
+sererror 
+   W $c(1,2,3,4,5,6,7,8,9)
+   F %ZTemp=0:1:9 S %Var="P"_%ZTemp I '$D(@%Var) S @%Var=""
+   s ^GTMERROR($j,$h)=$ZERROR
+   W "glc_ERROR:"_$zerror,$C(1),"<registry>",P0,$C(1),P1,$C(1),P2,$C(1),P3,$C(1),P4,$C(1),P5,$C(1),P6,$C(1),P7,$C(1),P8,$C(1),P9,$C(1),$c(9,8,7,6,5,4,3,2,1),*-3 
+   g 4
+srv(port) 
+     n dev,mode,jobflag,id,end
+     S dev="|TCP|"_port
+ ;; // 4 transfer to job open socket        
+    s $zt="error" 
+    S mode="AS" 
+    s end=""
+    S jobflag=4
+    O dev:(:port:mode::32767:32767) 
+    f  d  q:end=1
+    .U dev R x:30 ;; // wait connection
+    .i $T J srvj(port):(:jobflag:$IO:$IO):0 s end=1
+    .q
+error 
+   c dev  
+   j srv^%MLINK(port)
+  q
+srvj(port) 
+   n id,in,d,str,dev
+   s $zt="sererror"
+   s d=""
+   W "glc_READY:"_$c(0),*-3  
+4  F  D          
+   . s %ZNData=$$GETDATA() q:%ZNData=""
+   . i %ZNData="" q
+   . q:%ZNData=$c(1)
+   . I %ZNData="glc_EXIT:" W "glc_DISCONNECTED:",$c(0) s ^tmplink("close",$j)=$h_"~EXIT" H
+   . I $P(%ZNData,":",1)="glc_EXECUTE" D
+   .. s value=""
+   .. W $c(1,2,3,4,5,6,7,8,9)
+   .. I %ZNData["getsessionid=1" k:$d(^%session($JOB)) ^%session($JOB) s ^%session($JOB)=$h
+   .. F %ZTemp=0:1:9 s %Var="P"_%ZTemp,@%Var=$p(%ZNData,$c(1),%ZTemp+2)
+   .. S %ZNCommand=$P($P(%ZNData,":",2,9999),$c(1),1)
+   .. S:%ZNCommand[($c(5)_"xmldata=1") %ZNCommand=$p(%ZNCommand,$c(5)_"xmldata=1",1) 
+   .. s P9=""
+   .. ;; //s:($tr(%ZNCommand," ")'="")&(%ZNData'["getsessionid=1") %ZNCommand=$$GetFunc(%ZNCommand)
+   .. d:%ZNData'["getsessionid=1" Ex(.%ZNCommand)
+   .. i %ZNData'["getsessionid=1" s ^Aaa("com")=%ZNCommand x %ZNCommand
+   .. s:%ZNData["getsessionid=1" P0=$JOB
+   .. F %ZTemp=0:1:9 S %Var="P"_%ZTemp I '$D(@%Var) S @%Var=""
+   .. W "glc_EXRESPONSE:<registry>",value,$C(1),P0,$C(1),P1,$C(1),P2,$C(1),P3,$C(1),P4,$C(1),P5,$C(1),P6,$C(1),P7,$C(1),P8,$C(1),P9,$c(1)
+   .. W $c(9,8,7,6,5,4,3,2,1),*-3 
+   ..q
+   .q
+   Q       
+Ex(Cmd) 
+   q:Cmd=""
+   f  q:($e(Cmd)'=" ")!(Cmd="")  s Cmd=$e(Cmd,2,32000)
+   q:Cmd=""
+   i $e(Cmd)="$" s Cmd="s value="_Cmd q
+   i $e(Cmd)="=" s Cmd="s value"_Cmd q
+   q
+   ;  //end//  GT.M Link Server - by paulo.rogerio@zipmail.com.br  ; Compiled April 3, 2007 11:16:22
+ ;; {1052}{1086}{1078}{1085}{1086} {1074}{1099}{1082}{1080}{1085}{1091}{1090}{1100}
+ ;; s{1072}qqnump=$j
+ ;; s{1072}qW=##class(%Library.qWORD).%New()
+ ;; s{1072}qARM=##class(%Library.TqARM).%New()
+ ;; s{1072}qqlang=19
+ ;; {1056}{1072}{1073}{1086}{1090}{1072}{1077}{1090} {1083}{1077}{1090} 15 {1087}{1086} cache {1080} GT.M
+ ;; 123456789 - {1087}{1072}{1082}{1077}{1090} {1074}{1085}{1072}{1095}{1072}{1083}{1077} {1087}{1077}{1088}{1077}{1076}{1072}{1095}{1080}
+ ;; 987654321 - {1074} {1082}{1086}{1085}{1094}{1077}
+ ;; {1064}{1083}{1077}{1090} {1076}{1072}{1085}{1085}{1099}{1077} {1082}{1072}{1082} {1087}{1086}{1090}{1086}{1082}{1086}{1084} , {1090}{1072}{1082} {1080} {1090}{1080}{1087}{1072} {1087}{1086} {1082}{1086}{1084}{1072}{1085}{1076}{1077} {1072}{1085}{1072}{1083}{1086}{1075}{1072} VisM
+ ;; {1054}{1090}{1076}{1077}{1083}{1100}{1085}{1086} {1084}{1086}{1078}{1085}{1086} {1087}{1077}{1088}{1077}{1076}{1072}{1074}{1072}{1090}{1100} {1080} {1087}{1086}{1083}{1091}{1095}{1072}{1090}{1100} {1088}{1077}{1075}{1080}{1089}{1090}{1088}{1099} {1086}{1090} P0 {1076}{1086} P9

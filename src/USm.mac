@@ -1,0 +1,13 @@
+ROUTINE USm
+USm ;US.m -setup^AL [ 03/28/2005  1:06 AM ]  ;[ 20070204 19:51:29 ]
+ ; M3-LITE, MSM-4.4x, CACHE-3x..5x, GT.M-5x
+ ; Soft-in-cell  MX Copyright(c) SIA ENTERS  1997-2007
+ ; 
+ q
+SelALGlo(%all) 
+ n %,%1,%s k %SEL s %=""
+ s %s="qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM%1234567890"
+ f  s %=$o(^AL(%)) q:%=""  i $tr(%,%s_%,%s)=%,'%,$e(%)'=0 i $d(^AL(%,"NAME")) s %1="^"_% d
+ . i '$g(%all),$d(@%1) k @%1@("-") s:$d(@%1) %SEL(%)=^AL(%,"NAME") q
+ . q:'$g(%all)  i '$d(@%1) s %SEL($c(254)_%)=^AL(%,"NAME")
+ q $d(%SEL)
